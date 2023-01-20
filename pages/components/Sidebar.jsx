@@ -118,8 +118,10 @@ const Settings = () => {
         style={{
           padding: "12px",
           minHeight: "100px",
-          resize: "none",
+          maxHeight: "250px",
+          // resize: "none",
           fontFamily: "Noto Sans, sans-serif",
+          overflow: "auto",
         }}
       />
 

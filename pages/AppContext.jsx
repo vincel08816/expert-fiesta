@@ -125,7 +125,7 @@ export const AppContextProvider = ({ children }) => {
     const prompt =
       form.topText + "\n" + selectedMessages + "\n" + form.text + "\nA:";
 
-    const max = form.model === "text-davinci-003" ? 4000 : 2000;
+    const max = form.model === "text-davinci-003" ? 3500 : 1500;
     const max_tokens = parseInt(max - prompt.length / 4);
 
     if (max_tokens <= 0) {

@@ -50,6 +50,7 @@ const Content = () => {
             maxHeight: "350px",
             resize: "none",
             flex: 1,
+            overflow: "auto",
             fontFamily: "Noto Sans, sans-serif",
           }}
         />
