@@ -29,11 +29,13 @@ const Content = () => {
       {/* input field */}
       <Box
         sx={{
-          m: 1,
+          m: 2,
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
+          backgroundColor: "#ebedef",
+          borderRadius: "5px",
         }}
       >
         <TextareaAutosize
@@ -45,13 +47,16 @@ const Content = () => {
           name={"text"}
           onChange={handleChange}
           style={{
-            padding: "12px",
+            padding: "10px 20px",
             minHeight: "22px",
             maxHeight: "350px",
             resize: "none",
             flex: 1,
             overflow: "auto",
             fontFamily: "Noto Sans, sans-serif",
+            backgroundColor: "#ebedef",
+            border: "none",
+            outline: "none",
           }}
         />
 

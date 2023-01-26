@@ -10,7 +10,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-
 import { Box } from "@mui/system";
 import React from "react";
 import { useAppContext } from "../AppContext";
@@ -81,11 +80,9 @@ const Settings = () => {
       }}
     >
       <FormControl sx={{ width, mb: 2 }}>
-        <InputLabel id="demo-simple-select-helper-label">Model</InputLabel>
+        <InputLabel>Model</InputLabel>
         <Select
           sx={{ mb: 1 }}
-          labelId="demo-simple-select-helper-label"
-          id="demo-simple-select-helper"
           value={model}
           name="model"
           onChange={handleChange}
@@ -119,7 +116,6 @@ const Settings = () => {
           padding: "12px",
           minHeight: "100px",
           maxHeight: "250px",
-          // resize: "none",
           fontFamily: "Noto Sans, sans-serif",
           overflow: "auto",
         }}
@@ -212,7 +208,6 @@ const Settings = () => {
 const Sidebar = (props) => {
   const { openSidebar, setOpenSidebar } = useAppContext();
 
-  if (!openSidebar) return "";
   const toggleDrawer = () => setOpenSidebar((prev) => !prev);
 
   return (

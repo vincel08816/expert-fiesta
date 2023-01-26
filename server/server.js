@@ -2,7 +2,6 @@ const express = require("express");
 const { Configuration, OpenAIApi } = require("openai");
 const cors = require("cors");
 const next = require("next");
-
 require("dotenv").config();
 
 const dev = process.env.NODE_ENV !== "production";
@@ -12,9 +11,9 @@ const handle = nextApp.getRequestHandler();
 nextApp
   .prepare()
   .then(() => {
+    // express stuff
     const app = express();
 
-    // express stuff
     app.use(express.json({ limit: "50mb" }));
     app.use(express.urlencoded({ extended: true, limit: "50mb" }));
     app.use(cors());
@@ -58,6 +57,10 @@ nextApp
     // nextjs here
     app.get("/", (req, res) => {
       nextApp.render(req, res, "/Home");
+    });
+
+    app.get("/", (req, res) => {
+      nextApp.render(req, res, "/ResumeForm");
     });
     app.get("*", (req, res) => handle(req, res));
 

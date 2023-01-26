@@ -96,7 +96,21 @@ export const AppContextProvider = ({ children }) => {
         });
       })
       .catch((error) => console.error(error))
-      .then(() => setIsSending(false));
+      .then(() => {
+        setIsSending(false);
+        setChatLog((prev) => {
+          return [
+            ...prev,
+            {
+              user: "OpenAI",
+              timestamp: Date.now(),
+              text: "Could not send message.",
+              selected: true,
+              error: true,
+            },
+          ];
+        });
+      });
   };
 
   // don't forget to handle edge cases such as empty text field
