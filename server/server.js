@@ -1,6 +1,9 @@
 const express = require("express");
 const { Configuration, OpenAIApi } = require("openai");
 const cors = require("cors");
+const cp = require("cookie-parser");
+const passport = require("passport");
+
 const next = require("next");
 require("dotenv").config();
 
@@ -17,6 +20,13 @@ nextApp
     app.use(express.json({ limit: "50mb" }));
     app.use(express.urlencoded({ extended: true, limit: "50mb" }));
     app.use(cors());
+    app.use(cp());
+    app.use(passport.initialize());
+    require("./modules/passport-config")(passport);
+
+    app.use("/api/auth", require("./routes/auth"));
+    app.use("/api/user", require("./routes/user"));
+    app.use("/api/message", require("./routes/message"));
 
     const configuration = new Configuration({
       apiKey: process.env.OPENAI_API_KEY,
@@ -26,10 +36,10 @@ nextApp
 
     app.post("/api/chat", async (req, res) => {
       try {
-        console.log(req.body);
-        console.log("here");
+        console.log("/api/chat", req.body);
 
         const response = await openai.createCompletion(req.body.payload);
+        console.log(response);
         // save response to mongodb if the conversation exists...
 
         res.json({ text: response.data.choices[0].text });

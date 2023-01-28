@@ -1,9 +1,9 @@
 import { TextareaAutosize } from "@mui/base";
 import {
-  Drawer,
   FormControl,
   InputLabel,
   MenuItem,
+  Paper,
   Select,
   Slider,
   Switch,
@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
-import { useAppContext } from "../AppContext";
+import { useAppContext } from "../context/AppContext";
 import SidebarNav from "./SidebarNav";
 
 const width = "240px";
@@ -209,25 +209,36 @@ const Sidebar = (props) => {
   const { openSidebar, setOpenSidebar } = useAppContext();
 
   const toggleDrawer = () => setOpenSidebar((prev) => !prev);
-
   return (
-    <Drawer
-      anchor={"left"}
-      open={openSidebar}
-      onClose={toggleDrawer}
+    <Box
       sx={{
-        display: "flex",
-        width: 300,
-        borderRadius: "10px 0 0 10px",
-        flexDirection: "column",
-        alignItems: "center",
-        height: "100%",
+        display: openSidebar ? "flex" : "none",
+        position: "fixed",
         zIndex: 1000,
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        height: "100vh",
+        width: "100vw",
       }}
     >
-      <Settings {...props} />
-      <SidebarNav {...props} />
-    </Drawer>
+      <Paper
+        sx={{
+          display: "flex",
+          width: 300,
+          borderRadius: "10px 0 0 10px",
+          flexDirection: "column",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <Settings {...props} />
+        <SidebarNav {...props} />
+      </Paper>
+      <Box sx={{ flex: 1 }} onClick={toggleDrawer} />
+    </Box>
   );
 };
 

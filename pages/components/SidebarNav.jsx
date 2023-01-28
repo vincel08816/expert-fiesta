@@ -13,7 +13,7 @@ const SidebarNav = () => {
       sx={{
         boxShadow: "0px -5px 5px 0px #e4e4e4",
         width: "100%",
-        height: "80px",
+        height: "60px",
         maxHeight: "80px",
         display: "flex",
         alignItems: "center",

@@ -1,46 +1,15 @@
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { Checkbox, IconButton, Tooltip, Typography } from "@mui/material";
+import DoneIcon from "@mui/icons-material/Done";
+import { Checkbox, Tooltip, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import styled from "styled-components";
-import { useAppContext } from "../AppContext";
+import { useAppContext } from "../context/AppContext";
+import { formatDate } from "../utils/util";
 
-/**
- * @function formatDate
- * @param {string} dateString - A string representing the date to be formatted
- * @returns {string} A string representing the date in the format 'Today at 11:24 PM', 'Yesterday at 9:32 PM', '01/13/2023 7:31 PM', '09/10/2018 9:32 PM'
- * @description The function takes a date string as an input and returns a string representing the date in the format 'Today at 11:24 PM', 'Yesterday at 9:32 PM', '01/13/2023 7:31 PM', '09/10/2018 9:32 PM'
- */
-
-function formatDate(dateString) {
-  if (!dateString || dateString?.length === 0) return;
-  const date = new Date(dateString);
-  const today = new Date();
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-  const hour = date.getHours();
-  const minutes = date.getMinutes();
-  const ampm = hour >= 12 ? "PM" : "AM";
-  const hour12 = hour % 12 || 12;
-  if (date.setHours(0, 0, 0, 0) == today.setHours(0, 0, 0, 0)) {
-    return `Today at ${hour12}:${minutes.toString().padStart(2, 0)} ${ampm}`;
-  } else if (
-    date.setHours(0, 0, 0, 0) ==
-    new Date(today.getTime() - 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0)
-  ) {
-    return `Yesterday at ${hour12}:${minutes
-      .toString()
-      .padStart(2, 0)} ${ampm}`;
-  } else {
-    return `${month}/${day}/${year} ${hour12}:${minutes
-      .toString()
-      .padStart(2, 0)} ${ampm}`;
-  }
-}
-
-/* */
 const Message = ({
   user,
   timestamp,
@@ -50,57 +19,176 @@ const Message = ({
   toggleCheck,
   error,
   imageUrl,
+  bookmarked,
 }) => {
-  console.log(text);
+  const [show, setShow] = useState(false);
+
+  const handleMouseOver = () => setShow(true);
+  const handleMouseOut = () => setShow(false);
+
+  const display = show ? "flex" : "none";
+
   return (
     <Box
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "reverse",
+        mr: 1,
+        mb: 0.5,
+        p: 0.5,
+        borderRadius: 2,
+        backgroundColor: selected && "#fbfbfb",
+        border: `1px solid ${selected ? "#bcdbfd" : "transparent"}`,
+        "&:hover": {
+          backgroundColor: "rgba(52,53,65,0.05)",
+        },
+      }}
     >
+      <Box
+        sx={{
+          borderRadius: "50%",
+          mt: 1.5,
+          mr: 1,
+          width: 50,
+          height: 50,
+        }}
+      >
+        <StyledUserLogo
+          src={
+            user === "User"
+              ? "https://media.discordapp.net/attachments/594312779545051221/1068575020361715774/sticker2.png"
+              : "https://media.discordapp.net/attachments/594312779545051221/1068574850203009144/sticker29.png"
+          }
+        />
+      </Box>
       <Box
         sx={{
           display: "flex",
           flex: 1,
           flexDirection: "column",
           justifyContent: "center",
-          mb: 1,
         }}
       >
         <Box
           sx={{
             display: "flex",
-            mt: 2,
-            mb: 0.5,
+            mt: 1,
             alignItems: "center",
             wordBreak: "break-word",
+            mb: -1.5,
           }}
         >
-          <Typography sx={{ mr: 1.5, fontWeight: "bold" }}>{user}</Typography>
-          <Typography variant="caption" sx={{ opacity: 0.5 }}>
+          <Typography sx={{ fontWeight: 600, fontSize: 16 }}>{user}</Typography>
+          {user === "OpenAI" ? (
+            <Badge>
+              <DoneIcon
+                style={{ height: "14px", width: "14px", marginRight: "2px" }}
+              />
+              Bot
+            </Badge>
+          ) : (
+            <Box sx={{ width: 8 }} />
+          )}
+          <Typography sx={{ opacity: 0.8, fontSize: 12 }}>
             {formatDate(timestamp) || ""}
           </Typography>
+          <Box sx={{ flex: 1, display: "flex", flexDirection: "row-reverse" }}>
+            <Box
+              sx={{
+                border: "1px solid #dfe1e3",
+                borderRadius: 1.5,
+                position: "sticky",
+                mt: "-40px",
+                mr: "8px",
+                backgroundColor: " white",
+                display,
+                color: "#505761",
+                height: 25,
+              }}
+            >
+              <Tooltip title="Bookmark">
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "25px",
+                    height: "25px",
+                    alignSelf: "center",
+                    "&:hover": {
+                      backgroundColor: "#dfe1e3",
+                    },
+                  }}
+                  onClick={() =>
+                    navigator.clipboard.writeText(imageUrl ? imageUrl : text)
+                  }
+                >
+                  {bookmarked ? (
+                    <BookmarkIcon sx={{ width: "18px", height: "18px" }} />
+                  ) : (
+                    <BookmarkBorderIcon
+                      sx={{ width: "18px", height: "18px" }}
+                    />
+                  )}
+                </Box>
+              </Tooltip>
+              <Tooltip title="Copy to clipboard">
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "25px",
+                    height: "25px",
+                    alignSelf: "center",
+                    "&:hover": {
+                      backgroundColor: "#dfe1e3",
+                    },
+                  }}
+                  onClick={() =>
+                    navigator.clipboard.writeText(imageUrl ? imageUrl : text)
+                  }
+                >
+                  <ContentCopyIcon sx={{ width: "18px", height: "18px" }} />
+                </Box>
+              </Tooltip>
+              <Tooltip title="Include relevant data as part of chat history">
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "25px",
+                    height: "25px",
+                    alignSelf: "center",
+                    "&:hover": {
+                      backgroundColor: "#dfe1e3",
+                    },
+                  }}
+                >
+                  <Checkbox
+                    sx={{ height: "25px", width: "25px", alignSelf: "center" }}
+                    checked={selected}
+                    onChange={() => toggleCheck(user, index)}
+                    size={"small"}
+                  />
+                </Box>
+              </Tooltip>
+            </Box>
+          </Box>
         </Box>
-        {/* <Typography color={error ? "error" : ""}>{text}</Typography> */}
-        {imageUrl ? (
-          <StyledImage src={imageUrl} />
-        ) : (
-          <ReactMarkdown>{text}</ReactMarkdown>
-        )}
+
+        <Box sx={{ maxWidth: "90vw", lineHeight: 1.3 }}>
+          {imageUrl ? (
+            <StyledImage src={imageUrl} />
+          ) : (
+            <ReactMarkdown>{text}</ReactMarkdown>
+          )}
+        </Box>
       </Box>
-      <Tooltip title="Copy to clipboard">
-        <IconButton
-          sx={{ w: 5, h: 5 }}
-          onClick={() =>
-            navigator.clipboard.writeText(imageUrl ? imageUrl : text)
-          }
-        >
-          <ContentCopyIcon style={{ width: "18px", height: "18px" }} />
-        </IconButton>
-      </Tooltip>
-      <Checkbox
-        checked={selected}
-        onChange={() => toggleCheck(user, index)}
-        size={"small"}
-      />
     </Box>
   );
 };
@@ -109,9 +197,8 @@ const ChatLog = () => {
   const { chatLog = [], setChatLog, toggleCheck } = useAppContext();
   const chatRef = useRef(null);
 
-  const scrollToBottom = () => {
-    chatRef.current.scrollTop = chatRef.current.scrollHeight;
-  };
+  const scrollToBottom = () =>
+    (chatRef.current.scrollTop = chatRef.current.scrollHeight);
 
   useEffect(() => {
     scrollToBottom();
@@ -122,6 +209,7 @@ const ChatLog = () => {
       ref={chatRef}
       sx={{
         mt: 7,
+        pt: 3,
         display: "flex",
         flexDirection: "column",
         flex: 1,
@@ -153,6 +241,27 @@ const ChatLog = () => {
 export default ChatLog;
 
 const StyledImage = styled.img`
+  max-width: 80vw;
+  max-height: 80vw;
+  margin-top: 15px;
   width: 256px;
   height: 256px;
+`;
+
+const StyledUserLogo = styled.img`
+  width: 100%;
+  /* height: 100%; */
+  /* object-fit: cover; */
+`;
+
+const Badge = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 3px 7px;
+  margin: -1.5px 7px 0 7px;
+  background-color: #1a76d2;
+  font-size: 12px;
+  color: white;
+  border-radius: 5px;
 `;

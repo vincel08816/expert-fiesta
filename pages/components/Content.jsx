@@ -2,7 +2,7 @@ import { TextareaAutosize } from "@mui/base";
 import SendIcon from "@mui/icons-material/Send";
 import { Box } from "@mui/system";
 import React from "react";
-import { useAppContext } from "../AppContext";
+import { useAppContext } from "../context/AppContext";
 import ChatLog from "./ChatLog";
 import IconsWithTooltips from "./IconsWithTooltips";
 
@@ -30,6 +30,10 @@ const Content = () => {
       <Box
         sx={{
           m: 2,
+          pr: 1,
+          pl: 0.5,
+          pt: 0.5,
+          // pb: 0.2,
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
@@ -39,7 +43,7 @@ const Content = () => {
         }}
       >
         <TextareaAutosize
-          placeholder="Write a message..."
+          placeholder="Message @OpenAI"
           onKeyDown={(e) =>
             e.key === "Enter" && allowEnterToSubmit && handleSubmit(e)
           }
@@ -59,13 +63,17 @@ const Content = () => {
             outline: "none",
           }}
         />
+        {form.text?.trim().length > 0 ? (
+          <IconsWithTooltips
+            sx={{ m: 0, p: 0 }}
+            title="Submit"
+            Icon={SendIcon}
+            onClick={handleSubmit}
+          />
+        ) : (
+          ""
+        )}
 
-        <IconsWithTooltips
-          sx={{ m: 1, p: 1 }}
-          title="Submit"
-          Icon={SendIcon}
-          onClick={handleSubmit}
-        />
         {/* add character count here */}
       </Box>
     </>
