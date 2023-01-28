@@ -6,7 +6,7 @@ package-lock.json
 /.pnp
 .pnp.js
 /.idea
-.next
+/.next
 
 # testing
 /coverage
