@@ -25,7 +25,7 @@ const useDebug = (form, chatLog, user) => {
   }, [chatLog]);
 
   useEffect(() => {
-    if (process.env.NODE_ENV === "development") console.log(user);
+    if (process.env.NODE_ENV === "development") console.log("user", user);
   }, [user]);
 };
 

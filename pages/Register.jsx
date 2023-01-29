@@ -27,6 +27,7 @@ export default function Register() {
   }, {});
 
   const { username, password, confirmPassword, message } = formState;
+  j;
 
   const handleChange = (e) => {
     setError();
