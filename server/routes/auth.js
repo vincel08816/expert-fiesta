@@ -4,6 +4,7 @@ const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const { check, validationResult } = require("express-validator");
 const User = require("../models/User");
+const Message = require("../models/Message");
 
 const secret = process.env.SECRET;
 
@@ -14,11 +15,19 @@ const secret = process.env.SECRET;
 router.get(
   "/",
   passport.authenticate("jwt", { session: false }),
-  async (req, res) =>
-    await User.findById(req.user.id)
-      .select("-password")
-      .then((user) => res.json(user))
-      .catch((err) => console.error(err) && res.sendStatus(500))
+  async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id).select("-password");
+      const messages = await Message.find({ userId: req.user.id }).sort({
+        timestamp: -1,
+      });
+
+      res.json({ user, messages });
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  }
 );
 
 // @route    POST /auth/login
@@ -27,20 +36,22 @@ router.get(
 
 router.post(
   "/login",
-  check("email", "Please include a valid email").isEmail(),
+  check("username", "Please include a valid username").exists(),
   check("password", "Password is required").exists(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.sendStatus(401);
 
     try {
-      const { password } = req.body;
-      const email = req.body.email.toLowerCase().replace(" ", "");
-      const user = await User.findOne({ lowercaseEmail: email });
-      if (!user || !(await bcrypt.compare(password, user.password)))
-        return res.sendStatus(401);
+      const { username, password } = req.body;
 
-      const payload = { id: user.id, email };
+      const user = await User.findOne({ username });
+      if (!user || !(await bcrypt.compare(password, user.password))) {
+        console.error("username not found");
+        return res.sendStatus(401);
+      }
+
+      const payload = { id: user.id };
       jwt.sign(payload, secret, { expiresIn: 36000 }, (err, token) => {
         if (err) throw err;
         res.cookie("token", token, { httpOnly: true });

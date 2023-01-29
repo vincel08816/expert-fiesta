@@ -1,5 +1,7 @@
+import { Box } from "@mui/system";
 import Head from "next/head";
 import React from "react";
+import Topbar from "./components/Topbar";
 import { AppContextProvider } from "./context/AppContext";
 
 function App({ Component, pageProps }) {
@@ -26,7 +28,22 @@ function App({ Component, pageProps }) {
         <title>MenheraGPT</title>
       </Head>
       <AppContextProvider>
-        <Component {...pageProps} />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            position: "absolute",
+            height: "100vh",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            fontFamily: "Noto Sans, sans-serif",
+          }}
+        >
+          <Topbar />
+          <Component {...pageProps} />
+        </Box>
       </AppContextProvider>
     </>
   );

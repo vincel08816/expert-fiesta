@@ -6,12 +6,18 @@ const options = {
   secretOrKey: process.env.SECRET,
 };
 
-const callback = (payload, done) =>
-  User.findById(payload.id)
-    .then((user) => {
-      // console.log(user);
-      done(null, user ? { id: user.id, email: user.email } : false);
-    })
-    .catch((error) => console.error(error));
+const callback = async (payload, done) => {
+  try {
+    const user = await User.findById(payload.id);
+
+    if (user?.role === "admin" || user?.role === "user") {
+      done(null, { id: user.id, role: user.role });
+    } else {
+      done(null, false);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 module.exports = (passport) => passport.use(new JwtStrategy(options, callback));

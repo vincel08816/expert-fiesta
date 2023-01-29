@@ -4,11 +4,11 @@ module.exports = model(
   "user",
   new Schema(
     {
+      role: { type: String, default: "unverified", required: true },
       username: { type: String, required: true },
       password: { type: String, required: true },
-      email: { type: String, unique: true, required: true },
-      lowercaseEmail: { type: String, unique: true, required: true },
       picture: { type: String },
+      why: { type: String, default: "" },
     },
     { timestamps: true }
   )

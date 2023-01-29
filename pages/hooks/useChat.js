@@ -15,7 +15,7 @@ const initialForm = {
   topText: "",
 };
 
-const useDebug = (form, chatLog) => {
+const useDebug = (form, chatLog, user) => {
   useEffect(() => {
     if (process.env.NODE_ENV === "development") console.log("form", form);
   }, [form]);
@@ -23,6 +23,10 @@ const useDebug = (form, chatLog) => {
   useEffect(() => {
     if (process.env.NODE_ENV === "development") console.log("chatLog", chatLog);
   }, [chatLog]);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") console.log(user);
+  }, [user]);
 };
 
 /*
@@ -30,34 +34,56 @@ const useDebug = (form, chatLog) => {
  * This includes user, form, and chatLog.
  */
 
-export const useChat = (userData) => {
+export const useChat = () => {
+  const [user, setUser] = useState();
+  const [loading, setLoading] = useState(true);
   const [chatLog, setChatLog] = useState([]);
   const [allowEnterToSubmit, setAllowEnterToSubmit] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [form, setForm] = useState(initialForm);
   const [openSidebar, setOpenSidebar] = useState(false);
+  useDebug(form, chatLog, user);
 
-  useDebug(form, chatLog);
+  // useEffect(() => {
+  //   const messagesString = localStorage.getItem("messages");
+  //   const messagesArray = JSON.parse(messagesString) || [];
+  //   setChatLog(messagesArray);
+  // }, []);
+
+  // useEffect(() => {
+  //   localStorage.setItem(
+  //     "messages",
+  //     JSON.stringify(
+  //       chatLog.map((message) => {
+  //         return {
+  //           ...message,
+  //           selected: false,
+  //         };
+  //       })
+  //     )
+  //   );
+  // }, [chatLog]);
 
   useEffect(() => {
-    const messagesString = localStorage.getItem("messages");
-    const messagesArray = JSON.parse(messagesString);
-    setChatLog(messagesArray);
+    axios
+      .get("/api/auth")
+      .then((res) => {
+        const { messages, user } = res.data;
+        console.log(res.messages);
+        setUser(user);
+        setChatLog(
+          messages.map((message) => {
+            return {
+              ...message,
+              user: message.isBot ? "OpenAI" : "User",
+              timestamp: message.createdAt,
+            };
+          })
+        );
+      })
+      .catch((err) => console.error(err))
+      .then(() => setLoading(false));
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem(
-      "messages",
-      JSON.stringify(
-        chatLog.map((message) => {
-          return {
-            ...message,
-            selected: false,
-          };
-        })
-      )
-    );
-  }, [chatLog]);
 
   const handleChange = (event) => {
     event.preventDefault();
@@ -75,7 +101,7 @@ export const useChat = (userData) => {
       copy[index].selected = updatedCheck;
 
       // this part of the code is to make sure both the prompt and the answer to the prompt are being submitted to openai
-      const isUser = user === "User" ? 1 : -1;
+      const isUser = user === "OpenAI" ? -1 : 1;
       copy[index + isUser].selected = updatedCheck;
 
       return copy;
@@ -90,7 +116,7 @@ export const useChat = (userData) => {
     };
 
     axios
-      .post("/api/image", { payload })
+      .post("/api/message/image", { payload, text: form.text })
       .then((response) => {
         setChatLog((prev) => {
           return [
@@ -127,13 +153,6 @@ export const useChat = (userData) => {
   // don't forget to handle edge cases such as empty text field
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (!user) {
-    //   return Swal.fire({
-    //     icon: "error",
-    //     title: "Error: Not logged in",
-    //     text: "Please log in if you want to use these services",
-    //   });
-    // }
 
     if (isSending) return console.log("already sending");
     if (!form.text.length || !form.text.trim().length)
@@ -149,8 +168,8 @@ export const useChat = (userData) => {
       .filter((message) => message.selected)
       .map(
         (message) =>
-          `${message.user === "User" ? "Q:" : "A:"}: ${message.text}${
-            message.user === "User" ? "" : "\n"
+          `${message.user === "OpenAI" ? "A:" : "Q:"}: ${message.text}${
+            message.user === "OpenAI" ? "\n" : ""
           }`
       )
       .join("\n");
@@ -169,11 +188,11 @@ export const useChat = (userData) => {
       });
     }
 
-    // setIsSending(false);
     console.log({ prompt, max_tokens });
 
     // create payload
     // prompt should be: pinned + selected previous messages + current text
+
     const payload = {
       model: form.model,
       temperature: form.temperature,
@@ -205,7 +224,7 @@ export const useChat = (userData) => {
     if (form.model === "image-dalle-002") return submitImage();
 
     axios
-      .post("/api/chat", { payload })
+      .post("/api/message/text", { payload, text: form.text })
       .then((response) => {
         console.log(response.data);
         setChatLog((prev) => {
@@ -242,6 +261,10 @@ export const useChat = (userData) => {
   };
 
   return {
+    user,
+    setUser,
+    loading,
+
     openSidebar,
     setOpenSidebar,
     chatLog,

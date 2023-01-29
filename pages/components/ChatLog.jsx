@@ -1,6 +1,7 @@
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
 import { Checkbox, Tooltip, Typography } from "@mui/material";
 import { Box } from "@mui/system";
@@ -106,17 +107,17 @@ const Message = ({
                 backgroundColor: " white",
                 display,
                 color: "#505761",
-                height: 25,
+                // height: 30,
               }}
             >
               <Tooltip title="Bookmark">
                 <Box
                   sx={{
+                    p: 1,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    width: "25px",
-                    height: "25px",
+
                     alignSelf: "center",
                     "&:hover": {
                       backgroundColor: "#dfe1e3",
@@ -127,10 +128,10 @@ const Message = ({
                   }
                 >
                   {bookmarked ? (
-                    <BookmarkIcon sx={{ width: "18px", height: "18px" }} />
+                    <BookmarkIcon sx={{ width: "25px", height: "25px" }} />
                   ) : (
                     <BookmarkBorderIcon
-                      sx={{ width: "18px", height: "18px" }}
+                      sx={{ width: "25px", height: "25px" }}
                     />
                   )}
                 </Box>
@@ -138,11 +139,10 @@ const Message = ({
               <Tooltip title="Copy to clipboard">
                 <Box
                   sx={{
+                    p: 1,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    width: "25px",
-                    height: "25px",
                     alignSelf: "center",
                     "&:hover": {
                       backgroundColor: "#dfe1e3",
@@ -152,17 +152,16 @@ const Message = ({
                     navigator.clipboard.writeText(imageUrl ? imageUrl : text)
                   }
                 >
-                  <ContentCopyIcon sx={{ width: "18px", height: "18px" }} />
+                  <ContentCopyIcon sx={{ width: "20px", height: "20px" }} />
                 </Box>
               </Tooltip>
+
               <Tooltip title="Include relevant data as part of chat history">
                 <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    width: "25px",
-                    height: "25px",
                     alignSelf: "center",
                     "&:hover": {
                       backgroundColor: "#dfe1e3",
@@ -170,10 +169,32 @@ const Message = ({
                   }}
                 >
                   <Checkbox
-                    sx={{ height: "25px", width: "25px", alignSelf: "center" }}
+                    sx={{ height: "40px", width: "40px", alignSelf: "center" }}
                     checked={selected}
                     onChange={() => toggleCheck(user, index)}
                     size={"small"}
+                  />
+                </Box>
+              </Tooltip>
+
+              <Tooltip title="Delete Message">
+                <Box
+                  sx={{
+                    p: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    alignSelf: "center",
+                    "&:hover": {
+                      backgroundColor: "#dfe1e3",
+                    },
+                  }}
+                  onClick={() =>
+                    navigator.clipboard.writeText(imageUrl ? imageUrl : text)
+                  }
+                >
+                  <DeleteIcon
+                    sx={{ width: "25px", height: "25px", color: "red" }}
                   />
                 </Box>
               </Tooltip>
@@ -181,7 +202,13 @@ const Message = ({
           </Box>
         </Box>
 
-        <Box sx={{ maxWidth: "90vw", lineHeight: 1.3 }}>
+        <Box
+          sx={{
+            maxWidth: "calc(90vw - 65px);",
+            lineHeight: 1.3,
+            overflowX: "auto",
+          }}
+        >
           {imageUrl ? (
             <StyledImage src={imageUrl} />
           ) : (

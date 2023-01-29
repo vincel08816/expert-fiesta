@@ -1,98 +1,114 @@
 import { Button, Divider, Paper, TextField, Typography } from "@mui/material";
+import { Box } from "@mui/system";
 import axios from "axios";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useAppContext } from "./context/AppContext";
 
-const emptyEmailError = "Email cannot be empty.";
+const emptyUsernameError = "Username cannot be empty.";
 const emptyPasswordError = "Password cannot be empty.";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState();
+  const { user, setUser } = useAppContext();
+  const [username, setUsername] = useState("");
+  const [usernameError, setUsernameError] = useState();
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState();
   const [error, setError] = useState();
-  const setUser = useState("setUser");
+  const router = useRouter();
 
   useEffect(() => {
-    email && setEmailError(email.length > 0 ? "" : emptyEmailError);
+    if (user) router.push("/");
+  }, [user]);
+
+  useEffect(() => {
+    username && setUsernameError(username.length > 0 ? "" : emptyUsernameError);
     password && setPasswordError(password.length > 0 ? "" : emptyPasswordError);
-  }, [email, password]);
+  }, [username, password]);
 
   const login = async (e) => {
     e.preventDefault();
-    if (!email && !password) {
+    if (!username && !password) {
       setPasswordError(emptyPasswordError);
-      return setEmailError(emptyEmailError);
+      return setUsernameError(emptyUsernameError);
     }
-    if (!email) return setEmailError(emptyEmailError);
+    if (!username) return setUsernameError(emptyUsernameError);
     if (!password) return setPasswordError(emptyPasswordError);
 
     try {
-      const result = await axios.post("/auth/login", { email, password });
+      const result = await axios.post("/api/auth/login", {
+        username,
+        password,
+      });
       setUser(result.data);
     } catch (error) {
       setError(
-        "Unable to login. Please make sure your email and password are correct then try again."
+        "Unable to login. Please make sure your username and password are correct then try again."
       );
       console.error(error);
     }
   };
 
   return (
-    <Paper
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        width: 600,
-        height: 400,
-        p: 3,
-        m: 10,
-        boxShadow: 3,
-      }}
-    >
-      <Typography variant="h4" component="div" sx={{ p: 2 }}>
-        Login
-      </Typography>
-      <Divider sx={{ mb: 3 }} />
-      {error && (
-        <Typography
-          color="error"
-          variant="body2"
-          sx={{ margin: "-10px 0 30px 10px" }}
-        >
-          {error}
-        </Typography>
-      )}
-
-      <TextField
-        label="Email Address"
-        name="email"
-        onChange={(e) => setEmail(e.target.value)}
-        value={email}
-        error={Boolean(emailError)}
-        helperText={emailError}
-      />
-      <TextField
-        label="Password"
-        name="password"
-        onChange={(e) => setPassword(e.target.value)}
-        value={password}
-        error={Boolean(passwordError)}
-        helperText={passwordError}
-        type="password"
-        style={{ margin: "20px 0" }}
-      />
-      <Button
-        variant="contained"
+    <Box sx={{ display: "flex", justifyContent: "center", mt: 20 }}>
+      <Paper
         sx={{
-          padding: "10px",
-          marginBottom: "25px",
-          fontSize: "16px",
+          display: "flex",
+          flexDirection: "column",
+          width: 600,
+          height: 400,
+          p: 3,
+          m: 10,
+          boxShadow: 3,
         }}
-        onClick={login}
       >
-        Login
-      </Button>
-    </Paper>
+        <Typography variant="h4" component="div" sx={{ p: 2 }}>
+          Login
+        </Typography>
+        <Divider sx={{ mb: 3 }} />
+        {error && (
+          <Typography
+            color="error"
+            variant="body2"
+            sx={{ margin: "-10px 0 30px 10px" }}
+          >
+            {error}
+          </Typography>
+        )}
+
+        <TextField
+          label="Username"
+          name="username"
+          onChange={(e) => setUsername(e.target.value)}
+          value={username}
+          error={Boolean(usernameError)}
+          helperText={usernameError}
+        />
+        <TextField
+          label="Password"
+          name="password"
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          error={Boolean(passwordError)}
+          helperText={passwordError}
+          type="password"
+          style={{ margin: "20px 0" }}
+        />
+        <Button
+          variant="contained"
+          sx={{
+            padding: "10px",
+            marginBottom: "25px",
+            fontSize: "16px",
+          }}
+          onClick={login}
+        >
+          Login
+        </Button>
+        <Button onClick={() => router.push({ pathname: "/register" })}>
+          Register
+        </Button>
+      </Paper>
+    </Box>
   );
 }

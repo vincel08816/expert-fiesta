@@ -1,5 +1,4 @@
 import { createContext, useContext } from "react";
-import { useAuth } from "../hooks/useAuth";
 import { useChat } from "../hooks/useChat";
 
 const AppContext = createContext();
@@ -18,11 +17,10 @@ export const useAppContext = () => {
  */
 
 export const AppContextProvider = ({ children }) => {
-  const userData = useAuth();
-  const chatProps = useChat(userData);
+  const chatProps = useChat();
 
   return (
-    <AppContext.Provider value={{ ...chatProps, ...userData }}>
+    <AppContext.Provider value={{ ...chatProps }}>
       {children}
     </AppContext.Provider>
   );
