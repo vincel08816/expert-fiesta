@@ -6,6 +6,9 @@ package-lock.json
 /.pnp
 .pnp.js
 /.idea
+.next
+/.next
+next
 
 # testing
 /coverage
@@ -15,7 +18,6 @@ package-lock.json
 
 # misc
 .history
-.next
 .DS_Store
 .env
 env

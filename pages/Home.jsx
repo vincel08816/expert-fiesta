@@ -4,9 +4,6 @@ import Content from "./components/Content";
 import Sidebar from "./components/Sidebar";
 import { useAppContext } from "./context/AppContext";
 
-/* {!} Maybe save to message mongo if I feel like it in the future */
-/* {!} Add users and accounts perhaps too?  */
-
 const App = () => {
   const { user, loading } = useAppContext();
   const router = useRouter();

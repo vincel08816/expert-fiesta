@@ -6,14 +6,14 @@ import DoneIcon from "@mui/icons-material/Done";
 import { Checkbox, Tooltip, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
 import styled from "styled-components";
 import { useAppContext } from "../context/AppContext";
 import { formatDate } from "../utils/util";
+import CodeBlock from "./chatComponents/CodeBlock";
 
 const Message = ({
   user,
-  timestamp,
+  updatedAt,
   text,
   selected,
   index,
@@ -38,8 +38,9 @@ const Message = ({
         justifyContent: "center",
         alignItems: "reverse",
         mr: 1,
-        mb: 0.5,
+        mb: 1,
         p: 0.5,
+        pb: 2,
         borderRadius: 2,
         backgroundColor: selected && "#fbfbfb",
         border: `1px solid ${selected ? "#bcdbfd" : "transparent"}`,
@@ -79,7 +80,6 @@ const Message = ({
             mt: 1,
             alignItems: "center",
             wordBreak: "break-word",
-            mb: -1.5,
           }}
         >
           <Typography sx={{ fontWeight: 600, fontSize: 16 }}>{user}</Typography>
@@ -94,7 +94,7 @@ const Message = ({
             <Box sx={{ width: 8 }} />
           )}
           <Typography sx={{ opacity: 0.8, fontSize: 12 }}>
-            {formatDate(timestamp) || ""}
+            {formatDate(updatedAt) || ""}
           </Typography>
           <Box sx={{ flex: 1, display: "flex", flexDirection: "row-reverse" }}>
             <Box
@@ -207,12 +207,13 @@ const Message = ({
             maxWidth: "calc(90vw - 65px);",
             lineHeight: 1.3,
             overflowX: "auto",
+            pt: 1,
           }}
         >
           {imageUrl ? (
             <StyledImage src={imageUrl} />
           ) : (
-            <ReactMarkdown>{text}</ReactMarkdown>
+            <CodeBlock text={text?.trim()} />
           )}
         </Box>
       </Box>
@@ -277,8 +278,6 @@ const StyledImage = styled.img`
 
 const StyledUserLogo = styled.img`
   width: 100%;
-  /* height: 100%; */
-  /* object-fit: cover; */
 `;
 
 const Badge = styled.div`

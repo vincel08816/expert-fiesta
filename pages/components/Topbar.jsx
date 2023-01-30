@@ -11,7 +11,8 @@ import { useAppContext } from "../context/AppContext";
 import IconsWithTooltips from "./IconsWithTooltips";
 
 const Topbar = () => {
-  const { setChatLog, setOpenSidebar } = useAppContext();
+  const { setChatLog, setOpenSidebar, conversations, selected } =
+    useAppContext();
 
   const handleSelectAll = async () => {
     const response = await Swal.fire({
@@ -54,7 +55,13 @@ const Topbar = () => {
             onClick={() => setOpenSidebar((prev) => !prev)}
           />
           <AlternateEmailIcon />
-          <Typography sx={{ ml: 0.3, fontWeight: "bold" }}>OpenAI</Typography>
+          <Typography sx={{ ml: 0.3, mr: 0.3, fontWeight: "bold" }}>
+            OpenAI
+          </Typography>
+          <Typography sx={{ ml: 0.3, mr: 0.3, opacity: 0.6 }}>-</Typography>
+          <Typography sx={{ ml: 0.3, opacity: 0.6 }}>
+            {conversations[selected]?.title}
+          </Typography>
         </Box>
 
         <Box sx={{ display: "flex" }}>

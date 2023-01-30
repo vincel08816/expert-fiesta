@@ -12,13 +12,14 @@ const initialForm = {
   presencePenalty: 0,
   bestOf: 1,
   text: "",
-  topText: "",
+  topText:
+    "Wrap code blocks in 3 backticks followed by the language and a new line. But don't do that with for non-code responses",
 };
 
 const useDebug = (form, chatLog, user) => {
-  useEffect(() => {
-    if (process.env.NODE_ENV === "development") console.log("form", form);
-  }, [form]);
+  // useEffect(() => {
+  //   if (process.env.NODE_ENV === "development") console.log("form", form);
+  // }, [form]);
 
   useEffect(() => {
     if (process.env.NODE_ENV === "development") console.log("chatLog", chatLog);
@@ -37,6 +38,10 @@ const useDebug = (form, chatLog, user) => {
 export const useChat = () => {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
+
+  const [conversations, setConversations] = useState([]);
+  const [selected, setSelected] = useState(); // selected Conversation index
+
   const [chatLog, setChatLog] = useState([]);
   const [allowEnterToSubmit, setAllowEnterToSubmit] = useState(true);
   const [isSending, setIsSending] = useState(false);
@@ -44,45 +49,37 @@ export const useChat = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
   useDebug(form, chatLog, user);
 
-  // useEffect(() => {
-  //   const messagesString = localStorage.getItem("messages");
-  //   const messagesArray = JSON.parse(messagesString) || [];
-  //   setChatLog(messagesArray);
-  // }, []);
+  // listener for conversation selection; changes when selected or converation length changes
+  useEffect(() => {
+    if (conversations.length > 0 && typeof selected !== "undefined") {
+      axios
+        .get(`/api/message/` + conversations[selected]?._id)
+        .then((res) => {
+          const messages = res.data.messages.map((message) => {
+            return {
+              ...message,
+              user: message.isBot ? "OpenAI" : user.username,
+            };
+          });
 
-  // useEffect(() => {
-  //   localStorage.setItem(
-  //     "messages",
-  //     JSON.stringify(
-  //       chatLog.map((message) => {
-  //         return {
-  //           ...message,
-  //           selected: false,
-  //         };
-  //       })
-  //     )
-  //   );
-  // }, [chatLog]);
+          setChatLog(messages);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [selected, conversations.length]);
 
+  // default is new chat without a name
   useEffect(() => {
     axios
       .get("/api/auth")
       .then((res) => {
-        const { messages, user } = res.data;
-        console.log(res.messages);
+        const { user, conversations } = res.data;
         setUser(user);
-        setChatLog(
-          messages.map((message) => {
-            return {
-              ...message,
-              user: message.isBot ? "OpenAI" : "User",
-              timestamp: message.createdAt,
-            };
-          })
-        );
+        setConversations(conversations);
+        console.log(conversations);
       })
       .catch((err) => console.error(err))
-      .then(() => setLoading(false));
+      .then((_) => setLoading(false));
   }, []);
 
   const handleChange = (event) => {
@@ -123,6 +120,7 @@ export const useChat = () => {
             ...prev,
             {
               user: "OpenAI",
+              isBot: true,
               timestamp: Date.now(),
               selected: true,
               imageUrl: response.data.image,
@@ -132,18 +130,17 @@ export const useChat = () => {
       })
       .catch((error) => {
         console.error(error);
-        setChatLog((prev) => {
-          return [
-            ...prev,
-            {
-              user: "OpenAI",
-              timestamp: Date.now(),
-              text: "Could not send message.",
-              selected: true,
-              error: true,
-            },
-          ];
-        });
+        setChatLog((prev) => [
+          ...prev,
+          {
+            user: "OpenAI",
+            isBot: true,
+            timestamp: Date.now(),
+            text: "Could not send message.",
+            selected: true,
+            error: true,
+          },
+        ]);
       })
       .then(() => {
         setIsSending(false);
@@ -206,17 +203,16 @@ export const useChat = () => {
 
     // add new message to chat log and clear form
     // add message to chatLog array
-    setChatLog((prev) => {
-      return [
-        ...prev,
-        {
-          user: "User",
-          timestamp: Date.now(),
-          text: form.text,
-          selected: true,
-        },
-      ];
-    });
+    setChatLog((prev) => [
+      ...prev,
+      {
+        user: "User",
+        isBot: false,
+        timestamp: Date.now(),
+        text: form.text,
+        selected: true,
+      },
+    ]);
     setForm((prev) => {
       return { ...prev, text: "" };
     });
@@ -224,34 +220,34 @@ export const useChat = () => {
     if (form.model === "image-dalle-002") return submitImage();
 
     axios
-      .post("/api/message/text", { payload, text: form.text })
+      .post("/api/message/text", {
+        payload,
+        text: form.text,
+        conversationId: conversations[selected]._id,
+      })
       .then((response) => {
         console.log(response.data);
-        setChatLog((prev) => {
-          return [
-            ...prev,
-            {
-              user: "OpenAI",
-              timestamp: Date.now(),
-              text: response.data.text,
-              selected: true,
-            },
-          ];
-        });
+        setChatLog((prev) => [
+          ...prev,
+          {
+            user: "OpenAI",
+            timestamp: Date.now(),
+            text: response.data.text,
+            selected: true,
+          },
+        ]);
       })
       .catch((error) => {
-        setChatLog((prev) => {
-          return [
-            ...prev,
-            {
-              user: "OpenAI",
-              timestamp: Date.now(),
-              text: "Could not send message.",
-              selected: true,
-              error: true,
-            },
-          ];
-        });
+        setChatLog((prev) => [
+          ...prev,
+          {
+            user: "OpenAI",
+            timestamp: Date.now(),
+            text: "Could not send message.",
+            selected: true,
+            error: true,
+          },
+        ]);
 
         console.error(error);
       })
@@ -261,10 +257,18 @@ export const useChat = () => {
   };
 
   return {
+    /* User Data */
     user,
     setUser,
     loading,
 
+    /* Selecting Chat */
+    conversations,
+    setConversations,
+    selected,
+    setSelected,
+
+    /* Chat Data */
     openSidebar,
     setOpenSidebar,
     chatLog,

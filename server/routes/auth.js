@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const { check, validationResult } = require("express-validator");
 const User = require("../models/User");
 const Message = require("../models/Message");
+const Conversation = require("../models/Conversation");
 
 const secret = process.env.SECRET;
 
@@ -18,17 +19,42 @@ router.get(
   async (req, res) => {
     try {
       const user = await User.findById(req.user.id).select("-password");
-      const messages = await Message.find({ userId: req.user.id }).sort({
-        timestamp: -1,
+      const conversations = await Conversation.find({
+        userId: req.user.id,
+      }).sort({
+        updatedAt: -1,
       });
 
-      res.json({ user, messages });
+      res.json({ user, conversations });
     } catch (error) {
       console.error(error);
       res.sendStatus(500);
     }
   }
 );
+
+// @route    GET /auth/test
+// @desc     Testing route to do testing things
+// @access   Private
+
+router.post("/test", async (req, res) => {
+  try {
+    const userId = "63d5e092e698050206974027";
+
+    console.log("auth test");
+
+    // const titles = ["Node.js", "Mongodb", "Express.js", "React.js", "Redux.js"];
+
+    // for (let title of titles) {
+    //   await new Conversation({ userId, title }).save();
+    // }
+
+    res.json({ msg: "success" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+});
 
 // @route    POST /auth/login
 // @desc     Login

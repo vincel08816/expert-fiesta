@@ -1,10 +1,11 @@
 const router = require("express").Router();
-const Message = require("../models/Message");
 const { check, validationResult } = require("express-validator");
 const { Configuration, OpenAIApi } = require("openai");
 const passport = require("passport");
 const User = require("../models/User");
 const Receipt = require("../models/Receipt");
+const Message = require("../models/Message");
+const Conversation = require("../models/Conversation");
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -21,22 +22,39 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const { payload, text } = req.body;
+      let { payload, text, title, conversationId } = req.body;
+
       console.log("/api/message", req.body);
       const response = await openai.createCompletion(payload);
-      console.log(response);
+      console.log(response.data);
+
+      // conversationId = req.params.id;
+      let conversation = await Conversation.findById(conversationId);
+
+      if (!conversation) {
+        conversation = new Conversation({ userId: req.user.id });
+
+        if (title) conversation.title = title;
+        conversationId = conversation._id;
+      }
+
+      // {!} Will this update the timestamp on the conversation?
+      await conversation.save();
 
       // save message to mongodb
       const userMessage = new Message({
         userId: req.user.id,
+        conversationId,
         isBot: false,
         text,
       });
+
       await userMessage.save();
 
       // save bot response to mongodb
       await new Message({
         userId: req.user.id,
+        conversationId,
         responseId: userMessage.id,
         text: response.data.choices[0].text,
         isBot: true,
@@ -72,6 +90,7 @@ router.post(
       console.log("/api/message", req.body);
 
       const response = await openai.createImage(payload);
+      console.log(response.data);
 
       // save response to mongodb if the conversation exists...
       const userMessage = new Message({
@@ -106,57 +125,38 @@ router.post(
   }
 );
 
-// @route    POST /api/message/asdf
-// @desc     Send a new message
+// @route    GET /api/message/:id
+// @desc     Get conversation based on converationId and userId
 // @access   Private
 
-router.post(
-  "/asdf",
+router.get(
+  "/:id",
   passport.authenticate("jwt", { session: false }),
-  check("text", "text is required").notEmpty(),
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.error(errors);
-      return res.status(400).json({ error: errors });
-    }
-
     try {
-      const { senderId, text } = req.body;
-      const openaiOptions = JSON.parse(req.body.openaiOptions);
+      const conversationId = req.params.id;
+      const userId = req.user.id;
 
-      console.log(senderId);
-      if (!(await User.findOne({ _id: senderId }))) {
-        console.log("cannot find user");
-        return res.sendStatus(401);
+      console.log("/api/message/:id", req.params.id);
+
+      const conversation = await Conversation.findById(conversationId);
+
+      // this covers the case where conversation does not exist OR user does not match
+      if (conversation?.userId.toString() !== userId) {
+        console.error("Conversation does not exist or user does not match");
+        return res.sendStatus(404);
       }
 
-      if (!req.body.openaiOptions?.length) {
-        await new Message({ senderId, text }).save();
-        console.log("message without prompt");
+      const messages = await Message.find({ conversationId });
 
-        return res.sendStatus(200);
-      }
-
-      const response = await openai.createCompletion(openaiOptions);
-
-      await new Message({
-        senderId,
-        text,
-        openaiOptions: req.body.openaiOptions,
-        openaiResponses: [response.data.choices[0].text],
-      }).save();
-
-      console.log("message saved");
-
-      res.sendStatus(200);
-
-      res.json({ response: response.data.choices[0].text });
+      res.json({ messages });
     } catch (error) {
       console.error(error);
       res.sendStatus(500);
     }
   }
 );
+
+// {!} Make a route to change the converation name
 
 module.exports = router;
