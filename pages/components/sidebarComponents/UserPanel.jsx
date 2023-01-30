@@ -1,3 +1,4 @@
+import { TextareaAutosize } from "@mui/base";
 import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -46,6 +47,7 @@ const LargeDot = styled(Box)(({ theme }) => ({
 
 const UserPanel = () => {
   const { user } = useAppContext();
+  const [bio, setBio] = useState("");
   const [users, setUsers] = useState([]);
 
   const getUnverifiedUsers = async () => {
@@ -125,12 +127,31 @@ const UserPanel = () => {
         spacing={2}
         sx={{ display: "flex", alignItems: "center" }}
       >
-        <Typography variant="h6" sx={{ minWidth: "70px" }}>
+        <Typography variant="h5" sx={{ minWidth: "70px" }}>
           {user?.username}
         </Typography>
         <IconButton>
           <EditIcon />
         </IconButton>
+      </Stack>
+      <Stack>
+        <Typography variant="body2" sx={{ mt: 2, mb: 1 }}>
+          Biography
+        </Typography>
+
+        <TextareaAutosize
+          placeholder="Tell me a little bit about yourself"
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
+          style={{
+            padding: "12px",
+            minHeight: "100px",
+            maxHeight: "250px",
+            fontFamily: "Noto Sans, sans-serif",
+            overflow: "auto",
+            width: "250px",
+          }}
+        />
       </Stack>
       {user.role === "admin" ? (
         <Box spacing={2} sx={{ mt: 5, minWidth: 250 }}>

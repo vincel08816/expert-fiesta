@@ -58,9 +58,11 @@ const Topbar = () => {
           <Typography sx={{ ml: 0.3, mr: 0.3, fontWeight: "bold" }}>
             OpenAI
           </Typography>
-          <Typography sx={{ ml: 0.3, mr: 0.3, opacity: 0.6 }}>-</Typography>
-          <Typography sx={{ ml: 0.3, opacity: 0.6 }}>
-            {conversations[selected]?.title}
+          <Typography sx={{ ml: 0.3, mr: 0.3, opacity: 0.6, fontWeight: 600 }}>
+            &mdash;
+          </Typography>
+          <Typography sx={{ ml: 0.3, opacity: 0.6 }} variant="body2">
+            {conversations ? conversations[selected]?.title : ""}
           </Typography>
         </Box>
 

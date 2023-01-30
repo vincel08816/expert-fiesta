@@ -38,7 +38,8 @@ router.post(
         conversationId = conversation._id;
       }
 
-      // {!} Will this update the timestamp on the conversation?
+      // {!} Will this update the timestamp on the conversation? NO
+      conversation.updatedAt = new Date();
       await conversation.save();
 
       // save message to mongodb
@@ -158,5 +159,39 @@ router.get(
 );
 
 // {!} Make a route to change the converation name
+
+// @route    GET /api/message/:id
+// @desc     Get conversation based on converationId and userId
+// @access   Private
+
+router.put(
+  "/edit/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const conversationId = req.params.id;
+      const userId = req.user.id;
+      const { title } = req.body;
+
+      console.log("/api/message/edit/:id", { conversationId, title });
+
+      let conversation = await Conversation.findById(conversationId);
+
+      // this covers the case where conversation does not exist OR user does not match
+      if (conversation?.userId.toString() !== userId) {
+        console.error("Conversation does not exist or user does not match");
+        return res.sendStatus(404);
+      }
+
+      conversation.title = title;
+      conversation = await conversation.save();
+
+      res.sendStatus(200);
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  }
+);
 
 module.exports = router;

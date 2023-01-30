@@ -51,7 +51,7 @@ export const useChat = () => {
 
   // listener for conversation selection; changes when selected or converation length changes
   useEffect(() => {
-    if (conversations.length > 0 && typeof selected !== "undefined") {
+    if (conversations?.length > 0 && typeof selected !== "undefined") {
       axios
         .get(`/api/message/` + conversations[selected]?._id)
         .then((res) => {
@@ -66,7 +66,7 @@ export const useChat = () => {
         })
         .catch((err) => console.error(err));
     }
-  }, [selected, conversations.length]);
+  }, [selected, conversations?.length]);
 
   // default is new chat without a name
   useEffect(() => {
@@ -121,7 +121,7 @@ export const useChat = () => {
             {
               user: "OpenAI",
               isBot: true,
-              timestamp: Date.now(),
+              updatedAt: Date.now(),
               selected: true,
               imageUrl: response.data.image,
             },
@@ -135,7 +135,7 @@ export const useChat = () => {
           {
             user: "OpenAI",
             isBot: true,
-            timestamp: Date.now(),
+            updatedAt: Date.now(),
             text: "Could not send message.",
             selected: true,
             error: true,
@@ -208,7 +208,7 @@ export const useChat = () => {
       {
         user: "User",
         isBot: false,
-        timestamp: Date.now(),
+        updatedAt: Date.now(),
         text: form.text,
         selected: true,
       },
@@ -223,7 +223,7 @@ export const useChat = () => {
       .post("/api/message/text", {
         payload,
         text: form.text,
-        conversationId: conversations[selected]._id,
+        conversationId: selected ? conversations[selected]._id : undefined,
       })
       .then((response) => {
         console.log(response.data);
@@ -231,18 +231,19 @@ export const useChat = () => {
           ...prev,
           {
             user: "OpenAI",
-            timestamp: Date.now(),
+            updatedAt: Date.now(),
             text: response.data.text,
             selected: true,
           },
         ]);
+        // {!} Add new conversation if there is no selected conversation
       })
       .catch((error) => {
         setChatLog((prev) => [
           ...prev,
           {
             user: "OpenAI",
-            timestamp: Date.now(),
+            updatedAt: Date.now(),
             text: "Could not send message.",
             selected: true,
             error: true,

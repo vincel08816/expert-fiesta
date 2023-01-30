@@ -4,6 +4,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import axios from "axios";
 import React from "react";
 import Swal from "sweetalert2";
 import { useAppContext } from "../../context/AppContext";
@@ -39,7 +40,8 @@ const containerSx = {
 };
 
 const SelectChat = () => {
-  const { selected, setSelected, conversations } = useAppContext();
+  const { selected, setSelected, conversations, setConversations } =
+    useAppContext();
 
   return (
     <Box sx={containerSx}>
@@ -73,7 +75,7 @@ const SelectChat = () => {
           <Typography variant="body2">New chat</Typography>
         </Box>
       </Box>
-      {conversations.map(({ title, conversationId }, index) => (
+      {conversations?.map(({ title, _id: conversationId }, index) => (
         <Box
           key={index}
           sx={{
@@ -98,7 +100,43 @@ const SelectChat = () => {
 
           {selected === index ? (
             <Box sx={{ ml: 2 }}>
-              <EditIcon style={{ width: "20px", marginRight: "5px" }} />
+              <EditIcon
+                style={{ width: "20px", marginRight: "5px" }}
+                onClick={async () => {
+                  try {
+                    const swalResponse = await Swal.fire({
+                      icon: "warning",
+                      title: "Please enter your input",
+                      text: "You can enter any text",
+                      input: "text",
+                      inputValue: conversations[selected].title,
+                      showCancelButton: true,
+                      confirmButtonText: "Submit",
+                    });
+                    if (
+                      swalResponse.isConfirmed &&
+                      swalResponse.value?.trim().length
+                    ) {
+                      await axios.put(`/api/message/edit/${conversationId}`, {
+                        title: swalResponse.value,
+                      });
+
+                      // {!} Change the title
+                      setConversations((prev) => {
+                        let newConversations = [...prev];
+                        newConversations[selected] = {
+                          conversationId,
+                          title: swalResponse.value,
+                        };
+
+                        return newConversations;
+                      });
+                    }
+                  } catch (error) {
+                    console.error(error);
+                  }
+                }}
+              />
               <DeleteIcon style={{ width: "20px" }} />
             </Box>
           ) : (
