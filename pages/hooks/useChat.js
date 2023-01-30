@@ -94,12 +94,7 @@ export const useChat = () => {
   const toggleCheck = (user, index) => {
     setChatLog((prev) => {
       let copy = [...prev];
-      const updatedCheck = !copy[index].selected;
-      copy[index].selected = updatedCheck;
-
-      // this part of the code is to make sure both the prompt and the answer to the prompt are being submitted to openai
-      const isUser = user === "OpenAI" ? -1 : 1;
-      copy[index + isUser].selected = updatedCheck;
+      copy[index].selected = !copy[index].selected;
 
       return copy;
     });
@@ -113,20 +108,27 @@ export const useChat = () => {
     };
 
     axios
-      .post("/api/message/image", { payload, text: form.text })
+      .post("/api/message/image", {
+        payload,
+        text: form.text,
+        conversationId: selected ? conversations[selected]._id : undefined,
+      })
       .then((response) => {
-        setChatLog((prev) => {
-          return [
-            ...prev,
-            {
-              user: "OpenAI",
-              isBot: true,
-              updatedAt: Date.now(),
-              selected: true,
-              imageUrl: response.data.image,
-            },
-          ];
-        });
+        const { image, conversation } = response.data;
+        setChatLog((prev) => [
+          ...prev,
+          {
+            user: "OpenAI",
+            isBot: true,
+            updatedAt: Date.now(),
+            selected: true,
+            imageUrl: image,
+          },
+        ]);
+        if (selected === undefined) {
+          setConversations((prev) => [conversation, ...prev]);
+          setSelected(0);
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -226,17 +228,23 @@ export const useChat = () => {
         conversationId: selected ? conversations[selected]._id : undefined,
       })
       .then((response) => {
+        const { text, conversation } = response.data;
         console.log(response.data);
         setChatLog((prev) => [
           ...prev,
           {
             user: "OpenAI",
             updatedAt: Date.now(),
-            text: response.data.text,
+            text,
             selected: true,
           },
         ]);
         // {!} Add new conversation if there is no selected conversation
+
+        if (selected === undefined) {
+          setConversations((prev) => [conversation, ...prev]);
+          setSelected(0);
+        }
       })
       .catch((error) => {
         setChatLog((prev) => [

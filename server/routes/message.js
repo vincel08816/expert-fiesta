@@ -13,7 +13,59 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-// @route    POST /api/message/text
+// returns conversation id
+const verifyConversationAndSaveMessage = async (
+  conversationId,
+  title,
+  text,
+  response,
+  userId
+) => {
+  try {
+    let conversation = await Conversation.findById(conversationId);
+
+    if (!conversation) {
+      conversation = new Conversation({ userId });
+      if (title) conversation.title = title;
+      conversationId = conversation._id;
+    }
+
+    conversation.updatedAt = new Date();
+    await conversation.save();
+
+    // save message to mongodb
+    const userMessage = new Message({
+      userId,
+      conversationId,
+      isBot: false,
+      text,
+    });
+
+    // save response to mongodb
+    await userMessage.save();
+
+    let newMessageData = {
+      userId,
+      conversationId,
+      responseId: userMessage.id,
+      isBot: true,
+    };
+
+    if (response?.choices) {
+      newMessageData.text = response.choices[0].text;
+    } else {
+      newMessageData.imageUrl = response.data[0].url;
+    }
+
+    await new Message(newMessageData).save();
+
+    return conversation;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+// @route    POST /api/message/textblank
 // @desc     Send a request to the OpenAI API and save the repsonse to mongodb
 // @access   Private
 
@@ -28,38 +80,13 @@ router.post(
       const response = await openai.createCompletion(payload);
       console.log(response.data);
 
-      // conversationId = req.params.id;
-      let conversation = await Conversation.findById(conversationId);
-
-      if (!conversation) {
-        conversation = new Conversation({ userId: req.user.id });
-
-        if (title) conversation.title = title;
-        conversationId = conversation._id;
-      }
-
-      // {!} Will this update the timestamp on the conversation? NO
-      conversation.updatedAt = new Date();
-      await conversation.save();
-
-      // save message to mongodb
-      const userMessage = new Message({
-        userId: req.user.id,
+      const conversation = await verifyConversationAndSaveMessage(
         conversationId,
-        isBot: false,
+        title,
         text,
-      });
-
-      await userMessage.save();
-
-      // save bot response to mongodb
-      await new Message({
-        userId: req.user.id,
-        conversationId,
-        responseId: userMessage.id,
-        text: response.data.choices[0].text,
-        isBot: true,
-      }).save();
+        response.data,
+        req.user.id
+      );
 
       // save response.data.usage receipt to mongodb
       await new Receipt({
@@ -70,7 +97,7 @@ router.post(
         total: response.data.usage.total_tokens,
       }).save();
 
-      res.json({ text: response.data.choices[0].text });
+      res.json({ text: response.data.choices[0].text, conversation });
     } catch (error) {
       console.error(error);
       res.sendStatus(500);
@@ -87,38 +114,28 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     try {
-      const { payload, text } = req.body;
+      let { payload, text, title, conversationId } = req.body;
       console.log("/api/message", req.body);
 
       const response = await openai.createImage(payload);
       console.log(response.data);
 
-      // save response to mongodb if the conversation exists...
-      const userMessage = new Message({
-        userId: req.user.id,
-        isBot: false,
+      const conversation = await verifyConversationAndSaveMessage(
+        conversationId,
+        title,
         text,
-      });
-      await userMessage.save();
-
-      // save bot response to mongodb
-      await new Message({
-        userId: req.user.id,
-        responseId: userMessage.id,
-        text: response.data.choices[0].text,
-        isBot: true,
-      }).save();
+        response.data,
+        req.user.id
+      );
 
       // save response.data.usage receipt to mongodb
       await new Receipt({
         userId: req.user.id,
         model: "image-dalle-002",
-        prompt: response.data.usage.prompt_tokens,
-        completion: response.data.usage.completion_tokens,
-        total: response.data.usage.total_tokens,
+        size: payload.size,
       }).save();
 
-      res.json({ image: response.data.data[0].url });
+      res.json({ image: response.data.data[0].url, conversation });
     } catch (error) {
       console.error(error);
       res.sendStatus(500);
@@ -158,8 +175,6 @@ router.get(
   }
 );
 
-// {!} Make a route to change the converation name
-
 // @route    GET /api/message/:id
 // @desc     Get conversation based on converationId and userId
 // @access   Private
@@ -193,5 +208,9 @@ router.put(
     }
   }
 );
+
+// @route    GET /api/message/:id
+// @desc     Get conversation based on converationId and userId
+// @access   Private
 
 module.exports = router;

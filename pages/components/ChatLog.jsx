@@ -60,7 +60,7 @@ const Message = ({
       >
         <StyledUserLogo
           src={
-            user === "User"
+            user === "OpenAI"
               ? "https://media.discordapp.net/attachments/594312779545051221/1068575020361715774/sticker2.png"
               : "https://media.discordapp.net/attachments/594312779545051221/1068574850203009144/sticker29.png"
           }
@@ -107,7 +107,6 @@ const Message = ({
                 backgroundColor: " white",
                 display,
                 color: "#505761",
-                // height: 30,
               }}
             >
               <Tooltip title="Bookmark">
@@ -247,12 +246,7 @@ const ChatLog = () => {
     >
       {chatLog.map((data, index) => {
         return (
-          <Box
-            key={`message${index}`}
-            sx={{
-              opacity: !index % 2 && chatLog.length === index + 1 ? 0.6 : 1,
-            }}
-          >
+          <Box key={`message${index}`}>
             <Message
               {...data}
               index={index}

@@ -40,27 +40,18 @@ const containerSx = {
 };
 
 const SelectChat = () => {
-  const { selected, setSelected, conversations, setConversations } =
+  const { selected, setSelected, conversations, setConversations, setChatLog } =
     useAppContext();
 
   return (
     <Box sx={containerSx}>
       <Box
         sx={{ ...titleSx, border: "1px solid black", mb: 1 }}
-        onClick={async () => {
-          const result = await Swal.fire({
-            icon: "warning",
-            title: "Please enter your input",
-            text: "You can enter any text",
-            input: "text",
-            showCancelButton: true,
-            confirmButtonText: "Submit",
-          });
-          if (result.isConfirmed && result.value?.trim().length) {
-            console.log(result.value);
-            // {!} Change the title
-          }
+        onClick={() => {
+          setSelected();
+          setChatLog([]);
         }}
+        blank
       >
         <Box sx={{ p: 0.5, pr: 1 }}>
           <AddIcon style={{ width: "20px" }} />
@@ -124,11 +115,8 @@ const SelectChat = () => {
                       // {!} Change the title
                       setConversations((prev) => {
                         let newConversations = [...prev];
-                        newConversations[selected] = {
-                          conversationId,
-                          title: swalResponse.value,
-                        };
-
+                        if (newConversations?.length)
+                          newConversations[selected].title = swalResponse.value;
                         return newConversations;
                       });
                     }
