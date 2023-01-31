@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
-import { useAppContext } from "../../../contexts/AppContext";
+import { useAppContext } from "../../contexts/AppContext";
 
 const width = "240px";
 

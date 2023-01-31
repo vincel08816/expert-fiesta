@@ -9,7 +9,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { useAppContext } from "../../../contexts/AppContext";
+import { useAppContext } from "../../contexts/AppContext";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {

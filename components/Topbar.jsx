@@ -7,7 +7,7 @@ import Toolbar from "@mui/material/Toolbar";
 import { Box } from "@mui/system";
 import React from "react";
 import Swal from "sweetalert2";
-import { useAppContext } from "../../contexts/AppContext";
+import { useAppContext } from "../contexts/AppContext";
 import IconsWithTooltips from "./IconsWithTooltips";
 
 const Topbar = () => {

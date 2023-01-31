@@ -1,8 +1,8 @@
 import { Box } from "@mui/system";
 import Head from "next/head";
 import React from "react";
+import Topbar from "../components/Topbar";
 import { AppContextProvider } from "../contexts/AppContext";
-import Topbar from "./components/Topbar";
 
 function App({ Component, pageProps }) {
   return (

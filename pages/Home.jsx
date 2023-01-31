@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
+import Content from "../components/chatComponents/Content";
+import Sidebar from "../components/Sidebar";
 import { useAppContext } from "../contexts/AppContext";
-import Content from "./components/chatComponents/Content";
-import Sidebar from "./components/Sidebar";
 
 const App = () => {
   const { user, loading } = useAppContext();
