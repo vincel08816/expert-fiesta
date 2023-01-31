@@ -7,15 +7,8 @@ import IconsWithTooltips from "../IconsWithTooltips";
 import ChatLog from "./ChatLog";
 
 const Content = () => {
-  const {
-    form,
-    handleChange,
-    setChatLog,
-    chatLog,
-    handleSubmit,
-    allowEnterToSubmit,
-    toggleCheck,
-  } = useAppContext();
+  const { form, handleChange, setChatLog, chatLog, handleSubmit, toggleCheck } =
+    useAppContext();
 
   return (
     <>
@@ -44,9 +37,7 @@ const Content = () => {
       >
         <TextareaAutosize
           placeholder="Message @OpenAI"
-          onKeyDown={(e) =>
-            e.key === "Enter" && allowEnterToSubmit && handleSubmit(e)
-          }
+          onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSubmit(e)}
           value={form.text}
           name={"text"}
           onChange={handleChange}

@@ -195,7 +195,7 @@ const Message = ({
                     try {
                       const response = await Swal.fire({
                         icon: "warning",
-                        title: "Are you sure?",
+                        title: "Are you sure you want to delete this message?",
                         text: "You won't be able to revert this!",
                         showCancelButton: true,
                       });
@@ -208,15 +208,14 @@ const Message = ({
                     } catch (error) {
                       Swal.fire({
                         icon: "error",
-                        text: "Unable to delete message",
+                        title: "Unable to delete message",
+                        error: error?.message || "Something went wrong!",
                       });
                       console.error(error);
                     }
                   }}
                 >
-                  <DeleteIcon
-                    sx={{ width: "25px", height: "25px", color: "red" }}
-                  />
+                  <DeleteIcon sx={{ width: "25px", height: "25px" }} />
                 </Box>
               </Tooltip>
             </Box>

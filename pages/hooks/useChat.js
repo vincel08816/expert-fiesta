@@ -41,7 +41,6 @@ export const useChat = () => {
   const [selected, setSelected] = useState(); // selected Conversation index
 
   const [chatLog, setChatLog] = useState([]);
-  const [allowEnterToSubmit, setAllowEnterToSubmit] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [form, setForm] = useState(initialForm);
   const [openSidebar, setOpenSidebar] = useState(false);
@@ -83,9 +82,6 @@ export const useChat = () => {
   const handleChange = (event) => {
     event.preventDefault();
     const { name, value } = event.target;
-    if (value[value.length - 1] === "Enter" && allowEnterToSubmit) {
-      return handleSubmit(event);
-    }
     setForm({ ...form, [name]: value });
   };
 
@@ -243,8 +239,6 @@ export const useChat = () => {
     setOpenSidebar,
     chatLog,
     setChatLog,
-    allowEnterToSubmit,
-    setAllowEnterToSubmit,
     isSending,
     setIsSending,
     form,

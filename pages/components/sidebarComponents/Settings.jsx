@@ -5,7 +5,6 @@ import {
   MenuItem,
   Select,
   Slider,
-  Switch,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -49,7 +48,7 @@ const FormComponent = ({
 );
 
 const Settings = () => {
-  const { form, handleChange, setAllowEnterToSubmit } = useAppContext();
+  const { form, handleChange } = useAppContext();
 
   const {
     model,
@@ -194,10 +193,6 @@ const Settings = () => {
         }}
       >
         <Typography variant="body2">Allow Enter To Send</Typography>
-        <Switch
-          defaultChecked
-          onClick={() => setAllowEnterToSubmit((prev) => !prev)}
-        />
       </Box>
     </Box>
   );
