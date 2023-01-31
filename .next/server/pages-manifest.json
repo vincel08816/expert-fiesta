@@ -1,6 +1,23 @@
 {
-  "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/Home": "pages/Home.js"
+  "/_app": "pages/_app.js",
+  "/Home": "pages/Home.js",
+  "/Admin": "pages/Admin.js",
+  "/Login": "pages/Login.js",
+  "/Register": "pages/Register.js",
+  "/components/Sidebar": "pages/components/Sidebar.js",
+  "/components/SidebarNav": "pages/components/SidebarNav.js",
+  "/components/Topbar": "pages/components/Topbar.js",
+  "/components/chatComponents/CodeBlock": "pages/components/chatComponents/CodeBlock.js",
+  "/components/chatComponents/ChatLog": "pages/components/chatComponents/ChatLog.js",
+  "/ResumeForm": "pages/ResumeForm.js",
+  "/context/AppContext": "pages/context/AppContext.js",
+  "/components/chatComponents/Content": "pages/components/chatComponents/Content.js",
+  "/hooks/useChat": "pages/hooks/useChat.js",
+  "/utils/util": "pages/utils/util.js",
+  "/components/sidebarComponents/SelectChat": "pages/components/sidebarComponents/SelectChat.js",
+  "/components/sidebarComponents/Settings": "pages/components/sidebarComponents/Settings.js",
+  "/components/sidebarComponents/UserPanel": "pages/components/sidebarComponents/UserPanel.js",
+  "/components/IconsWithTooltips": "pages/components/IconsWithTooltips.js",
+  "/_document": "pages/_document.js"
 }
