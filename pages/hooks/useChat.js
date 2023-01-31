@@ -20,14 +20,12 @@ const useDebug = (form, chatLog, user) => {
   // useEffect(() => {
   //   if (process.env.NODE_ENV === "development") console.log("form", form);
   // }, [form]);
-
-  useEffect(() => {
-    if (process.env.NODE_ENV === "development") console.log("chatLog", chatLog);
-  }, [chatLog]);
-
-  useEffect(() => {
-    if (process.env.NODE_ENV === "development") console.log("user", user);
-  }, [user]);
+  // useEffect(() => {
+  //   if (process.env.NODE_ENV === "development") console.log("chatLog", chatLog);
+  // }, [chatLog]);
+  // useEffect(() => {
+  //   if (process.env.NODE_ENV === "development") console.log("user", user);
+  // }, [user]);
 };
 
 /*
@@ -95,7 +93,6 @@ export const useChat = () => {
     setChatLog((prev) => {
       let copy = [...prev];
       copy[index].selected = !copy[index].selected;
-
       return copy;
     });
   };
@@ -181,10 +178,12 @@ export const useChat = () => {
 
     // if (form.model === "image-dalle-002") return submitImage(index);
 
+    console.log("conversationId", conversations[selected]._id);
+
     const axiosUrl =
       form.model === "image-dalle-002"
         ? "/api/message/image"
-        : "/api/message/ text";
+        : "/api/message/text";
 
     axios
       .post(axiosUrl, {

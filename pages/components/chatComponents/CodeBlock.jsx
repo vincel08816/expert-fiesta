@@ -9,35 +9,46 @@ function splitString(str) {
   const results = [];
   const regex = /```(\w+)?\n([\s\S]+?)\n```/g;
   let match;
+  let lastIndex = 0;
 
   while ((match = regex.exec(str)) !== null) {
+    if (match.index > lastIndex) {
+      results.push({
+        type: "text",
+        value: str.slice(lastIndex, match.index),
+      });
+    }
+
     results.push({
       type: "code",
       value: match[2],
       language: match[1] || null,
     });
 
-    str = str.replace(match[0], "");
+    lastIndex = regex.lastIndex;
   }
 
-  results.push({
-    type: "text",
-    value: str,
-  });
+  if (lastIndex < str.length) {
+    results.push({
+      type: "text",
+      value: str.slice(lastIndex),
+    });
+  }
 
   return results;
 }
 
 const CodeBlock = ({ text }) => {
-  return splitString(text).map(({ type, value, language }) => {
+  console.log(JSON.stringify({ input: text, output: splitString(text) }));
+  return splitString(text).map(({ type, value, language }, index) => {
     if (type === "text")
       return (
-        <Typography sx={{ whiteSpace: "pre-wrap", fontSize: 15 }}>
+        <Typography key={index} sx={{ whiteSpace: "pre-wrap", fontSize: 15 }}>
           {value}
         </Typography>
       );
     return (
-      <Box>
+      <Box key={index}>
         <Box
           sx={{
             display: "flex",
