@@ -10,7 +10,7 @@ import SidebarNav from "./SidebarNav";
 const Sidebar = (props) => {
   const { openSidebar, setOpenSidebar } = useAppContext();
   const [isMobile, setIsMobile] = useState(false);
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState(0);
 
   useEffect(() => {
     setIsMobile(

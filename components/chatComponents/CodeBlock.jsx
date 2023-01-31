@@ -28,7 +28,7 @@ function splitString(str) {
     lastIndex = regex.lastIndex;
   }
 
-  if (lastIndex < str.length) {
+  if (lastIndex < str?.length) {
     results.push({
       type: "text",
       value: str.slice(lastIndex),

@@ -153,7 +153,7 @@ const UserPanel = () => {
           }}
         />
       </Stack>
-      {user.role === "admin" ? (
+      {user?.role === "admin" ? (
         <Box spacing={2} sx={{ mt: 5, minWidth: 250 }}>
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>

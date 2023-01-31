@@ -1,8 +1,14 @@
+import { Box } from "@mui/system";
 import React from "react";
 
 import { IconButton, Tooltip } from "@mui/material";
 
-const IconsWithTooltips = ({ title = "", Icon, onClick, sx = {} }) => {
+const IconsWithTooltips = ({
+  title = "",
+  Icon = Box,
+  onClick = () => {},
+  sx = {},
+}) => {
   return (
     <Tooltip title={title}>
       <IconButton sx={sx} onClick={onClick}>
