@@ -39,6 +39,7 @@ function App({ Component, pageProps }) {
             left: 0,
             right: 0,
             fontFamily: "Noto Sans, sans-serif",
+            overflow: "hidden",
           }}
         >
           <Topbar />

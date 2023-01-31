@@ -39,7 +39,7 @@ const Topbar = () => {
   };
 
   return (
-    <AppBar>
+    <AppBar sx={{ position: "fixed" }}>
       <Toolbar
         sx={{
           display: "flex",

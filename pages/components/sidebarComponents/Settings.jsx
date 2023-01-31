@@ -164,7 +164,7 @@ const Settings = () => {
       ].map((value, index) => (
         <FormComponent key={index} {...value} handleChange={handleChange} />
       ))}
-      <FormControl sx={{ width, mt: 2, mb: 2 }}>
+      <FormControl sx={{ width, mt: 2, mb: 15 }}>
         <InputLabel id="demo-simple-select-helper-label">
           Image Model Size (Dalle only)
         </InputLabel>
@@ -183,17 +183,6 @@ const Settings = () => {
           ))}
         </Select>
       </FormControl>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mt: 1,
-          mb: 1,
-        }}
-      >
-        <Typography variant="body2">Allow Enter To Send</Typography>
-      </Box>
     </Box>
   );
 };

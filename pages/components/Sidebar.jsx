@@ -1,6 +1,6 @@
 import { Paper } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import SelectChat from "./sidebarComponents/SelectChat";
 import Settings from "./sidebarComponents/Settings";
@@ -9,15 +9,26 @@ import SidebarNav from "./SidebarNav";
 
 const Sidebar = (props) => {
   const { openSidebar, setOpenSidebar } = useAppContext();
-  const [value, setValue] = React.useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [value, setValue] = useState(1);
+
+  useEffect(() => {
+    setIsMobile(
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      )
+    );
+  }, []);
 
   const SidebarArray = [
     <SelectChat {...props} />,
-    <Settings {...props} />,
-    <UserPanel {...props} />,
+    <Settings {...props} isMobile={isMobile} />,
+    <UserPanel {...props} isMobile={isMobile} />,
   ];
 
   const toggleDrawer = () => setOpenSidebar((prev) => !prev);
+
+  useEffect(() => {}, []);
 
   return (
     <Box
@@ -37,7 +48,7 @@ const Sidebar = (props) => {
       <Paper
         sx={{
           display: "flex",
-          width: 300,
+          width: isMobile ? "100%" : 300,
           borderRadius: "10px 0 0 10px",
           flexDirection: "column",
           alignItems: "center",
@@ -45,7 +56,12 @@ const Sidebar = (props) => {
         }}
       >
         {SidebarArray[value]}
-        <SidebarNav {...props} value={value} setValue={setValue} />
+        <SidebarNav
+          {...props}
+          value={value}
+          setValue={setValue}
+          isMobile={isMobile}
+        />
       </Paper>
       <Box sx={{ flex: 1 }} onClick={toggleDrawer} />
     </Box>

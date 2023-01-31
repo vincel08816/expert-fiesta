@@ -174,7 +174,10 @@ export const useChat = () => {
 
     // if (form.model === "image-dalle-002") return submitImage(index);
 
-    console.log("conversationId", conversations[selected]._id);
+    console.log(
+      "conversationId",
+      conversations.length && selected && conversations[selected]._id
+    );
 
     const axiosUrl =
       form.model === "image-dalle-002"
