@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useAppContext } from "./context/AppContext";
+import { useAppContext } from "../contexts/AppContext";
 
 const emptyUsernameError = "Username cannot be empty.";
 const emptyPasswordError = "Password cannot be empty.";

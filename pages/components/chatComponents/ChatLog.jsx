@@ -9,8 +9,8 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Swal from "sweetalert2";
-import { useAppContext } from "../../context/AppContext";
-import { formatDate } from "../../utils/util";
+import { useAppContext } from "../../../contexts/AppContext";
+import { formatDate } from "../../../utils/util";
 import CodeBlock from "./CodeBlock";
 
 const Message = ({

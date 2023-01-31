@@ -7,7 +7,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React from "react";
 import Swal from "sweetalert2";
-import { useAppContext } from "../../context/AppContext";
+import { useAppContext } from "../../../contexts/AppContext";
 
 const titleSx = {
   display: "flex",

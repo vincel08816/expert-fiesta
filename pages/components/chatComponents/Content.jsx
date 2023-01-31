@@ -2,7 +2,7 @@ import { TextareaAutosize } from "@mui/base";
 import SendIcon from "@mui/icons-material/Send";
 import { Box } from "@mui/system";
 import React from "react";
-import { useAppContext } from "../../context/AppContext";
+import { useAppContext } from "../../../contexts/AppContext";
 import IconsWithTooltips from "../IconsWithTooltips";
 import ChatLog from "./ChatLog";
 
