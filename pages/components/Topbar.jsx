@@ -62,7 +62,9 @@ const Topbar = () => {
             &mdash;
           </Typography>
           <Typography sx={{ ml: 0.3, opacity: 0.6 }} variant="body2">
-            {conversations ? conversations[selected]?.title : ""}
+            {conversations && conversations[selected]?.title.length
+              ? conversations[selected]?.title
+              : "New Chat"}
           </Typography>
         </Box>
 

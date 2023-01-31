@@ -80,7 +80,7 @@ const CodeBlock = ({ text }) => {
             margin: 0,
           }}
         >
-          {value}
+          {value || ""}
         </SyntaxHighlighter>
       </Box>
     );

@@ -57,9 +57,10 @@ const verifyConversationAndSaveMessage = async (
       newMessageData.imageUrl = response.data[0].url;
     }
 
-    await new Message(newMessageData).save();
+    const openAIResponse = await new Message(newMessageData).save();
 
-    return conversation;
+    // {!} Handle _id when message is created (do this for image)
+    return { conversation, userMessageId: userMessage._id, openAIResponse };
   } catch (error) {
     throw new Error(error);
   }
@@ -80,7 +81,7 @@ router.post(
       const response = await openai.createCompletion(payload);
       console.log(response.data);
 
-      const conversation = await verifyConversationAndSaveMessage(
+      const data = await verifyConversationAndSaveMessage(
         conversationId,
         title,
         text,
@@ -97,7 +98,7 @@ router.post(
         total: response.data.usage.total_tokens,
       }).save();
 
-      res.json({ text: response.data.choices[0].text, conversation });
+      res.json(data);
     } catch (error) {
       console.error(error);
       res.sendStatus(500);
@@ -120,7 +121,7 @@ router.post(
       const response = await openai.createImage(payload);
       console.log(response.data);
 
-      const conversation = await verifyConversationAndSaveMessage(
+      const data = await verifyConversationAndSaveMessage(
         conversationId,
         title,
         text,
@@ -135,7 +136,7 @@ router.post(
         size: payload.size,
       }).save();
 
-      res.json({ image: response.data.data[0].url, conversation });
+      res.json(data);
     } catch (error) {
       console.error(error);
       res.sendStatus(500);
@@ -209,8 +210,59 @@ router.put(
   }
 );
 
-// @route    GET /api/message/:id
-// @desc     Get conversation based on converationId and userId
+// @route    DELETE /api/message/:id
+// @desc     Delete conversations and associated messages
 // @access   Private
+
+router.delete(
+  "/conversation/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const conversationId = req.params.id;
+      const userId = req.user.id;
+
+      console.log("/api/message/conversation/:id (delete)", req.params.id);
+
+      const conversation = await Conversation.findById(conversationId);
+
+      // this covers the case where conversation does not exist OR user does not match
+      if (conversation?.userId.toString() !== userId) {
+        console.error("Conversation does not exist or user does not match");
+        return res.sendStatus(404);
+      }
+
+      const deletedMessages = await Message.deleteMany({ conversationId });
+      await Conversation.deleteOne({ _id: conversationId });
+
+      res.json({ deletedMessages });
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  }
+);
+
+// @route    DELETE /api/message/:id
+// @desc     Delete one message
+// @access   Private
+
+router.delete(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const userId = req.user.id;
+      console.log("/api/message/:id (delete)", req.params.id);
+
+      await Message.deleteOne({ _id: req.params.id, userId });
+
+      res.sendStatus(200);
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  }
+);
 
 module.exports = router;

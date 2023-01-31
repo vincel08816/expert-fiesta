@@ -100,55 +100,6 @@ export const useChat = () => {
     });
   };
 
-  const submitImage = () => {
-    const payload = {
-      prompt: form.text,
-      n: form.number,
-      size: form.size,
-    };
-
-    axios
-      .post("/api/message/image", {
-        payload,
-        text: form.text,
-        conversationId: selected ? conversations[selected]._id : undefined,
-      })
-      .then((response) => {
-        const { image, conversation } = response.data;
-        setChatLog((prev) => [
-          ...prev,
-          {
-            user: "OpenAI",
-            isBot: true,
-            updatedAt: Date.now(),
-            selected: true,
-            imageUrl: image,
-          },
-        ]);
-        if (selected === undefined) {
-          setConversations((prev) => [conversation, ...prev]);
-          setSelected(0);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        setChatLog((prev) => [
-          ...prev,
-          {
-            user: "OpenAI",
-            isBot: true,
-            updatedAt: Date.now(),
-            text: "Could not send message.",
-            selected: true,
-            error: true,
-          },
-        ]);
-      })
-      .then(() => {
-        setIsSending(false);
-      });
-  };
-
   // don't forget to handle edge cases such as empty text field
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -167,8 +118,8 @@ export const useChat = () => {
       .filter((message) => message.selected)
       .map(
         (message) =>
-          `${message.user === "OpenAI" ? "A:" : "Q:"}: ${message.text}${
-            message.user === "OpenAI" ? "\n" : ""
+          `${message.isBot ? "OpenAI:" : "User:"}: ${message.text}${
+            message.isBot ? "\n" : ""
           }`
       )
       .join("\n");
@@ -192,23 +143,32 @@ export const useChat = () => {
     // create payload
     // prompt should be: pinned + selected previous messages + current text
 
-    const payload = {
-      model: form.model,
-      temperature: form.temperature,
-      top_p: form.topP,
-      frequency_penalty: form.frequencyPenalty,
-      presence_penalty: form.presencePenalty,
-      best_of: form.bestOf,
-      prompt,
-      max_tokens,
-    };
+    const payload =
+      form.model === "image-dalle-002"
+        ? {
+            prompt: form.text,
+            n: form.number,
+            size: form.size,
+          }
+        : {
+            model: form.model,
+            temperature: form.temperature,
+            top_p: form.topP,
+            frequency_penalty: form.frequencyPenalty,
+            presence_penalty: form.presencePenalty,
+            best_of: form.bestOf,
+            prompt,
+            max_tokens,
+          };
 
     // add new message to chat log and clear form
     // add message to chatLog array
+
+    const index = chatLog.length; // index of new message from user
     setChatLog((prev) => [
       ...prev,
       {
-        user: "User",
+        user: user.username,
         isBot: false,
         updatedAt: Date.now(),
         text: form.text,
@@ -219,27 +179,29 @@ export const useChat = () => {
       return { ...prev, text: "" };
     });
 
-    if (form.model === "image-dalle-002") return submitImage();
+    // if (form.model === "image-dalle-002") return submitImage(index);
+
+    const axiosUrl =
+      form.model === "image-dalle-002"
+        ? "/api/message/image"
+        : "/api/message/ text";
 
     axios
-      .post("/api/message/text", {
+      .post(axiosUrl, {
         payload,
         text: form.text,
-        conversationId: selected ? conversations[selected]._id : undefined,
+        conversationId:
+          selected !== undefined ? conversations[selected]._id : undefined,
       })
       .then((response) => {
-        const { text, conversation } = response.data;
+        const { openAIResponse, conversation, userMessageId } = response.data;
         console.log(response.data);
-        setChatLog((prev) => [
-          ...prev,
-          {
-            user: "OpenAI",
-            updatedAt: Date.now(),
-            text,
-            selected: true,
-          },
-        ]);
-        // {!} Add new conversation if there is no selected conversation
+        setChatLog((prev) => {
+          let prevCopy = [...prev];
+          prevCopy[index]._id = userMessageId; // replace FE sent message with real message id
+          prevCopy.push({ ...openAIResponse, user: "OpenAI", selected: true });
+          return prevCopy;
+        });
 
         if (selected === undefined) {
           setConversations((prev) => [conversation, ...prev]);

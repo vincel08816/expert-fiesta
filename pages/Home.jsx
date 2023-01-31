@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import Content from "./components/Content";
+import Content from "./components/chatComponents/Content";
 import Sidebar from "./components/Sidebar";
 import { useAppContext } from "./context/AppContext";
 

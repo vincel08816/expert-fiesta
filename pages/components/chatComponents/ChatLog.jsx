@@ -5,11 +5,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
 import { Checkbox, Tooltip, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { useAppContext } from "../context/AppContext";
-import { formatDate } from "../utils/util";
-import CodeBlock from "./chatComponents/CodeBlock";
+import Swal from "sweetalert2";
+import { useAppContext } from "../../context/AppContext";
+import { formatDate } from "../../utils/util";
+import CodeBlock from "./CodeBlock";
 
 const Message = ({
   user,
@@ -17,12 +19,13 @@ const Message = ({
   text,
   selected,
   index,
-  toggleCheck,
   error,
   imageUrl,
   bookmarked,
+  _id,
 }) => {
   const [show, setShow] = useState(false);
+  const { setChatLog, toggleCheck } = useAppContext();
 
   const handleMouseOver = () => setShow(true);
   const handleMouseOut = () => setShow(false);
@@ -188,9 +191,28 @@ const Message = ({
                       backgroundColor: "#dfe1e3",
                     },
                   }}
-                  onClick={() =>
-                    navigator.clipboard.writeText(imageUrl ? imageUrl : text)
-                  }
+                  onClick={async () => {
+                    try {
+                      const response = await Swal.fire({
+                        icon: "warning",
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        showCancelButton: true,
+                      });
+                      if (response.isConfirmed) {
+                        await axios.delete(`/api/message/${_id}`);
+                        setChatLog((prev) =>
+                          prev.filter((msg) => msg._id !== _id)
+                        );
+                      }
+                    } catch (error) {
+                      Swal.fire({
+                        icon: "error",
+                        text: "Unable to delete message",
+                      });
+                      console.error(error);
+                    }
+                  }}
                 >
                   <DeleteIcon
                     sx={{ width: "25px", height: "25px", color: "red" }}
