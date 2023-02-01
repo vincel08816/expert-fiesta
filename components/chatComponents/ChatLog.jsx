@@ -4,6 +4,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
 import { Checkbox, Tooltip, Typography } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
@@ -42,8 +43,7 @@ const Message = ({
         alignItems: "reverse",
         mr: 1,
         mb: 1,
-        p: 0.5,
-        pb: 2,
+        padding: "5px 12px 15px",
         borderRadius: 2,
         backgroundColor: selected && "#fbfbfb",
         border: `1px solid ${selected ? "#bcdbfd" : "transparent"}`,
@@ -81,6 +81,7 @@ const Message = ({
           sx={{
             display: "flex",
             mt: 1,
+            mb: -0.5,
             alignItems: "center",
             wordBreak: "break-word",
           }}
@@ -96,7 +97,7 @@ const Message = ({
           ) : (
             <Box sx={{ width: 8 }} />
           )}
-          <Typography sx={{ opacity: 0.8, fontSize: 12 }}>
+          <Typography sx={{ opacity: 0.6, fontSize: 12 }}>
             {formatDate(updatedAt) || ""}
           </Typography>
           <Box sx={{ flex: 1, display: "flex", flexDirection: "row-reverse" }}>
@@ -242,7 +243,12 @@ const Message = ({
 };
 
 const ChatLog = () => {
-  const { chatLog = [], setChatLog, toggleCheck } = useAppContext();
+  const {
+    chatLog = [],
+    setChatLog,
+    toggleCheck,
+    loadingMessages,
+  } = useAppContext();
   const chatRef = useRef(null);
 
   const scrollToBottom = () =>
@@ -250,34 +256,55 @@ const ChatLog = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [chatLog?.length]);
+  }, [loadingMessages, chatLog]);
+
+  if (loadingMessages) {
+    return (
+      <Box
+        ref={chatRef}
+        sx={{
+          pt: 5,
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column",
+          flex: 1,
+          overflowY: "scroll",
+        }}
+      >
+        <CircularProgress style={{ width: "60px", height: "60px" }} />
+      </Box>
+    );
+  }
 
   return (
     <Box
       ref={chatRef}
       sx={{
-        mt: 7,
-        mb: 0,
-        pt: 3,
+        pt: 1,
+        mb: 1,
+        width: "100%",
         display: "flex",
+        alignItems: "center",
         flexDirection: "column",
         flex: 1,
         overflowY: "scroll",
-        ml: 2,
       }}
     >
-      {chatLog.map((data, index) => {
-        return (
-          <Box key={`message${index}`}>
-            <Message
-              {...data}
-              index={index}
-              setChatLog={setChatLog}
-              toggleCheck={toggleCheck}
-            />
-          </Box>
-        );
-      })}
+      <Box sx={{ maxWidth: "1000px", width: "100vw" }}>
+        {chatLog.map((data, index) => {
+          return (
+            <Box key={`message${index}`}>
+              <Message
+                {...data}
+                index={index}
+                setChatLog={setChatLog}
+                toggleCheck={toggleCheck}
+              />
+            </Box>
+          );
+        })}
+      </Box>
     </Box>
   );
 };

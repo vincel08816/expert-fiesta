@@ -50,7 +50,14 @@ export default function Login() {
   };
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", mt: 20 }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        mt: 3,
+      }}
+    >
       <Paper
         sx={{
           display: "flex",
@@ -105,7 +112,10 @@ export default function Login() {
         >
           Login
         </Button>
-        <Button onClick={() => router.push({ pathname: "/register" })}>
+        <Button
+          sx={{ color: "inherit", width: "120px" }}
+          onClick={() => router.push({ pathname: "/register" })}
+        >
           Register
         </Button>
       </Paper>

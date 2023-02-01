@@ -33,13 +33,13 @@ function App({ Component, pageProps }) {
             display: "flex",
             flexDirection: "column",
             position: "absolute",
+            alignItems: "center",
             height: "100vh",
             top: 0,
             bottom: 0,
             left: 0,
             right: 0,
             fontFamily: "Noto Sans, sans-serif",
-            overflow: "hidden",
           }}
         >
           <Topbar />

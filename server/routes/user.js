@@ -34,7 +34,8 @@ router.post(
       console.log(why);
 
       if (await User.findOne({ username })) {
-        return res.sendStatus(400);
+        console.log("User already exists");
+        return res.send(400).send("User already exists");
       }
 
       const user = new User({ username, password, why });

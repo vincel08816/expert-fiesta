@@ -1,14 +1,24 @@
 import { TextareaAutosize } from "@mui/base";
 import SendIcon from "@mui/icons-material/Send";
+import { Typography } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import { Box } from "@mui/system";
 import React from "react";
+import styled from "styled-components";
 import { useAppContext } from "../../contexts/AppContext";
 import IconsWithTooltips from "../IconsWithTooltips";
 import ChatLog from "./ChatLog";
 
 const Content = () => {
-  const { form, handleChange, setChatLog, chatLog, handleSubmit, toggleCheck } =
-    useAppContext();
+  const {
+    form,
+    handleChange,
+    setChatLog,
+    chatLog,
+    handleSubmit,
+    toggleCheck,
+    isSending,
+  } = useAppContext();
 
   return (
     <>
@@ -24,9 +34,10 @@ const Content = () => {
         sx={{
           flexShrink: 0,
           m: 2,
-          pr: 1,
-          pl: 0.5,
-          pt: 0.5,
+          mt: 0,
+          p: 0.5,
+          pr: 1.5,
+          pt: 0.8,
           pb: 0.2,
           display: "flex",
           bottom: 0,
@@ -34,8 +45,9 @@ const Content = () => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          backgroundColor: "#ebedef",
           borderRadius: "5px",
+          maxWidth: "1000px",
+          boxShadow: "0 0 10px rgba(0,0,0,.1);",
         }}
       >
         <TextareaAutosize
@@ -52,14 +64,34 @@ const Content = () => {
             flex: 1,
             overflow: "auto",
             fontFamily: "Noto Sans, sans-serif",
-            backgroundColor: "#ebedef",
+            // backgroundColor: "#ebedef",
             border: "none",
             outline: "none",
           }}
         />
+
+        {isSending ? (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Box sx={{ display: "flex" }}>
+              <CircularProgress style={{ width: "24px", height: "24px" }} />
+            </Box>
+            <Typography sx={{ fontSize: 10, mt: 0.5, mb: -0.5, opacity: 0.5 }}>
+              Sending...
+            </Typography>
+          </Box>
+        ) : (
+          ""
+        )}
         {form.text?.trim().length > 0 ? (
           <IconsWithTooltips
-            sx={{ m: 0, p: 0 }}
+            sx={{ m: 0, p: 0, mt: -0.5 }}
             title="Submit"
             Icon={SendIcon}
             onClick={handleSubmit}

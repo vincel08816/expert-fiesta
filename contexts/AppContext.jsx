@@ -41,6 +41,7 @@ export const useChat = () => {
 
   const [conversations, setConversations] = useState([]);
   const [selected, setSelected] = useState(); // selected Conversation index
+  const [loadingMessages, setLoadingMessages] = useState(false);
 
   const [chatLog, setChatLog] = useState([]);
   const [isSending, setIsSending] = useState(false);
@@ -48,9 +49,17 @@ export const useChat = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
   useDebug(form, chatLog, user);
 
+  function delay(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
   // listener for conversation selection; changes when selected or converation length changes
   useEffect(() => {
+    if (loadingMessages) return;
+
     if (conversations?.length > 0 && typeof selected !== "undefined") {
+      setLoadingMessages(true);
+
       axios
         .get(`/api/message/` + conversations[selected]?._id)
         .then((res) => {
@@ -60,10 +69,13 @@ export const useChat = () => {
               user: message.isBot ? "OpenAI" : user.username,
             };
           });
-
           setChatLog(messages);
         })
-        .catch((err) => console.error(err));
+        .catch((err) => console.error(err))
+        .then(() => {
+          console.log("waiting");
+          delay(500).then((_) => setLoadingMessages(false));
+        });
     }
   }, [selected, conversations?.length]);
 
@@ -238,6 +250,8 @@ export const useChat = () => {
     setConversations,
     selected,
     setSelected,
+    loadingMessages,
+    setLoadingMessages,
 
     /* Chat Data */
     openSidebar,

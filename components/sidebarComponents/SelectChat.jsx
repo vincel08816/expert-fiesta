@@ -12,9 +12,8 @@ import { useAppContext } from "../../contexts/AppContext";
 const titleSx = {
   display: "flex",
   flexDirection: "row",
-  maxWidth: "90%",
-  ml: 0.5,
-  p: 1,
+  width: "calc(100% - 30px)",
+  padding: "10px",
   alignItems: "center",
   border: "1px solid transparent",
   borderRadius: "5px",
@@ -29,7 +28,8 @@ const containerSx = {
   flex: 1,
   display: "flex",
   flexDirection: "column",
-  p: 2,
+  alignItems: "center",
+  p: 3,
   pt: 9.5,
   overflow: "scroll",
   "&::-webkit-scrollbar": {

@@ -3,6 +3,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useReducer, useState } from "react";
+import Swal from "sweetalert2";
 
 export default function Register() {
   const [error, setError] = useState();
@@ -48,7 +49,7 @@ export default function Register() {
             password?.value
           ),
         error:
-          "Please enter a password at least 8 character and contain at least a uppercase, lowercase, and a special character.",
+          "Please enter a password at least 8 character and contain at least a uppercase, lowercase, and number",
       },
       confirmPassword: {
         check: () => password?.value === confirmPassword?.value,
@@ -81,7 +82,7 @@ export default function Register() {
   }, [formState, validate]);
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", mt: 20 }}>
+    <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
       <Paper
         sx={{
           display: "flex",
@@ -158,16 +159,28 @@ export default function Register() {
                 why: message.value,
               });
               router.push({ pathname: "/login" });
+              Swal.fire({
+                icon: "success",
+                title:
+                  "🎉 Congratulations! You have successfully signed up! 🎉",
+                text: "Please contact me about verification!",
+              });
             } catch (err) {
               console.error(err);
-              alert("Unable to register. Please try again.");
-              return;
+              Swal.fire({
+                icon: "error",
+                title: "Could not create an account 🥲",
+                text: "Maybe you already have an account or try again later",
+              });
             }
           }}
         >
           Sign Up
         </Button>
-        <Button onClick={() => router.push({ pathname: "/login" })}>
+        <Button
+          sx={{ color: "inherit", width: "120px" }}
+          onClick={() => router.push({ pathname: "/login" })}
+        >
           Login
         </Button>
       </Paper>
