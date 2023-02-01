@@ -39,7 +39,7 @@ const Topbar = () => {
   };
 
   return (
-    <AppBar sx={{ position: "fixed" }}>
+    <AppBar sx={{ backgroundColor: "white", color: "black" }}>
       <Toolbar
         sx={{
           display: "flex",
@@ -50,7 +50,7 @@ const Topbar = () => {
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <IconsWithTooltips
-            sx={{ color: "white", mr: 1 }}
+            sx={{ color: "black", mr: 1 }}
             Icon={MenuIcon}
             onClick={() => setOpenSidebar((prev) => !prev)}
           />
@@ -71,7 +71,7 @@ const Topbar = () => {
         <Box sx={{ display: "flex" }}>
           <IconsWithTooltips
             title="Select or Deselect All"
-            sx={{ color: "white" }}
+            sx={{ color: "black" }}
             Icon={DoneAllIcon}
             onClick={handleSelectAll}
           />

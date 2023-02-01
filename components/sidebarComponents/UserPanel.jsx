@@ -1,6 +1,5 @@
 import { TextareaAutosize } from "@mui/base";
 import CheckIcon from "@mui/icons-material/Check";
-import EditIcon from "@mui/icons-material/Edit";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Badge, Divider, IconButton, styled, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
@@ -106,6 +105,7 @@ const UserPanel = () => {
         msOverflowStyle: "none",
         scrollbarWidth: "none",
         alignItems: "center",
+        width: "100%",
       }}
     >
       <Stack direction="row" spacing={2} sx={{ pb: 2 }}>
@@ -115,46 +115,48 @@ const UserPanel = () => {
           badgeContent={<LargeDot />}
         >
           <Avatar
-            alt="Remy Sharp"
+            alt="YIP YIP"
             src="https://media.discordapp.net/attachments/594312779545051221/1069314177446985798/sticker34.png"
-            sx={{ width: 150, height: 150 }}
+            sx={{ width: 200, height: 200 }}
           />
         </StyledBadge>
       </Stack>
       <Divider light />
-      <Stack
-        direction="row"
-        spacing={2}
-        sx={{ display: "flex", alignItems: "center" }}
-      >
+      <Stack direction="row" sx={{ display: "flex", alignItems: "center" }}>
         <Typography variant="h5" sx={{ minWidth: "70px" }}>
           {user?.username}
         </Typography>
-        <IconButton>
-          <EditIcon />
-        </IconButton>
       </Stack>
       <Stack>
         <Typography variant="body2" sx={{ mt: 2, mb: 1 }}>
           Biography
         </Typography>
 
-        <TextareaAutosize
-          placeholder="Tell me a little bit about yourself"
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          style={{
-            padding: "12px",
-            minHeight: "100px",
-            maxHeight: "250px",
-            fontFamily: "Noto Sans, sans-serif",
-            overflow: "auto",
-            width: "250px",
+        <Box
+          sx={{
+            display: "flex",
+            width: "100%",
+            flexDirection: "row",
+            minWidth: 250,
           }}
-        />
+        >
+          <TextareaAutosize
+            placeholder="Tell me a little bit about yourself"
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            style={{
+              padding: "12px",
+              minHeight: "100px",
+              maxHeight: "250px",
+              fontFamily: "Noto Sans, sans-serif",
+              overflow: "auto",
+              flex: 1,
+            }}
+          />
+        </Box>
       </Stack>
       {user?.role === "admin" ? (
-        <Box spacing={2} sx={{ mt: 5, minWidth: 250 }}>
+        <Box sx={{ mt: 5, minWidth: 250 }}>
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
               <Typography sx={{ flex: 1 }}>Unverified Users</Typography>

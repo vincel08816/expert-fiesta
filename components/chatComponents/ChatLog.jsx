@@ -257,7 +257,7 @@ const ChatLog = () => {
       ref={chatRef}
       sx={{
         mt: 7,
-        mb: 10,
+        mb: 0,
         pt: 3,
         display: "flex",
         flexDirection: "column",

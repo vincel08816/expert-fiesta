@@ -22,13 +22,13 @@ const Content = () => {
       {/* input field */}
       <Box
         sx={{
+          flexShrink: 0,
           m: 2,
           pr: 1,
           pl: 0.5,
           pt: 0.5,
           pb: 0.2,
           display: "flex",
-          position: "fixed",
           bottom: 0,
           width: "calc(100% - 45px)",
           flexDirection: "row",

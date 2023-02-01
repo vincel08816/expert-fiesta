@@ -53,14 +53,13 @@ const SelectChat = () => {
         input: "text",
         inputValue: conversations[selected].title,
         showCancelButton: true,
-        confirmButtonText: "DELETE",
+        confirmButtonText: "Confirm",
       });
       if (swalResponse.isConfirmed && swalResponse.value?.trim().length) {
         await axios.put(`/api/message/edit/${_id}`, {
           title: swalResponse.value,
         });
 
-        // {!} Change the title
         setConversations((prev) => {
           let newConversations = [...prev];
           if (newConversations?.length)

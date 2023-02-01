@@ -25,7 +25,7 @@ const FormComponent = ({
   handleChange,
   name,
 }) => (
-  <FormControl sx={{ width, mt: 2 }}>
+  <FormControl sx={{ mt: 2 }}>
     <Tooltip title={helperText} placement="bottom">
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="body2">{title}</Typography>
@@ -47,7 +47,7 @@ const FormComponent = ({
   </FormControl>
 );
 
-const Settings = () => {
+const Settings = ({ isMobile }) => {
   const { form, handleChange } = useAppContext();
 
   const {
@@ -76,7 +76,7 @@ const Settings = () => {
         scrollbarWidth: "none",
       }}
     >
-      <FormControl sx={{ width, mb: 2 }}>
+      <FormControl sx={{ width: isMobile ? "80vw" : width, mb: 2 }}>
         <InputLabel>Model</InputLabel>
         <Select
           sx={{ mb: 1 }}
@@ -110,6 +110,7 @@ const Settings = () => {
         name="topText"
         onChange={handleChange}
         style={{
+          width: "auto",
           padding: "12px",
           minHeight: "100px",
           maxHeight: "250px",
@@ -164,7 +165,7 @@ const Settings = () => {
       ].map((value, index) => (
         <FormComponent key={index} {...value} handleChange={handleChange} />
       ))}
-      <FormControl sx={{ width, mt: 2, mb: 15 }}>
+      <FormControl sx={{ mt: 2, mb: 15 }}>
         <InputLabel id="demo-simple-select-helper-label">
           Image Model Size (Dalle only)
         </InputLabel>

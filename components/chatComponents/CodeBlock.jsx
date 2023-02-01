@@ -39,7 +39,6 @@ function splitString(str) {
 }
 
 const CodeBlock = ({ text }) => {
-  console.log(JSON.stringify({ input: text, output: splitString(text) }));
   return splitString(text).map(({ type, value, language }, index) => {
     if (type === "text")
       return (
