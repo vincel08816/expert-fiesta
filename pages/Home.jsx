@@ -18,8 +18,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import Content from "../components/chatComponents/Content";
+import MoveConversationModal from "../components/MoveConversationModal";
 import SearchModal from "../components/SearchModal";
 import SelectChat from "../components/sidebarComponents/SelectChat";
 import Settings from "../components/sidebarComponents/Settings";
@@ -95,30 +95,6 @@ export default function Home() {
   const openSelectMenu = Boolean(anchorEl);
 
   const SidebarArray = [<SelectChat />, <Settings />, <UserPanel />];
-
-  const handleSelectAll = async () => {
-    const response = await Swal.fire({
-      title: "Select",
-      text: "Select or deselect all items",
-      icon: "question",
-      showCancelButton: true,
-      showDenyButton: true,
-      confirmButtonColor: "success",
-      confirmButtonText: "Select all",
-      denyButtonColor: "error",
-      denyButtonText: "Deselect all",
-      cancelButtonText: "Cancel",
-      cancelButtonColor: "secondary",
-    });
-
-    if (response.isConfirmed || response.isDenied) {
-      setChatLog((prev) =>
-        prev.map((message) => {
-          return { ...message, selected: response.isConfirmed };
-        })
-      );
-    }
-  };
 
   const selectAll = (selected) =>
     setChatLog((prev) =>
@@ -196,6 +172,7 @@ export default function Home() {
 
           <Box sx={{ display: "flex" }}>
             <SearchModal />
+            <MoveConversationModal />
             <Tooltip title="Select or Deselect All">
               <IconButton
                 onClick={(event) => setAnchorEl(event.currentTarget)}
@@ -209,6 +186,7 @@ export default function Home() {
                 <DoneAllIcon sx={{ width: 20, height: 20 }} />
               </IconButton>
             </Tooltip>
+
             <Menu
               sx={{ borderRadius: "8px" }}
               id="basic-menu"

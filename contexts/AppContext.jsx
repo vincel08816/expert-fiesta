@@ -73,7 +73,6 @@ export const useChat = () => {
         })
         .catch((err) => console.error(err))
         .then(() => {
-          console.log("waiting");
           delay(500).then((_) => setLoadingMessages(false));
         });
     }

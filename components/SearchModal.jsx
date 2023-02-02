@@ -1,9 +1,11 @@
 import SearchIcon from "@mui/icons-material/Search";
 import { Paper } from "@mui/material";
 import Box from "@mui/material/Box";
+import Input from "@mui/material/Input";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
+import styled from "styled-components";
 
 const style = {
   borderRadius: "10px",
@@ -15,7 +17,6 @@ const style = {
   height: 600,
   bgcolor: "background.paper",
   borderColor: "none",
-  // boxShadow: 24,
 };
 
 export default function SearchModal() {
@@ -82,14 +83,21 @@ export default function SearchModal() {
             <Box sx={{ display: "flex", p: 1, pr: 2 }}>
               <SearchIcon sx={{ width: 30, height: 30 }} />
             </Box>
-            <Typography
+            <Input
               id="modal-modal-title"
               variant="h6"
               component="h2"
-              sx={{ flex: 1, color: "#64717f" }}
+              disableUnderline={true}
+              placeholder="Search..."
+              sx={{
+                flex: 1,
+                textDecoration: "none",
+                fontSize: "20px",
+                mt: 0.5,
+              }}
             >
               Search...
-            </Typography>
+            </Input>
             <Box
               sx={{
                 borderRadius: "6px",
@@ -112,3 +120,5 @@ export default function SearchModal() {
     </div>
   );
 }
+
+const TextInput = styled.input``;

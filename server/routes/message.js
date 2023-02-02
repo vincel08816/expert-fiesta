@@ -176,8 +176,8 @@ router.get(
   }
 );
 
-// @route    GET /api/message/:id
-// @desc     Get conversation based on converationId and userId
+// @route    PUT /api/message/:id
+// @desc     Edit conversation based on converationId and userId
 // @access   Private
 
 router.put(
@@ -202,6 +202,29 @@ router.put(
       conversation.title = title;
       conversation = await conversation.save();
 
+      res.sendStatus(200);
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  }
+);
+
+// @route    PUT /api/move-message/:id
+// @desc     Edit conversation based on converationId and userId
+// @access   Private
+
+router.put(
+  "/move-many",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const { messageIds, conversationId } = req.body;
+
+      await Message.updateMany(
+        { _id: { $in: messageIds } },
+        { $set: { conversationId } }
+      );
       res.sendStatus(200);
     } catch (error) {
       console.error(error);

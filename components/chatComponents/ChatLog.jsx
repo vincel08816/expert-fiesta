@@ -38,11 +38,11 @@ const Message = ({
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
       sx={{
+        whitespace: "pre",
         width: "100%",
         display: "flex",
         justifyContent: "center",
         alignItems: "reverse",
-        mr: 1,
         mb: 1,
         padding: "5px 12px 15px",
         borderRadius: 2,
@@ -256,7 +256,7 @@ const ChatLog = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [loadingMessages, chatLog]);
+  }, [loadingMessages, chatLog?.length]);
 
   if (loadingMessages) {
     return (
