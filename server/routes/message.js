@@ -158,10 +158,33 @@ router.get(
 
       const userId = mongoose.Types.ObjectId(req.user.id);
 
-      const messages = await Message.find({
+      const searchMessages = await Message.find({
         userId,
         text: { $regex: new RegExp(keyword, "i") },
       });
+
+      let botMessages = []; // bot messages
+      let userMessages = []; // user messages basically will query for the rest of the messages from mongo after this
+
+      searchMessages.forEach((message) => {
+        message.responseId
+          ? botMessages.push(message)
+          : userMessages.push(message);
+      });
+
+      const mySet = new Set([...userMessages].map((messages) => messages._id));
+
+      botMessages.forEach((message) => {
+        mySet.delete(message.responseId);
+      });
+
+      const extraResponses = await Message.find({
+        responseId: { $in: [...mySet] },
+      });
+
+      const messages = [...searchMessages, ...extraResponses].sort(
+        (a, b) => b.updatedAt - a.updatedAt
+      );
 
       res.send(messages);
     } catch (error) {

@@ -326,7 +326,7 @@ export default function SearchModal() {
               variant="h6"
               component="h2"
               disableUnderline={true}
-              placeholder="Search..."
+              placeholder="Search within your messages..."
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               sx={{
@@ -335,9 +335,7 @@ export default function SearchModal() {
                 fontSize: "20px",
                 mt: 0.5,
               }}
-            >
-              Search...
-            </Input>
+            />
             <Box
               sx={{
                 borderRadius: "6px",
