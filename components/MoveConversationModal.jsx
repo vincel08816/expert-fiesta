@@ -137,7 +137,11 @@ export default function MoveConversationModal() {
 
   const handleOpen = () => {
     if (chatLog.filter((chat) => chat.selected).length === 0)
-      return Swal.fire({ icon: "error", title: "No messages selected" });
+      return Swal.fire({
+        icon: "error",
+        title: "Cannot move messages",
+        text: "No messages selected",
+      });
     setOpen(true);
   };
   const handleClose = () => {
