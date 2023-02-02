@@ -29,8 +29,7 @@ const containerSx = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  p: 3,
-  pt: 9.5,
+  // pt: 9.5,
   overflow: "scroll",
   "&::-webkit-scrollbar": {
     display: "none",

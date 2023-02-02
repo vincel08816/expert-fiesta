@@ -38,6 +38,7 @@ const Message = ({
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
       sx={{
+        width: "100%",
         display: "flex",
         justifyContent: "center",
         alignItems: "reverse",
@@ -225,7 +226,6 @@ const Message = ({
 
         <Box
           sx={{
-            maxWidth: "calc(90vw - 65px);",
             lineHeight: 1.3,
             overflowX: "auto",
             pt: 1,
@@ -264,12 +264,10 @@ const ChatLog = () => {
         ref={chatRef}
         sx={{
           pt: 5,
-          width: "100%",
           display: "flex",
           alignItems: "center",
           flexDirection: "column",
           flex: 1,
-          overflowY: "scroll",
         }}
       >
         <CircularProgress style={{ width: "60px", height: "60px" }} />
@@ -288,23 +286,22 @@ const ChatLog = () => {
         alignItems: "center",
         flexDirection: "column",
         flex: 1,
-        overflowY: "scroll",
+        overflowY: "auto",
+        overflowX: "hidden",
       }}
     >
-      <Box sx={{ maxWidth: "1000px", width: "100vw" }}>
-        {chatLog.map((data, index) => {
-          return (
-            <Box key={`message${index}`}>
-              <Message
-                {...data}
-                index={index}
-                setChatLog={setChatLog}
-                toggleCheck={toggleCheck}
-              />
-            </Box>
-          );
-        })}
-      </Box>
+      {chatLog.map((data, index) => {
+        return (
+          <Box key={`message${index}`} sx={{ width: "100%" }}>
+            <Message
+              {...data}
+              index={index}
+              setChatLog={setChatLog}
+              toggleCheck={toggleCheck}
+            />
+          </Box>
+        );
+      })}
     </Box>
   );
 };

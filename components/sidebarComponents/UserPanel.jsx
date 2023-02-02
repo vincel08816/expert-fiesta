@@ -96,8 +96,7 @@ const UserPanel = () => {
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        p: 5,
-        pt: 10,
+        p: 3,
         overflow: "scroll",
         "&::-webkit-scrollbar": {
           display: "none",

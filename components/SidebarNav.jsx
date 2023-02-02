@@ -5,19 +5,18 @@ import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import React from "react";
 
-const SidebarNav = ({ value, setValue, isMobile }) => {
+const SidebarNav = ({ value = 0, setValue = () => {}, isMobile }) => {
   return (
     <BottomNavigation
       sx={{
         boxShadow: "0px -5px 5px 0px #e4e4e4",
         position: isMobile ? "fixed" : "relative",
-        width: "100%",
-        display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         bottom: isMobile ? 0 : "auto",
+        bottom: 0,
         p: 0,
-        zIndex: 100000,
+        minHeight: "30px",
       }}
       showLabels
       value={value}

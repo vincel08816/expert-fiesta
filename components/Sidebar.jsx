@@ -1,4 +1,6 @@
-import { Paper } from "@mui/material";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { IconButton } from "@mui/material";
+import Drawer from "@mui/material/Drawer";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useAppContext } from "../contexts/AppContext";
@@ -21,7 +23,7 @@ const Sidebar = (props) => {
   }, []);
 
   const SidebarArray = [
-    <SelectChat {...props} />,
+    <SelectChat />,
     <Settings {...props} isMobile={isMobile} />,
     <UserPanel {...props} isMobile={isMobile} />,
   ];
@@ -31,40 +33,41 @@ const Sidebar = (props) => {
   useEffect(() => {}, []);
 
   return (
-    <Box
+    <Drawer
+      variant="persistent"
+      anchor="left"
+      open={openSidebar}
       sx={{
-        display: openSidebar ? "flex" : "none",
         position: "fixed",
-        zIndex: 1000,
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        height: "100vh",
-        width: "100vw",
+        borderRadius: "10px 0 0 10px",
+        flexDirection: "column",
+        alignItems: "center",
+        height: "100%",
       }}
     >
-      <Paper
+      <Box
         sx={{
+          pt: 1,
+          pb: 1,
           display: "flex",
-          width: isMobile ? "100%" : 300,
-          borderRadius: "10px 0 0 10px",
-          flexDirection: "column",
-          alignItems: "center",
-          height: "100%",
+          flexDirection: "row-reverse",
+          width: "100%",
+          borderBottom: "1px solid rgba(0,0,0,.1)",
         }}
       >
-        {SidebarArray[value]}
-        <SidebarNav
-          {...props}
-          value={value}
-          setValue={setValue}
-          isMobile={isMobile}
-        />
-      </Paper>
-      <Box sx={{ flex: 1 }} onClick={toggleDrawer} />
-    </Box>
+        <IconButton sx={{ mr: 2 }} onClick={toggleDrawer}>
+          <ArrowBackIosNewIcon />
+        </IconButton>
+      </Box>
+
+      {SidebarArray[value]}
+      <SidebarNav
+        {...props}
+        value={value}
+        setValue={setValue}
+        isMobile={isMobile}
+      />
+    </Drawer>
   );
 };
 

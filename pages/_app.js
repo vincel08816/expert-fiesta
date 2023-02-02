@@ -1,7 +1,6 @@
 import { Box } from "@mui/system";
 import Head from "next/head";
 import React from "react";
-import Topbar from "../components/Topbar";
 import { AppContextProvider } from "../contexts/AppContext";
 
 function App({ Component, pageProps }) {
@@ -33,7 +32,6 @@ function App({ Component, pageProps }) {
             display: "flex",
             flexDirection: "column",
             position: "absolute",
-            alignItems: "center",
             height: "100vh",
             top: 0,
             bottom: 0,
@@ -42,7 +40,6 @@ function App({ Component, pageProps }) {
             fontFamily: "Noto Sans, sans-serif",
           }}
         >
-          <Topbar />
           <Component {...pageProps} />
         </Box>
       </AppContextProvider>

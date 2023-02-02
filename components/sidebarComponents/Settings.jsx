@@ -66,8 +66,7 @@ const Settings = ({ isMobile }) => {
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        p: 5,
-        pt: 10,
+        p: 3.5,
         overflow: "scroll",
         "&::-webkit-scrollbar": {
           display: "none",
@@ -76,7 +75,7 @@ const Settings = ({ isMobile }) => {
         scrollbarWidth: "none",
       }}
     >
-      <FormControl sx={{ width: isMobile ? "80vw" : width, mb: 2 }}>
+      <FormControl sx={{ mb: 2 }}>
         <InputLabel>Model</InputLabel>
         <Select
           sx={{ mb: 1 }}
@@ -165,7 +164,7 @@ const Settings = ({ isMobile }) => {
       ].map((value, index) => (
         <FormComponent key={index} {...value} handleChange={handleChange} />
       ))}
-      <FormControl sx={{ mt: 2, mb: 15 }}>
+      <FormControl sx={{ mt: 2 }}>
         <InputLabel id="demo-simple-select-helper-label">
           Image Model Size (Dalle only)
         </InputLabel>
