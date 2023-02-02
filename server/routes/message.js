@@ -6,6 +6,7 @@ const User = require("../models/User");
 const Receipt = require("../models/Receipt");
 const Message = require("../models/Message");
 const Conversation = require("../models/Conversation");
+const mongoose = require("mongoose");
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -137,6 +138,32 @@ router.post(
       }).save();
 
       res.json(data);
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  }
+);
+
+// @route    PUT /api/message/:id
+// @desc     Edit conversation based on converationId and userId
+// @access   Private
+
+router.get(
+  "/search",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const { keyword } = req.query;
+
+      const userId = mongoose.Types.ObjectId(req.user.id);
+
+      const messages = await Message.find({
+        userId,
+        text: { $regex: new RegExp(keyword, "i") },
+      });
+
+      res.send(messages);
     } catch (error) {
       console.error(error);
       res.sendStatus(500);

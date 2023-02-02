@@ -1,28 +1,266 @@
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DoneIcon from "@mui/icons-material/Done";
 import SearchIcon from "@mui/icons-material/Search";
-import { Paper } from "@mui/material";
+import { Paper, Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Input from "@mui/material/Input";
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import CodeBlock from "../components/chatComponents/CodeBlock";
+import { useAppContext } from "../contexts/AppContext";
+import { formatDate } from "../utils/util";
 
 const style = {
   borderRadius: "10px",
   position: "absolute",
-  top: "38%",
+  top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 800,
-  height: 600,
+  width: "80vw",
+  height: "80vh",
   bgcolor: "background.paper",
   borderColor: "none",
+  display: "flex",
+  flexDirection: "column",
+};
+
+const Message = ({
+  isBot,
+  updatedAt,
+  text,
+  selected,
+  index,
+  error,
+  imageUrl,
+  bookmarked,
+  _id,
+}) => {
+  const [show, setShow] = useState(false);
+  const handleMouseOver = () => setShow(true);
+  const handleMouseOut = () => setShow(false);
+  const {
+    user: { username },
+  } = useAppContext();
+
+  const display = show ? "flex" : "none";
+
+  return (
+    <Box
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
+      sx={{
+        whitespace: "pre",
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "reverse",
+        mb: 1,
+        padding: "5px 12px 15px",
+        borderRadius: 2,
+        backgroundColor: selected && "#fbfbfb",
+        border: `1px solid ${selected ? "#bcdbfd" : "transparent"}`,
+        "&:hover": {
+          backgroundColor: "rgba(52,53,65,0.05)",
+        },
+      }}
+    >
+      <Box
+        sx={{
+          borderRadius: "50%",
+          mt: 1.5,
+          mr: 1,
+          width: 50,
+          height: 50,
+        }}
+      >
+        <StyledUserLogo
+          src={
+            isBot
+              ? "https://media.discordapp.net/attachments/594312779545051221/1068575020361715774/sticker2.png"
+              : "https://media.discordapp.net/attachments/594312779545051221/1068574850203009144/sticker29.png"
+          }
+        />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flex: 1,
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            mt: 1,
+            mb: -0.5,
+            alignItems: "center",
+            wordBreak: "break-word",
+          }}
+        >
+          <Typography sx={{ fontWeight: 600, fontSize: 16 }}>
+            {isBot ? "OpenAI" : username}
+          </Typography>
+          {isBot ? (
+            <Badge>
+              <DoneIcon
+                style={{ height: "14px", width: "14px", marginRight: "2px" }}
+              />
+              Bot
+            </Badge>
+          ) : (
+            <Box sx={{ width: 8 }} />
+          )}
+          <Typography sx={{ opacity: 0.6, fontSize: 12 }}>
+            {formatDate(updatedAt) || ""}
+          </Typography>
+          <Box sx={{ flex: 1, display: "flex", flexDirection: "row-reverse" }}>
+            <Box
+              sx={{
+                border: "1px solid #dfe1e3",
+                borderRadius: 1.5,
+                position: "sticky",
+                mt: "-40px",
+                mr: "8px",
+                backgroundColor: " white",
+                display,
+                color: "#505761",
+              }}
+            >
+              <Tooltip title="Bookmark">
+                <Box
+                  sx={{
+                    p: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+
+                    alignSelf: "center",
+                    "&:hover": {
+                      backgroundColor: "#dfe1e3",
+                    },
+                  }}
+                  onClick={() =>
+                    navigator.clipboard.writeText(imageUrl ? imageUrl : text)
+                  }
+                >
+                  {bookmarked ? (
+                    <BookmarkIcon sx={{ width: "25px", height: "25px" }} />
+                  ) : (
+                    <BookmarkBorderIcon
+                      sx={{ width: "25px", height: "25px" }}
+                    />
+                  )}
+                </Box>
+              </Tooltip>
+              <Tooltip title="Copy to clipboard">
+                <Box
+                  sx={{
+                    p: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    alignSelf: "center",
+                    "&:hover": {
+                      backgroundColor: "#dfe1e3",
+                    },
+                  }}
+                  onClick={() =>
+                    navigator.clipboard.writeText(imageUrl ? imageUrl : text)
+                  }
+                >
+                  <ContentCopyIcon sx={{ width: "20px", height: "20px" }} />
+                </Box>
+              </Tooltip>
+
+              <Tooltip title="Delete Message">
+                <Box
+                  sx={{
+                    p: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    alignSelf: "center",
+                    "&:hover": {
+                      backgroundColor: "#dfe1e3",
+                    },
+                  }}
+                  onClick={async () => {
+                    try {
+                      const response = await Swal.fire({
+                        icon: "warning",
+                        title: "Are you sure you want to delete this message?",
+                        text: "You won't be able to revert this!",
+                        showCancelButton: true,
+                      });
+                      if (response.isConfirmed) {
+                        await axios.delete(`/api/message/${_id}`);
+                        results((prev) =>
+                          prev.filter((msg) => msg._id !== _id)
+                        );
+                      }
+                    } catch (error) {
+                      Swal.fire({
+                        icon: "error",
+                        title: "Unable to delete message",
+                        error: error?.message || "Something went wrong!",
+                      });
+                      console.error(error);
+                    }
+                  }}
+                >
+                  <DeleteIcon sx={{ width: "25px", height: "25px" }} />
+                </Box>
+              </Tooltip>
+            </Box>
+          </Box>
+        </Box>
+
+        <Box
+          sx={{
+            lineHeight: 1.3,
+            overflowX: "auto",
+            pt: 1,
+          }}
+        >
+          {imageUrl ? (
+            <StyledImage src={imageUrl} />
+          ) : (
+            <CodeBlock text={text?.trim()} />
+          )}
+        </Box>
+      </Box>
+    </Box>
+  );
 };
 
 export default function SearchModal() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [results, setResults] = useState([]);
+  const [keyword, setKeyword] = useState("");
+
+  const { user } = useAppContext();
+
+  useEffect(() => {
+    if (keyword?.length < 3) setResults([]);
+    if (user?._id && keyword?.length > 2) {
+      const url = `/api/message/search?keyword=${keyword}`;
+      console.log(url, { keyword });
+      console.log(user?._id);
+      axios
+        .get(url)
+        .then((res) => setResults(res.data))
+        .catch((err) => console.log(err));
+    }
+  }, [keyword]);
 
   return (
     <div>
@@ -89,6 +327,8 @@ export default function SearchModal() {
               component="h2"
               disableUnderline={true}
               placeholder="Search..."
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
               sx={{
                 flex: 1,
                 textDecoration: "none",
@@ -112,13 +352,54 @@ export default function SearchModal() {
               esc
             </Box>
           </Box>
-          <Typography id="modal-modal-description" sx={{ m: 4 }}>
-            WORK IN PROCESS... COMING SOON
-          </Typography>
+          <Box sx={{ flex: 1, display: "flex", overflowY: "auto", height: "" }}>
+            <Box
+              sx={{
+                pt: 1,
+                mb: 1,
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                flex: 1,
+                overflowX: "hidden",
+              }}
+            >
+              {results?.map((data, index) => {
+                return (
+                  <Box key={`message${index}`} sx={{ width: "100%" }}>
+                    <Message {...data} index={index} />
+                  </Box>
+                );
+              }) || ""}
+            </Box>
+          </Box>
         </Paper>
       </Modal>
     </div>
   );
 }
 
-const TextInput = styled.input``;
+const StyledImage = styled.img`
+  max-width: 80vw;
+  max-height: 80vw;
+  margin-top: 15px;
+  width: 256px;
+  height: 256px;
+`;
+
+const StyledUserLogo = styled.img`
+  width: 100%;
+`;
+
+const Badge = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 3px 7px;
+  margin: -1.5px 7px 0 7px;
+  background-color: #1a76d2;
+  font-size: 12px;
+  color: white;
+  border-radius: 5px;
+`;

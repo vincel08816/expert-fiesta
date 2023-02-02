@@ -42,7 +42,7 @@ const titleSx = {
 
 function ChildModal({ newConversationIndex, closeParentModal }) {
   const [open, setOpen] = React.useState(false);
-  const { chatLog, setChatLog, conversations, selected } = useAppContext();
+  const { chatLog, setChatLog, conversations } = useAppContext();
 
   const handleOpen = () => {
     setOpen(true);
