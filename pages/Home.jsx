@@ -1,30 +1,11 @@
-import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import DoneAllIcon from "@mui/icons-material/DoneAll";
-import MenuIcon from "@mui/icons-material/Menu";
-import { Tooltip } from "@mui/material";
-import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import { styled, useTheme } from "@mui/material/styles";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Content from "../components/chatComponents/Content";
-import MoveConversationModal from "../components/MoveConversationModal";
-import SearchModal from "../components/SearchModal";
-import SelectChat from "../components/sidebarComponents/SelectChat";
-import Settings from "../components/sidebarComponents/Settings";
-import UserPanel from "../components/sidebarComponents/UserPanel";
-import SidebarNav from "../components/SidebarNav";
+import TopBar from "../components/TopBar";
 import { useAppContext } from "../contexts/AppContext";
 
 const drawerWidth = 300;
@@ -53,26 +34,6 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   })
 );
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  backgroundColor: "white",
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    backgroundColor: "white",
-
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -83,28 +44,17 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function Home() {
-  const { setChatLog, conversations, selected, loading, user } =
-    useAppContext();
-  const theme = useTheme();
+  const { loading, user } = useAppContext();
   const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
   const [value, setValue] = useState(0);
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const openSelectMenu = Boolean(anchorEl);
-
-  const SidebarArray = [<SelectChat />, <Settings />, <UserPanel />];
-
-  const selectAll = (selected) =>
-    setChatLog((prev) =>
-      prev.map((message) => {
-        return { ...message, selected };
-      })
-    );
 
   useEffect(() => {
     if (!loading && !user) router.push("/login");
+    if (user?.role === "unverified") router.push("/unverified");
   }, [loading, user]);
 
   if (loading)
@@ -125,131 +75,18 @@ export default function Home() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar
-        position="fixed"
-        open={open}
-        sx={{
-          boxShadow: "0 0 6px rgba(0,0,0,.1)",
-          borderBottom: "1px solid rgba(0,0,0,.1 ",
-          backgroundColor: "white",
+      <TopBar
+        {...{
+          open,
+          setOpen,
+          value,
+          setValue,
+          handleDrawerClose,
+          handleDrawerOpen,
+          anchorEl,
+          setAnchorEl,
         }}
-      >
-        <Toolbar
-          sx={{
-            backgroundColor: "white",
-            color: "black",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            ml: open ? drawerWidth + "px" : 0,
-          }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{ mr: 2, ...(open && { display: "none" }) }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <AlternateEmailIcon />
-            <Typography sx={{ ml: 0.3, mr: 0.3, fontWeight: "bold" }}>
-              OpenAI
-            </Typography>
-            <Typography
-              sx={{ ml: 0.3, mr: 0.3, opacity: 0.6, fontWeight: 600 }}
-            >
-              &mdash;
-            </Typography>
-            <Typography sx={{ ml: 0.3, opacity: 0.6, fontSize: "12px" }}>
-              {conversations && conversations[selected]?.title.length
-                ? conversations[selected]?.title
-                : "New Chat"}
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: "flex" }}>
-            <SearchModal />
-            <MoveConversationModal />
-            <Tooltip title="Select or Deselect All">
-              <IconButton
-                onClick={(event) => setAnchorEl(event.currentTarget)}
-                sx={{
-                  border: "2px solid rgba(0,0,0,.1)",
-                  p: 0.5,
-                  mt: 0.2,
-                  borderRadius: "8px",
-                }}
-              >
-                <DoneAllIcon sx={{ width: 20, height: 20 }} />
-              </IconButton>
-            </Tooltip>
-
-            <Menu
-              sx={{ borderRadius: "8px" }}
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={openSelectMenu}
-              onClose={() => setAnchorEl(null)}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
-            >
-              <MenuItem
-                sx={{ fontSize: "12px" }}
-                onClick={() => {
-                  selectAll(true);
-                  setAnchorEl(null);
-                }}
-              >
-                Select All
-              </MenuItem>
-              <MenuItem
-                sx={{ fontSize: "12px" }}
-                onClick={() => {
-                  selectAll(false);
-                  setAnchorEl(null);
-                }}
-              >
-                Deselect All
-              </MenuItem>
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        sx={{
-          display: "flex",
-          width: drawerWidth,
-          alignItems: "center",
-          backgroundColor: "white",
-
-          // flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            // boxSizing: "border-box",
-          },
-        }}
-        variant="persistent"
-        anchor="left"
-        open={open}
-      >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
-          </IconButton>
-        </DrawerHeader>
-        {SidebarArray[value]}
-        <Divider />
-
-        <SidebarNav value={value} setValue={setValue} />
-      </Drawer>
+      />
 
       <Main open={open}>
         <DrawerHeader />

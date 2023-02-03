@@ -1,5 +1,6 @@
 import { TextareaAutosize } from "@mui/base";
 import CheckIcon from "@mui/icons-material/Check";
+import LogoutIcon from "@mui/icons-material/Logout";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Badge, Divider, IconButton, styled, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
@@ -39,13 +40,28 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
+const boxSx = {
+  display: "flex",
+  flexDirection: "row",
+  width: "calc(100%)",
+  p: 2,
+  alignItems: "center",
+  // justifyContent: "center",
+  border: "1px solid transparent",
+  borderRadius: "5px",
+  "&:hover": {
+    backgroundColor: "#f1f1f1",
+    cursor: "pointer",
+  },
+};
+
 const LargeDot = styled(Box)(({ theme }) => ({
   backgroundColor: "#44b700",
   borderRadius: "50%",
 }));
 
 const UserPanel = () => {
-  const { user } = useAppContext();
+  const { user, setUser } = useAppContext();
   const [bio, setBio] = useState("");
   const [users, setUsers] = useState([]);
 
@@ -193,6 +209,25 @@ const UserPanel = () => {
       ) : (
         ""
       )}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column-reverse",
+          flex: 1,
+          width: "100%",
+        }}
+      >
+        <Box
+          sx={boxSx}
+          onClick={() => {
+            setUser();
+            axios.delete("/api/user/logout").catch((error) => {});
+          }}
+        >
+          <LogoutIcon />
+          <Typography sx={{ ml: 2 }}>Logout</Typography>
+        </Box>
+      </Box>
     </Box>
   );
 };

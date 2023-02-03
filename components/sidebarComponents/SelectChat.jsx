@@ -2,7 +2,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Typography } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React from "react";
@@ -13,8 +13,9 @@ const titleSx = {
   display: "flex",
   flexDirection: "row",
   width: "calc(100% - 30px)",
-  padding: "10px",
+  padding: "6px",
   alignItems: "center",
+  // justifyContent: "center",
   border: "1px solid transparent",
   borderRadius: "5px",
   "&:hover": {
@@ -96,7 +97,7 @@ const SelectChat = () => {
   return (
     <Box sx={containerSx}>
       <Box
-        sx={{ ...titleSx, border: "1px solid black", mb: 1 }}
+        sx={{ ...titleSx, border: "1px solid black", padding: "8px" }}
         onClick={() => {
           setSelected();
           setChatLog([]);
@@ -124,7 +125,7 @@ const SelectChat = () => {
           }}
           onClick={() => setSelected(index)}
         >
-          <Box sx={{ p: 0.5, pr: 1 }}>
+          <Box sx={{ p: 0.3, pr: 1, mt: 1 }}>
             <ChatBubbleOutlineIcon style={{ width: "18px" }} />
           </Box>
           <Box
@@ -139,15 +140,37 @@ const SelectChat = () => {
           </Box>
 
           {selected === index ? (
-            <Box sx={{ ml: 2 }}>
-              <EditIcon
-                style={{ width: "20px", marginRight: "5px" }}
+            <Box sx={{ ml: 2, display: "flex" }}>
+              <IconButton
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  p: 0.3,
+                  opacity: 0.7,
+                  "&:hover": {
+                    opacity: 1,
+                  },
+                }}
                 onClick={() => handleEdit(_id)}
-              />
-              <DeleteIcon
-                style={{ width: "20px" }}
+              >
+                <EditIcon style={{ width: "20px", marginRight: "5px" }} />
+              </IconButton>
+              <IconButton
+                sx={{
+                  p: 0.3,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  opacity: 0.7,
+                  "&:hover": {
+                    opacity: 1,
+                  },
+                }}
                 onClick={() => handleDelete(_id)}
-              />
+              >
+                <DeleteIcon style={{ width: "20px" }} />
+              </IconButton>
             </Box>
           ) : (
             ""

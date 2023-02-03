@@ -82,21 +82,37 @@ export default function Register() {
   }, [formState, validate]);
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#f3f2ee",
+        minHeight: "100vh",
+      }}
+    >
       <Paper
         sx={{
           display: "flex",
           flexDirection: "column",
-          width: 600,
+          borderRadius: "10px",
+          width: 400,
           p: 3,
           m: 10,
           boxShadow: 3,
         }}
       >
-        <Typography variant="h4" component="div" sx={{ p: 2 }}>
-          Create an Account!
+        <Typography
+          variant="h4"
+          component="div"
+          sx={{ pt: 2, pb: 1, fontWeight: 600 }}
+        >
+          Sign Up
         </Typography>
-        <Divider sx={{ mb: 3 }} />
+        {/* <Divider sx={{ mb: 3 }} /> */}
+        <Typography variant="caption" component="div" sx={{ pb: 3 }}>
+          Welcome to all the answers to your questions!
+        </Typography>
         {error && (
           <Typography
             color="error"
@@ -145,9 +161,12 @@ export default function Register() {
         />
         <Button
           variant="contained"
-          style={{
-            padding: "10px",
+          sx={{
+            padding: "15px 10px",
             marginBottom: "25px",
+            fontSize: "16px",
+            borderRadius: "50px",
+            fontSize: "14px",
           }}
           onClick={async () => {
             if (!validate()) return;
@@ -158,7 +177,6 @@ export default function Register() {
                 password: password.value,
                 why: message.value,
               });
-              router.push({ pathname: "/login" });
               Swal.fire({
                 icon: "success",
                 title:
@@ -177,8 +195,16 @@ export default function Register() {
         >
           Sign Up
         </Button>
+        <Divider sx={{ fontSize: "15px", mb: 2 }}>or</Divider>
+
         <Button
-          sx={{ color: "inherit", width: "120px" }}
+          variant="outlined"
+          sx={{
+            padding: "15px 10px",
+            marginBottom: "25px",
+            borderRadius: "50px",
+            fontSize: "14px",
+          }}
           onClick={() => router.push({ pathname: "/login" })}
         >
           Login

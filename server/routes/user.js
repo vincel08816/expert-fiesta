@@ -105,4 +105,23 @@ router.put(
   }
 );
 
+// @route    DELETE /auth/logout
+// @desc     Logout user or delete token
+// @access   Private
+
+router.delete("/logout", (req, res) => {
+  res
+    .cookie("token", "none", {
+      expires: new Date(Date.now() + 5 * 1000),
+      httpOnly: true,
+    })
+    .then(() => {
+      res.status(200).json({ success: true });
+    })
+    .catch((error) => {
+      console.error(error);
+      res.sendStatus(500);
+    });
+});
+
 module.exports = router;

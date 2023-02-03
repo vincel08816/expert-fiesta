@@ -1,5 +1,6 @@
 import { TextareaAutosize } from "@mui/base";
 import SendIcon from "@mui/icons-material/Send";
+import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import { useAppContext } from "../../contexts/AppContext";
@@ -32,7 +33,6 @@ const Content = () => {
         sx={{
           margin: "0 15px 20px 15px",
           backgroundColor: "white",
-          // position: "fixed",
           bottom: 0,
           pt: 1,
         }}
@@ -88,6 +88,28 @@ const Content = () => {
           )}
 
           {/* add character count here */}
+        </Box>
+        <Box sx={{ textAlign: "center", lineHeight: 0.5, mt: 1, mb: -1 }}>
+          <Typography sx={{ color: "text.secondary", fontSize: 12 }}>
+            Check out{" "}
+            <a
+              style={{ color: "inherit" }}
+              href="https://github.com/vincel08816/expert-fiesta"
+              target="_blank"
+            >
+              MenheraGPT
+            </a>
+            , a clone of ChatGPT on my Github repository. Also, don't forget to
+            visit my{" "}
+            <a
+              style={{ color: "inherit" }}
+              href="https://linkedin.com/in/vincentlee28/"
+              target="_blank"
+            >
+              LinkedIn
+            </a>{" "}
+            page for more information.
+          </Typography>
         </Box>
       </Box>
     </>

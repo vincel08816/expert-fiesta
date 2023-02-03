@@ -1,18 +1,33 @@
 const router = require("express").Router();
-const { check, validationResult } = require("express-validator");
 const { Configuration, OpenAIApi } = require("openai");
 const passport = require("passport");
-const User = require("../models/User");
 const Receipt = require("../models/Receipt");
 const Message = require("../models/Message");
 const Conversation = require("../models/Conversation");
 const mongoose = require("mongoose");
+const axios = require("axios");
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
 const openai = new OpenAIApi(configuration);
+
+async function sendModerationRequest(text) {
+  const url = "https://api.openai.com/v1/moderations";
+  const data = { input: text };
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+  };
+
+  try {
+    const response = await axios.post(url, data, { headers });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 // returns conversation id
 const verifyConversationAndSaveMessage = async (
@@ -160,33 +175,30 @@ router.get(
 
       const searchMessages = await Message.find({
         userId,
-        text: { $regex: new RegExp(keyword, "i") },
+        text: { $regex: new RegExp(keyword, "i") }, // match keyword
       });
 
-      let botMessages = []; // bot messages
-      let userMessages = []; // user messages basically will query for the rest of the messages from mongo after this
-
-      searchMessages.forEach((message) => {
-        message.responseId
-          ? botMessages.push(message)
-          : userMessages.push(message);
-      });
-
-      const mySet = new Set([...userMessages].map((messages) => messages._id));
-
-      botMessages.forEach((message) => {
-        mySet.delete(message.responseId);
-      });
+      let userMessages = searchMessages.filter(({ responseId }) => !responseId);
 
       const extraResponses = await Message.find({
-        responseId: { $in: [...mySet] },
+        responseId: { $in: userMessages.map((message) => message._id) },
       });
 
-      const messages = [...searchMessages, ...extraResponses].sort(
-        (a, b) => b.updatedAt - a.updatedAt
-      );
+      const getUniqueMessages = (...params) => {
+        let messages = {};
 
-      res.send(messages);
+        params.forEach((array) => {
+          array.forEach((message) => (messages[message._id] = message));
+        });
+
+        return Object.values(messages).sort((a, b) => {
+          const dateA = new Date(b.createdAt);
+          const dateB = new Date(a.createdAt);
+          return dateA - dateB;
+        });
+      };
+
+      res.send(getUniqueMessages(searchMessages, extraResponses));
     } catch (error) {
       console.error(error);
       res.sendStatus(500);

@@ -55,24 +55,61 @@ export default function Login() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        mt: 3,
+        backgroundColor: "#f3f2ee",
+        minHeight: "100vh",
       }}
     >
+      <Box
+        sx={{
+          top: 25,
+          left: 50,
+          position: "absolute",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          display: "none",
+        }}
+      >
+        <Typography variant="h5" sx={{ fontWeight: 600 }}>
+          Menhera
+        </Typography>
+        <Box sx={{ ml: 0.1 }}>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 600,
+              backgroundColor: "black",
+              color: "white",
+              p: 0.2,
+              borderRadius: 1,
+            }}
+          >
+            GPT
+          </Typography>
+        </Box>
+      </Box>
       <Paper
         sx={{
           display: "flex",
           flexDirection: "column",
-          width: 600,
-          height: 400,
+          borderRadius: "10px",
+          width: 400,
           p: 3,
           m: 10,
           boxShadow: 3,
         }}
       >
-        <Typography variant="h4" component="div" sx={{ p: 2 }}>
+        <Typography
+          variant="h4"
+          component="div"
+          sx={{ pt: 2, pb: 1, fontWeight: 600 }}
+        >
           Login
         </Typography>
-        <Divider sx={{ mb: 3 }} />
+        {/* <Divider sx={{ mb: 3 }} /> */}
+        <Typography variant="caption" sx={{ pb: 3 }}>
+          Welcome to all the answers to your questions!
+        </Typography>
         {error && (
           <Typography
             color="error"
@@ -104,16 +141,25 @@ export default function Login() {
         <Button
           variant="contained"
           sx={{
-            padding: "10px",
+            padding: "15px 10px",
             marginBottom: "25px",
-            fontSize: "16px",
+            borderRadius: "50px",
+            fontSize: "14px",
           }}
           onClick={login}
         >
           Login
         </Button>
+        <Divider sx={{ fontSize: "15px", mb: 2 }}>or</Divider>
+
         <Button
-          sx={{ color: "inherit", width: "120px" }}
+          variant="outlined"
+          sx={{
+            padding: "15px 10px",
+            marginBottom: "25px",
+            borderRadius: "50px",
+            fontSize: "14px",
+          }}
           onClick={() => router.push({ pathname: "/register" })}
         >
           Register

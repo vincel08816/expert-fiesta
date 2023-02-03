@@ -257,7 +257,10 @@ export default function SearchModal() {
       console.log(user?._id);
       axios
         .get(url)
-        .then((res) => setResults(res.data))
+        .then((res) => {
+          console.log(res.data);
+          setResults(res.data);
+        })
         .catch((err) => console.log(err));
     }
   }, [keyword]);

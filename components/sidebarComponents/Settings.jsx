@@ -1,7 +1,9 @@
 import { TextareaAutosize } from "@mui/base";
 import {
+  Button,
   FormControl,
   InputLabel,
+  Menu,
   MenuItem,
   Select,
   Slider,
@@ -9,10 +11,70 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
+import React, { useState } from "react";
 import { useAppContext } from "../../contexts/AppContext";
 
-const width = "240px";
+const presets = [
+  {
+    title: "None",
+    text: "",
+  },
+  {
+    title: "Code",
+    text: "Wrap code blocks in 3 backticks followed by the language and a new line. But don't do that with for non-code responses",
+  },
+];
+
+const PromptHeaderPreset = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { handleChange } = useAppContext();
+  const openSelectMenu = Boolean(anchorEl);
+
+  return (
+    <Box sx={{ display: "flex", flexDirection: "row-reverse" }}>
+      <Button
+        onClick={(event) => setAnchorEl(event.currentTarget)}
+        sx={{
+          borderRadius: "8px",
+          maxHeight: "10px",
+          p: 0,
+          fontSize: 10,
+          mb: -23,
+          mr: -2,
+        }}
+      >
+        Preset
+      </Button>
+      <Menu
+        sx={{ borderRadius: "8px" }}
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={openSelectMenu}
+        onClose={() => setAnchorEl(null)}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+      >
+        {presets.map(({ title, text }) => (
+          <MenuItem
+            sx={{ fontSize: "12px" }}
+            name="topText"
+            value={text}
+            onClick={(e) => {
+              handleChange({
+                target: { name: "topText", value: text },
+                preventDefault: () => {},
+              });
+              setAnchorEl(null);
+            }}
+          >
+            {title}
+          </MenuItem>
+        ))}
+      </Menu>
+    </Box>
+  );
+};
 
 const FormComponent = ({
   title,
@@ -47,7 +109,7 @@ const FormComponent = ({
   </FormControl>
 );
 
-const Settings = ({ isMobile }) => {
+const Settings = () => {
   const { form, handleChange } = useAppContext();
 
   const {
@@ -66,7 +128,8 @@ const Settings = ({ isMobile }) => {
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        p: 3.5,
+        p: 3,
+        pt: 1,
         overflow: "scroll",
         "&::-webkit-scrollbar": {
           display: "none",
@@ -98,7 +161,7 @@ const Settings = ({ isMobile }) => {
           ))}
         </Select>
       </FormControl>
-
+      <PromptHeaderPreset />
       <Typography variant="body2" sx={{ mb: 1 }}>
         Prompt Header
       </Typography>

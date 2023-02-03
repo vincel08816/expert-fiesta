@@ -46,7 +46,8 @@ export const useChat = () => {
   const [chatLog, setChatLog] = useState([]);
   const [isSending, setIsSending] = useState(false);
   const [form, setForm] = useState(initialForm);
-  const [openSidebar, setOpenSidebar] = useState(false);
+  const [autoSelect, setAutoSelect] = useState(true);
+
   useDebug(form, chatLog, user);
 
   function delay(time) {
@@ -73,7 +74,8 @@ export const useChat = () => {
         })
         .catch((err) => console.error(err))
         .then(() => {
-          delay(500).then((_) => setLoadingMessages(false));
+          // delay(500).then((_) => setLoadingMessages(false));
+          setLoadingMessages(false);
         });
     }
   }, [selected, conversations?.length]);
@@ -119,21 +121,45 @@ export const useChat = () => {
       });
     setIsSending(true);
 
-    // parse the prompt into a Q/A pair
-    const selectedMessages = chatLog
-      .filter((message) => message.selected)
-      .map(
-        (message) =>
-          `${message.isBot ? "OpenAI:" : "User:"}: ${message.text}${
-            message.isBot ? "\n" : ""
-          }`
-      )
-      .join("\n");
+    // Manually selecting messages to send as chat history.
+    const max = form.model === "text-davinci-003" ? 3500 : 1500;
+
+    const length = 6 > chatLog.length ? 0 : chatLog.length - 6;
+    let selectedMessages = autoSelect
+      ? chatLog.slice(length)
+      : chatLog.filter((message) => message.selected);
+
+    console.log(selectedMessages);
+
+    while (selectedMessages?.length) {
+      const temp = selectedMessages
+        .map(
+          (message) =>
+            `${message.isBot ? "OpenAI:" : "User:"}: ${message.text}${
+              message.isBot ? "\n" : ""
+            }`
+        )
+        .join("\n");
+      const prompt = form.topText + "\n" + temp + "\n" + form.text + "\nA:";
+      const max_tokens = parseInt(max - prompt.length / 4);
+
+      if (max_tokens >= 0) {
+        break;
+      } else {
+        selectedMessages.shift();
+      }
+    }
+
+    selectedMessages = selectedMessages.map(
+      (message) =>
+        `\n${message.isBot ? "OpenAI" : "User"}: ${message.text}${
+          message.isBot ? "\n" : ""
+        }`
+    );
 
     const prompt =
       form.topText + "\n" + selectedMessages + "\n" + form.text + "\nA:";
 
-    const max = form.model === "text-davinci-003" ? 3500 : 1500;
     const max_tokens = parseInt(max - prompt.length / 4);
 
     if (max_tokens <= 0) {
@@ -252,9 +278,12 @@ export const useChat = () => {
     loadingMessages,
     setLoadingMessages,
 
+    /* Settings */
+    autoSelect,
+    setAutoSelect,
+
     /* Chat Data */
-    openSidebar,
-    setOpenSidebar,
+
     chatLog,
     setChatLog,
     isSending,

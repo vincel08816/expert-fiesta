@@ -10,10 +10,11 @@ const callback = async (payload, done) => {
   try {
     const user = await User.findById(payload.id);
 
-    if (user?.role === "admin" || user?.role === "user") {
-      done(null, { id: user.id, role: user.role });
-    } else {
+    console.log(user);
+    if (!user) {
       done(null, false);
+    } else {
+      done(null, { id: user.id, role: user.role });
     }
   } catch (error) {
     console.error(error);

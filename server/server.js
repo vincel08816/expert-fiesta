@@ -45,6 +45,10 @@ nextApp
       nextApp.render(req, res, "/Admin");
     });
 
+    app.get("/unverified", (req, res) => {
+      nextApp.render(req, res, "/Unverified");
+    });
+
     app.get("*", (req, res) => handle(req, res));
 
     app.listen(5000, (err) => {
