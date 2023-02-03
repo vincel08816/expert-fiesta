@@ -60,6 +60,9 @@ const Message = ({
           mr: 1,
           width: 50,
           height: 50,
+          "@media (max-width: 600px)": {
+            display: "none",
+          },
         }}
       >
         <StyledUserLogo

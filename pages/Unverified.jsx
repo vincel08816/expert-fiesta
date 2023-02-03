@@ -1,5 +1,5 @@
 import MailIcon from "@mui/icons-material/Mail";
-import { Button, Divider, IconButton, Paper, Typography } from "@mui/material";
+import { Button, IconButton, Paper, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import { Box } from "@mui/system";
@@ -37,7 +37,7 @@ export default function Unverified() {
           borderRadius: "10px",
           width: 500,
           p: 3,
-          m: 10,
+          m: 1,
           boxShadow: 3,
         }}
       >
@@ -52,11 +52,13 @@ export default function Unverified() {
             sx={{ width: 200, height: 200 }}
           />
         </Stack>
-        <Divider sx={{ mb: 2 }}>
-          <Typography variant="h5" component="h2">
-            Sorry! Your account is not yet verified!
-          </Typography>
-        </Divider>
+        <Typography
+          variant="h5"
+          component="h2"
+          sx={{ textAlign: "center", mb: 2 }}
+        >
+          Sorry! Your account is not yet verified!
+        </Typography>
         <Stack
           direction="row"
           spacing={2}

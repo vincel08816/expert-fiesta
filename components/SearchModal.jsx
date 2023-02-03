@@ -12,9 +12,19 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import Swal from "sweetalert2";
 import CodeBlock from "../components/chatComponents/CodeBlock";
 import { useAppContext } from "../contexts/AppContext";
 import { formatDate } from "../utils/util";
+
+const iconSx = {
+  width: "25px",
+  height: "25px",
+  "@media (max-width: 600px)": {
+    width: "18px",
+    height: "18px",
+  },
+};
 
 const style = {
   borderRadius: "10px",
@@ -28,6 +38,9 @@ const style = {
   borderColor: "none",
   display: "flex",
   flexDirection: "column",
+  "@media (max-width: 600px)": {
+    width: "95vw",
+  },
 };
 
 const Message = ({
@@ -77,6 +90,9 @@ const Message = ({
           mr: 1,
           width: 50,
           height: 50,
+          "@media (max-width: 600px)": {
+            display: "none",
+          },
         }}
       >
         <StyledUserLogo
@@ -104,7 +120,15 @@ const Message = ({
             wordBreak: "break-word",
           }}
         >
-          <Typography sx={{ fontWeight: 600, fontSize: 16 }}>
+          <Typography
+            sx={{
+              fontWeight: 600,
+              fontSize: 16,
+              "@media (max-width: 600px)": {
+                fontSize: 14,
+              },
+            }}
+          >
             {isBot ? "OpenAI" : username}
           </Typography>
           {isBot ? (
@@ -151,11 +175,9 @@ const Message = ({
                   }
                 >
                   {bookmarked ? (
-                    <BookmarkIcon sx={{ width: "25px", height: "25px" }} />
+                    <BookmarkIcon sx={iconSx} />
                   ) : (
-                    <BookmarkBorderIcon
-                      sx={{ width: "25px", height: "25px" }}
-                    />
+                    <BookmarkBorderIcon sx={iconSx} />
                   )}
                 </Box>
               </Tooltip>
@@ -175,7 +197,7 @@ const Message = ({
                     navigator.clipboard.writeText(imageUrl ? imageUrl : text)
                   }
                 >
-                  <ContentCopyIcon sx={{ width: "20px", height: "20px" }} />
+                  <ContentCopyIcon sx={iconSx} />
                 </Box>
               </Tooltip>
 
@@ -215,7 +237,7 @@ const Message = ({
                     }
                   }}
                 >
-                  <DeleteIcon sx={{ width: "25px", height: "25px" }} />
+                  <DeleteIcon sx={iconSx} />
                 </Box>
               </Tooltip>
             </Box>
@@ -285,12 +307,20 @@ export default function SearchModal() {
               backgroundColor: "rgba(0,0,0,0.05)",
               boxShadow: "0 0 10px rgba(0,0,0,.1);",
             },
+            "@media (max-width: 600px)": {
+              // display: "none",
+              width: "auto",
+              padding: "2px 5px",
+            },
           }}
         >
           <SearchIcon sx={{ width: 20 }} />
 
           <Typography
             sx={{
+              "@media (max-width: 600px)": {
+                display: "none",
+              },
               fontSize: "13px",
               ml: 1.3,
               color: "#536270",
@@ -322,7 +352,16 @@ export default function SearchModal() {
             }}
           >
             <Box sx={{ display: "flex", p: 1, pr: 2 }}>
-              <SearchIcon sx={{ width: 30, height: 30 }} />
+              <SearchIcon
+                sx={{
+                  width: 30,
+                  height: 30,
+                  "@media (max-width: 600px)": {
+                    width: 15,
+                    height: 15,
+                  },
+                }}
+              />
             </Box>
             <Input
               id="modal-modal-title"
@@ -333,6 +372,9 @@ export default function SearchModal() {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               sx={{
+                "@media (max-width: 600px)": {
+                  fontSize: "13px",
+                },
                 flex: 1,
                 textDecoration: "none",
                 fontSize: "20px",
@@ -395,6 +437,7 @@ const StyledUserLogo = styled.img`
 
 const Badge = styled.div`
   display: flex;
+  white-space: nowrap;
   align-items: center;
   justify-content: space-around;
   padding: 3px 7px;
@@ -403,4 +446,7 @@ const Badge = styled.div`
   font-size: 12px;
   color: white;
   border-radius: 5px;
+  @media screen and (max-width: 600px) {
+    font-size: 10px;
+  } ;
 `;

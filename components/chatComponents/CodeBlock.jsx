@@ -42,12 +42,22 @@ const CodeBlock = ({ text }) => {
   return splitString(text).map(({ type, value, language }, index) => {
     if (type === "text")
       return (
-        <Typography key={index} sx={{ whiteSpace: "pre-wrap", fontSize: 15 }}>
+        <Typography
+          key={index}
+          sx={{
+            maxWidth: "95vw",
+            whiteSpace: "pre-wrap",
+            fontSize: 15,
+            "@media (max-width: 600px)": {
+              fontSize: "14px",
+            },
+          }}
+        >
           {value}
         </Typography>
       );
     return (
-      <Box key={index}>
+      <Box key={index} sx={{ maxWidth: "95vw" }}>
         <Box
           sx={{
             display: "flex",
@@ -80,7 +90,8 @@ const CodeBlock = ({ text }) => {
           language={language || "none"}
           style={d}
           customStyle={{
-            fontSize: "14px",
+            whiteSpace: "pre-wrap",
+            fontSize: "0.8em",
             overflow: "hidden",
             padding: "15px",
             backgroundColor: "black",

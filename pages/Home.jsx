@@ -8,11 +8,10 @@ import Content from "../components/chatComponents/Content";
 import TopBar from "../components/TopBar";
 import { useAppContext } from "../contexts/AppContext";
 
-const drawerWidth = 300;
+const drawerWidth = 280;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
-    flexGrow: 1,
     flex: 1,
     padding: 0,
     display: "flex",
@@ -25,6 +24,8 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
     }),
     marginLeft: `-${drawerWidth}px`,
     ...(open && {
+      maxHeight: "100vh",
+
       transition: theme.transitions.create("margin", {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
@@ -73,7 +74,7 @@ export default function Home() {
     );
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", maxHeight: "100vh" }}>
       <CssBaseline />
       <TopBar
         {...{

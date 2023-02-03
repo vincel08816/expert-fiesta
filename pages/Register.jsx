@@ -98,8 +98,8 @@ export default function Register() {
           borderRadius: "10px",
           width: 400,
           p: 3,
-          m: 10,
           boxShadow: 3,
+          m: 1,
         }}
       >
         <Typography

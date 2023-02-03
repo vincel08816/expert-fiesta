@@ -57,6 +57,7 @@ export default function Login() {
         alignItems: "center",
         backgroundColor: "#f3f2ee",
         minHeight: "100vh",
+        width: "100vw",
       }}
     >
       <Box
@@ -95,8 +96,8 @@ export default function Login() {
           borderRadius: "10px",
           width: 400,
           p: 3,
-          m: 10,
           boxShadow: 3,
+          m: 1,
         }}
       >
         <Typography

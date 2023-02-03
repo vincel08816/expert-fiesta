@@ -31,6 +31,7 @@ const Content = () => {
       {/* input field */}
       <Box
         sx={{
+          flex: 0,
           margin: "0 15px 20px 15px",
           backgroundColor: "white",
           bottom: 0,
@@ -89,7 +90,15 @@ const Content = () => {
 
           {/* add character count here */}
         </Box>
-        <Box sx={{ textAlign: "center", lineHeight: 0.5, mt: 1, mb: -1 }}>
+        <Box
+          sx={{
+            textAlign: "center",
+            lineHeight: 0.5,
+            mt: 1,
+            mb: -1,
+            flex: 0,
+          }}
+        >
           <Typography sx={{ color: "text.secondary", fontSize: 12 }}>
             Check out{" "}
             <a

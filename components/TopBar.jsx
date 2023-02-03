@@ -5,7 +5,6 @@ import DoneAllIcon from "@mui/icons-material/DoneAll";
 import MenuIcon from "@mui/icons-material/Menu";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import {
-  Divider,
   Drawer,
   IconButton,
   Menu,
@@ -26,7 +25,7 @@ import Settings from "./sidebarComponents/Settings";
 import UserPanel from "./sidebarComponents/UserPanel";
 import SidebarNav from "./SidebarNav";
 
-const drawerWidth = 300;
+const drawerWidth = 280;
 
 const SidebarArray = [<SelectChat />, <Settings />, <UserPanel />];
 
@@ -97,7 +96,6 @@ const AppBar = styled(MuiAppBar, {
   }),
   ...(open && {
     backgroundColor: "white",
-
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: `${drawerWidth}px`,
     transition: theme.transitions.create(["margin", "width"], {
@@ -173,11 +171,28 @@ const TopBar = ({
               OpenAI
             </Typography>
             <Typography
-              sx={{ ml: 0.3, mr: 0.3, opacity: 0.6, fontWeight: 600 }}
+              sx={{
+                ml: 0.3,
+                mr: 0.3,
+                opacity: 0.6,
+                fontWeight: 600,
+                "@media (max-width: 600px)": {
+                  display: "none",
+                },
+              }}
             >
               &mdash;
             </Typography>
-            <Typography sx={{ ml: 0.3, opacity: 0.6, fontSize: "12px" }}>
+            <Typography
+              sx={{
+                ml: 0.3,
+                opacity: 0.6,
+                fontSize: "12px",
+                "@media (max-width: 600px)": {
+                  display: "none",
+                },
+              }}
+            >
               {conversations && conversations[selected]?.title.length
                 ? conversations[selected]?.title
                 : "New Chat"}
@@ -261,13 +276,15 @@ const TopBar = ({
       <Drawer
         sx={{
           display: "flex",
+          flexDirection: "column",
           width: drawerWidth,
           alignItems: "center",
           backgroundColor: "white",
-
-          // flexShrink: 0,
+          maxHeight: "100vh",
+          flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
+            maxHeight: "100vh",
             // boxSizing: "border-box",
           },
         }}
@@ -285,8 +302,6 @@ const TopBar = ({
           </IconButton>
         </DrawerHeader>
         {SidebarArray[value]}
-        <Divider />
-
         <SidebarNav value={value} setValue={setValue} />
       </Drawer>
     </>
