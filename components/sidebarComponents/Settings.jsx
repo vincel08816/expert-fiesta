@@ -1,22 +1,80 @@
 import { TextareaAutosize } from "@mui/base";
 import {
-  Drawer,
+  Button,
   FormControl,
   InputLabel,
+  Menu,
   MenuItem,
   Select,
   Slider,
-  Switch,
   Tooltip,
   Typography,
 } from "@mui/material";
-
 import { Box } from "@mui/system";
-import React from "react";
-import { useAppContext } from "../AppContext";
-import SidebarNav from "./SidebarNav";
+import React, { useState } from "react";
+import { useAppContext } from "../../contexts/AppContext";
 
-const width = "240px";
+const presets = [
+  {
+    title: "None",
+    text: "",
+  },
+  {
+    title: "Code",
+    text: "Wrap code blocks in 3 backticks followed by the language and a new line. But don't do that with for non-code responses",
+  },
+];
+
+const PromptHeaderPreset = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { handleChange } = useAppContext();
+  const openSelectMenu = Boolean(anchorEl);
+
+  return (
+    <Box sx={{ display: "flex", flexDirection: "row-reverse" }}>
+      <Button
+        onClick={(event) => setAnchorEl(event.currentTarget)}
+        sx={{
+          borderRadius: "8px",
+          maxHeight: "10px",
+          p: 0,
+          fontSize: 10,
+          mb: -23,
+          mr: -2,
+        }}
+      >
+        Preset
+      </Button>
+      <Menu
+        sx={{ borderRadius: "8px" }}
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={openSelectMenu}
+        onClose={() => setAnchorEl(null)}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+      >
+        {presets.map(({ title, text }) => (
+          <MenuItem
+            sx={{ fontSize: "12px" }}
+            name="topText"
+            value={text}
+            onClick={(e) => {
+              handleChange({
+                target: { name: "topText", value: text },
+                preventDefault: () => {},
+              });
+              setAnchorEl(null);
+            }}
+          >
+            {title}
+          </MenuItem>
+        ))}
+      </Menu>
+    </Box>
+  );
+};
 
 const FormComponent = ({
   title,
@@ -29,7 +87,7 @@ const FormComponent = ({
   handleChange,
   name,
 }) => (
-  <FormControl sx={{ width, mt: 2 }}>
+  <FormControl sx={{ mt: 2 }}>
     <Tooltip title={helperText} placement="bottom">
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="body2">{title}</Typography>
@@ -52,7 +110,7 @@ const FormComponent = ({
 );
 
 const Settings = () => {
-  const { form, handleChange, setAllowEnterToSubmit } = useAppContext();
+  const { form, handleChange } = useAppContext();
 
   const {
     model,
@@ -70,8 +128,8 @@ const Settings = () => {
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        p: 5,
-        pt: 10,
+        p: 3,
+        pt: 1,
         overflow: "scroll",
         "&::-webkit-scrollbar": {
           display: "none",
@@ -80,12 +138,10 @@ const Settings = () => {
         scrollbarWidth: "none",
       }}
     >
-      <FormControl sx={{ width, mb: 2 }}>
-        <InputLabel id="demo-simple-select-helper-label">Model</InputLabel>
+      <FormControl sx={{ mb: 2 }}>
+        <InputLabel>Model</InputLabel>
         <Select
           sx={{ mb: 1 }}
-          labelId="demo-simple-select-helper-label"
-          id="demo-simple-select-helper"
           value={model}
           name="model"
           onChange={handleChange}
@@ -105,7 +161,7 @@ const Settings = () => {
           ))}
         </Select>
       </FormControl>
-
+      <PromptHeaderPreset />
       <Typography variant="body2" sx={{ mb: 1 }}>
         Prompt Header
       </Typography>
@@ -116,10 +172,12 @@ const Settings = () => {
         name="topText"
         onChange={handleChange}
         style={{
+          width: "auto",
           padding: "12px",
           minHeight: "100px",
-          resize: "none",
+          maxHeight: "250px",
           fontFamily: "Noto Sans, sans-serif",
+          overflow: "auto",
         }}
       />
 
@@ -169,7 +227,7 @@ const Settings = () => {
       ].map((value, index) => (
         <FormComponent key={index} {...value} handleChange={handleChange} />
       ))}
-      <FormControl sx={{ width, mt: 2, mb: 2 }}>
+      <FormControl sx={{ mt: 2 }}>
         <InputLabel id="demo-simple-select-helper-label">
           Image Model Size (Dalle only)
         </InputLabel>
@@ -188,50 +246,8 @@ const Settings = () => {
           ))}
         </Select>
       </FormControl>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mt: 1,
-          mb: 1,
-        }}
-      >
-        <Typography variant="body2">Allow Enter To Send</Typography>
-        <Switch
-          defaultChecked
-          onClick={() => setAllowEnterToSubmit((prev) => !prev)}
-        />
-      </Box>
     </Box>
   );
 };
 
-const Sidebar = (props) => {
-  const { openSidebar, setOpenSidebar } = useAppContext();
-
-  if (!openSidebar) return "";
-  const toggleDrawer = () => setOpenSidebar((prev) => !prev);
-
-  return (
-    <Drawer
-      anchor={"left"}
-      open={openSidebar}
-      onClose={toggleDrawer}
-      sx={{
-        display: "flex",
-        width: 300,
-        borderRadius: "10px 0 0 10px",
-        flexDirection: "column",
-        alignItems: "center",
-        height: "100%",
-        zIndex: 1000,
-      }}
-    >
-      <Settings {...props} />
-      <SidebarNav {...props} />
-    </Drawer>
-  );
-};
-
-export default Sidebar;
+export default Settings;

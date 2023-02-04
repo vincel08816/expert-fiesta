@@ -5,19 +5,17 @@ import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import React from "react";
 
-const SidebarNav = () => {
-  const [value, setValue] = React.useState(1);
-
+const SidebarNav = ({ value = 0, setValue = () => {}, isMobile }) => {
   return (
     <BottomNavigation
       sx={{
         boxShadow: "0px -5px 5px 0px #e4e4e4",
-        width: "100%",
-        height: "80px",
-        maxHeight: "80px",
-        display: "flex",
+        position: isMobile ? "fixed" : "relative",
         alignItems: "center",
         justifyContent: "space-between",
+        bottom: 0,
+        p: 0,
+        minHeight: "30px",
       }}
       showLabels
       value={value}
@@ -25,9 +23,23 @@ const SidebarNav = () => {
         setValue(newValue);
       }}
     >
-      <BottomNavigationAction label="Chats" icon={<ForumIcon />} />
-      <BottomNavigationAction label="Settings" icon={<SettingsIcon />} />
-      <BottomNavigationAction label="User" icon={<AccountCircleIcon />} />
+      <BottomNavigationAction
+        data-tut="reactour__conversation"
+        label="Chats"
+        icon={<ForumIcon />}
+        sx={{ height: "100%" }}
+      />
+      <BottomNavigationAction
+        data-tut="reactour__settings"
+        label="Settings"
+        icon={<SettingsIcon />}
+        sx={{ height: "100%" }}
+      />
+      <BottomNavigationAction
+        label="User"
+        icon={<AccountCircleIcon />}
+        sx={{ height: "100%" }}
+      />
     </BottomNavigation>
   );
 };
