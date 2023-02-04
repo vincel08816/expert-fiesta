@@ -2,6 +2,7 @@ import { Box } from "@mui/system";
 import Head from "next/head";
 import React from "react";
 import { AppContextProvider } from "../contexts/AppContext";
+import "./../styles/_app.css";
 
 function App({ Component, pageProps }) {
   return (
