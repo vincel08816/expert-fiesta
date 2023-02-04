@@ -26,10 +26,7 @@ function splitString(str) {
   }
 
   if (lastIndex < str?.length) {
-    results.push({
-      type: "text",
-      value: str.slice(lastIndex),
-    });
+    results.push({ type: "text", value: str.slice(lastIndex) });
   }
 
   return results;
