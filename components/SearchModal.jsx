@@ -48,8 +48,6 @@ const Message = ({
   updatedAt,
   text,
   selected,
-  index,
-  error,
   imageUrl,
   bookmarked,
   _id,
@@ -324,12 +322,12 @@ export default function SearchModal() {
               fontSize: "13px",
               ml: 1.3,
               color: "#536270",
-              "-webkit-touch-callout": "none",
-              "-webkit-user-select": "none",
-              "-khtml-user-select": "none",
-              "-moz-user-select": "none",
-              "-ms-user-select": "none",
-              "user-select": "none",
+              WebkitTouchCallout: "none",
+              WebkitUserSelect: "none",
+              KhtmlUserSelect: "none",
+              MozUserSelect: "none",
+              msUserSelect: "none",
+              userSelect: "none",
             }}
           >
             Search...

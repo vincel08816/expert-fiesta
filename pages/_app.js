@@ -24,10 +24,6 @@ function App({ Component, pageProps }) {
           sizes="16x16"
           href="/images/favicon.png"
         />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.12.0/devicon.min.css"
-        />
         <title>MenheraGPT</title>
       </Head>
       <AppContextProvider>

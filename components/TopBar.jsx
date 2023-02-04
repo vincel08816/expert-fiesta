@@ -162,12 +162,12 @@ const TopBar = ({
               aria-label="open drawer"
               onClick={handleDrawerOpen}
               edge="start"
-              sx={{ mr: 2, ...(open && { display: "none" }) }}
+              sx={{ ...(open && { display: "none" }) }}
             >
               <MenuIcon />
             </IconButton>
             <AlternateEmailIcon />
-            <Typography sx={{ ml: 0.3, mr: 0.3, fontWeight: "bold" }}>
+            <Typography sx={{ ml: 0.2, mr: 0.3, fontWeight: "bold" }}>
               OpenAI
             </Typography>
             <Typography

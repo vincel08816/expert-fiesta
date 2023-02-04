@@ -100,16 +100,15 @@ const Content = () => {
           }}
         >
           <Typography sx={{ color: "text.secondary", fontSize: 12 }}>
-            Check out{" "}
+            Check out my project on{" "}
             <a
               style={{ color: "inherit" }}
               href="https://github.com/vincel08816/expert-fiesta"
               target="_blank"
             >
-              MenheraGPT
+              GitHub
             </a>
-            , a clone of ChatGPT on my Github repository. Also, don't forget to
-            visit my{" "}
+            Also, don't forget to visit my{" "}
             <a
               style={{ color: "inherit" }}
               href="https://linkedin.com/in/vincentlee28/"
@@ -117,7 +116,7 @@ const Content = () => {
             >
               LinkedIn
             </a>{" "}
-            page for more information.
+            for more information.
           </Typography>
         </Box>
       </Box>

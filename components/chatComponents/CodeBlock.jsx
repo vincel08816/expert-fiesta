@@ -19,11 +19,7 @@ function splitString(str) {
       });
     }
 
-    results.push({
-      type: "code",
-      value: match[2],
-      language: match[1] || null,
-    });
+    results.push({ type: "code", value: match[2], language: match[1] || null });
 
     lastIndex = regex.lastIndex;
   }
@@ -57,7 +53,7 @@ const CodeBlock = ({ text }) => {
         </Typography>
       );
     return (
-      <Box key={index} sx={{ maxWidth: "95vw" }}>
+      <Box key={index} sx={{ maxWidth: "95vw", overflowX: "auto" }}>
         <Box
           sx={{
             display: "flex",
@@ -81,7 +77,7 @@ const CodeBlock = ({ text }) => {
               p: 0,
             }}
           >
-            <ContentPasteIcon style={{ width: "16px", marginRight: 7 }} />
+            <ContentPasteIcon sx={{ width: 16, mr: 1 }} />
             <Typography variant="caption">Copy code</Typography>
           </Button>
         </Box>
@@ -91,7 +87,7 @@ const CodeBlock = ({ text }) => {
           style={d}
           customStyle={{
             whiteSpace: "pre-wrap",
-            fontSize: "0.8em",
+            fontSize: "0.9em",
             overflow: "hidden",
             padding: "15px",
             backgroundColor: "black",

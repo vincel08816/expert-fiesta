@@ -13,7 +13,6 @@ const SidebarNav = ({ value = 0, setValue = () => {}, isMobile }) => {
         position: isMobile ? "fixed" : "relative",
         alignItems: "center",
         justifyContent: "space-between",
-        bottom: isMobile ? 0 : "auto",
         bottom: 0,
         p: 0,
         minHeight: "30px",

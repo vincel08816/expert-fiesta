@@ -20,7 +20,6 @@ const Message = ({
   text,
   selected,
   index,
-  error,
   imageUrl,
   bookmarked,
   _id,

@@ -24,29 +24,23 @@ nextApp
     app.use(passport.initialize());
     require("./modules/passport-config")(passport);
 
+    // express routes here
     app.use("/api/auth", require("./routes/auth"));
     app.use("/api/user", require("./routes/user"));
     app.use("/api/message", require("./routes/message"));
 
     // nextjs here
-    app.get("/", (req, res) => {
-      nextApp.render(req, res, "/Home");
-    });
-
-    app.get("/login", (req, res) => {
-      nextApp.render(req, res, "/Login");
-    });
-
-    app.get("/register", (req, res) => {
-      nextApp.render(req, res, "/Register");
-    });
-
-    app.get("/admin", (req, res) => {
-      nextApp.render(req, res, "/Admin");
-    });
-
-    app.get("/unverified", (req, res) => {
-      nextApp.render(req, res, "/Unverified");
+    [
+      { route: "/", component: "/Home" },
+      { route: "/login", component: "/Login" },
+      { route: "/register", component: "/Register" },
+      { route: "/admin", component: "/Admin" },
+      { route: "/unverified", component: "/Unverified" },
+      { route: "/ResumeForm", component: "/ResumeForm" },
+    ].forEach(({ route, component }) => {
+      app.get(route, (req, res) => {
+        nextApp.render(req, res, component);
+      });
     });
 
     app.get("*", (req, res) => handle(req, res));
