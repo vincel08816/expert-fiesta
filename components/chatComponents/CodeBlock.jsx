@@ -84,7 +84,7 @@ const CodeBlock = ({ text }) => {
         </Box>
         <SyntaxHighlighter
           wrapLongLines
-          language={language || "none"}
+          language={language?.trim() || "none"}
           style={d}
           customStyle={{
             whiteSpace: "pre-wrap",

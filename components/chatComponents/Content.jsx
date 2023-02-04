@@ -109,7 +109,7 @@ const Content = () => {
             >
               GitHub
             </a>
-            . Visit my{" "}
+            . Please visit my{" "}
             <a
               style={{ color: "inherit" }}
               href="https://linkedin.com/in/vincentlee28/"

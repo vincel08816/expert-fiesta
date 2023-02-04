@@ -14,8 +14,9 @@ const initialForm = {
   presencePenalty: 0,
   bestOf: 1,
   text: "",
-  topText:
-    "Wrap code blocks in 3 backticks followed by the language and a new line. But don't do that with for non-code responses",
+  topText: `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly. 
+    The assistant will wrap code blocks in 3 backticks followed by the language and a new line. But don't do that with for non-code responses.
+  `,
 };
 
 const useDebug = (form, chatLog, user) => {
@@ -135,13 +136,13 @@ export const useChat = () => {
       const temp = selectedMessages
         .map(
           (message) =>
-            `${message.isBot ? "Response:" : "Prompt:"}: ${message.text}${
+            `${message.isBot ? "\n AI:" : "\n Human:"}: ${message.text}${
               message.isBot ? "\n" : ""
             }`
         )
         .join("\n");
       const prompt =
-        form.topText + "\n" + temp + "prompt\n" + form.text + "\nResponse:";
+        form.topText + "\n" + temp + "Human:\n" + form.text + "\nAI:";
       const max_tokens = parseInt(max - prompt.length / 4);
 
       if (max_tokens >= 0) {
@@ -153,7 +154,7 @@ export const useChat = () => {
 
     selectedMessages = selectedMessages.map(
       (message) =>
-        `\n${message.isBot ? "Response" : "Prompt"}: ${message.text}${
+        `\n${message.isBot ? "\n AI" : "\n Human"}: ${message.text}${
           message.isBot ? "\n" : ""
         }`
     );
@@ -162,9 +163,9 @@ export const useChat = () => {
       form.topText +
       "\n" +
       selectedMessages +
-      "\nPrompt" +
+      "\n Human:" +
       form.text +
-      "\nResponse:";
+      "\nAI:";
 
     const max_tokens = parseInt(max - prompt.length / 4);
 
@@ -197,6 +198,7 @@ export const useChat = () => {
             best_of: form.bestOf,
             prompt,
             max_tokens,
+            stop: [" Human:", " AI:"],
           };
 
     // add new message to chat log and clear form
