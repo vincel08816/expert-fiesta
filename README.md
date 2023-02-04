@@ -18,12 +18,9 @@ Clone this repository:
 
 git clone https://github.com/your-username/mern-chatbot.git
 
-```
-
 Install dependencies:
 
 ```
-
 npm install
 
 ```
@@ -38,7 +35,7 @@ npm start
 
 ```
 
-The server will be running at `localhost:3000`
+The server will be running at `localhost:5000`
 
 ## Contributing
 
@@ -47,4 +44,7 @@ Pull requests are welcome. For major changes, open an issue first to discuss wha
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
+```
+
 ```
