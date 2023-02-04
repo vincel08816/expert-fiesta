@@ -218,6 +218,7 @@ const TopBar = ({
                 }}
               >
                 <PrecisionManufacturingIcon
+                  data-tut="reactour__automate"
                   sx={{
                     width: 20,
                     height: 20,

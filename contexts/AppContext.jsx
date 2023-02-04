@@ -135,12 +135,13 @@ export const useChat = () => {
       const temp = selectedMessages
         .map(
           (message) =>
-            `${message.isBot ? "OpenAI:" : "User:"}: ${message.text}${
+            `${message.isBot ? "Response:" : "Prompt:"}: ${message.text}${
               message.isBot ? "\n" : ""
             }`
         )
         .join("\n");
-      const prompt = form.topText + "\n" + temp + "\n" + form.text + "\nA:";
+      const prompt =
+        form.topText + "\n" + temp + "prompt\n" + form.text + "\nResponse:";
       const max_tokens = parseInt(max - prompt.length / 4);
 
       if (max_tokens >= 0) {
@@ -152,13 +153,18 @@ export const useChat = () => {
 
     selectedMessages = selectedMessages.map(
       (message) =>
-        `\n${message.isBot ? "OpenAI" : "User"}: ${message.text}${
+        `\n${message.isBot ? "Response" : "Prompt"}: ${message.text}${
           message.isBot ? "\n" : ""
         }`
     );
 
     const prompt =
-      form.topText + "\n" + selectedMessages + "\n" + form.text + "\nA:";
+      form.topText +
+      "\n" +
+      selectedMessages +
+      "\nPrompt" +
+      form.text +
+      "\nResponse:";
 
     const max_tokens = parseInt(max - prompt.length / 4);
 
@@ -283,7 +289,6 @@ export const useChat = () => {
     setAutoSelect,
 
     /* Chat Data */
-
     chatLog,
     setChatLog,
     isSending,
@@ -311,9 +316,18 @@ export const useAppContext = () => {
 
 export const AppContextProvider = ({ children }) => {
   const chatProps = useChat();
+  const [isTourOpen, setIsTourOpen] = useState(true);
+  const closeTour = () => setIsTourOpen(false);
+
+  useEffect(() => {
+    if (!localStorage.getItem("MenheraGPTTour")) {
+      localStorage.setItem("MenheraGPTTour", "true");
+      setIsTourOpen(true);
+    }
+  }, []);
 
   return (
-    <AppContext.Provider value={{ ...chatProps }}>
+    <AppContext.Provider value={{ ...chatProps, isTourOpen, closeTour }}>
       {children}
     </AppContext.Provider>
   );

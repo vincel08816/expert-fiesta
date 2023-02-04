@@ -4,6 +4,7 @@ import { Box } from "@mui/system";
 import React from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import d from "react-syntax-highlighter/dist/cjs/styles/prism/tomorrow";
+import useWindowSize from "../../hooks/useWindowSize";
 
 function splitString(str) {
   const results = [];
@@ -35,6 +36,9 @@ function splitString(str) {
 }
 
 const CodeBlock = ({ text }) => {
+  const { width: viewWidth, height: viewHeight } = useWindowSize();
+  const fontSize = viewWidth > 600 ? 15 : viewWidth > 400 ? 14 : 13;
+
   return splitString(text).map(({ type, value, language }, index) => {
     if (type === "text")
       return (
@@ -43,10 +47,7 @@ const CodeBlock = ({ text }) => {
           sx={{
             maxWidth: "95vw",
             whiteSpace: "pre-wrap",
-            fontSize: 15,
-            "@media (max-width: 600px)": {
-              fontSize: "14px",
-            },
+            fontSize,
           }}
         >
           {value}
@@ -87,7 +88,7 @@ const CodeBlock = ({ text }) => {
           style={d}
           customStyle={{
             whiteSpace: "pre-wrap",
-            fontSize: "0.9em",
+            fontSize: `${fontSize}px`,
             overflow: "hidden",
             padding: "15px",
             backgroundColor: "black",

@@ -18,13 +18,20 @@ import { useAppContext } from "../contexts/AppContext";
 const style = {
   borderRadius: "10px",
   position: "absolute",
-  top: "38%",
+  top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 800,
-  height: 600,
+  maxWidth: 800,
+  maxHeight: 600,
+  width: "80vw",
+  height: "80vh",
   bgcolor: "background.paper",
   borderColor: "none",
+  display: "flex",
+  flexDirection: "column",
+  "@media (max-width: 600px)": {
+    width: "95vw",
+  },
 };
 
 const titleSx = {
@@ -154,6 +161,7 @@ export default function MoveConversationModal() {
       <Box sx={{ display: "flex" }}>
         <Tooltip title="Move Selected Conversations">
           <IconButton
+            data-tut="reactour__move"
             onClick={handleOpen}
             sx={{
               border: "2px solid rgba(0,0,0,.1)",

@@ -24,11 +24,13 @@ const SidebarNav = ({ value = 0, setValue = () => {}, isMobile }) => {
       }}
     >
       <BottomNavigationAction
+        data-tut="reactour__conversation"
         label="Chats"
         icon={<ForumIcon />}
         sx={{ height: "100%" }}
       />
       <BottomNavigationAction
+        data-tut="reactour__settings"
         label="Settings"
         icon={<SettingsIcon />}
         sx={{ height: "100%" }}

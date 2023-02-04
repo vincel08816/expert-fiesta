@@ -27,6 +27,7 @@ const iconSx = {
 };
 
 const style = {
+  maxWidth: 1200,
   borderRadius: "10px",
   position: "absolute",
   top: "50%",
@@ -289,6 +290,7 @@ export default function SearchModal() {
     <div>
       <Box sx={{ display: "flex" }}>
         <Box
+          data-tut="reactour__search"
           onClick={handleOpen}
           sx={{
             display: "flex",

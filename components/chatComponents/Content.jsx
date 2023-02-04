@@ -30,6 +30,7 @@ const Content = () => {
 
       {/* input field */}
       <Box
+        data-tut="reactour__chat-input"
         sx={{
           flex: 0,
           margin: "0 15px 20px 15px",

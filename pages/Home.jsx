@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Content from "../components/chatComponents/Content";
 import TopBar from "../components/TopBar";
+import Tutorial from "../components/Tutorial";
 import { useAppContext } from "../contexts/AppContext";
 
 const drawerWidth = 280;
@@ -46,7 +47,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function Home() {
   const { loading, user } = useAppContext();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(true);
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
   const [value, setValue] = useState(0);
@@ -75,6 +76,8 @@ export default function Home() {
 
   return (
     <Box sx={{ display: "flex", maxHeight: "100vh" }}>
+      <Tutorial />
+
       <CssBaseline />
       <TopBar
         {...{

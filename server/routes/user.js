@@ -48,7 +48,7 @@ router.post(
       const payload = { id: user.id };
       jwt.sign(payload, secret, { expiresIn }, (err, token) => {
         if (err) throw err;
-        res.cookie("token", token, { httpOnly: true });
+        // res.cookie("token", token, { httpOnly: true });
         res.json(payload);
       });
     } catch (error) {
