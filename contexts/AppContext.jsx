@@ -316,7 +316,7 @@ export const useAppContext = () => {
 
 export const AppContextProvider = ({ children }) => {
   const chatProps = useChat();
-  const [isTourOpen, setIsTourOpen] = useState(true);
+  const [isTourOpen, setIsTourOpen] = useState(false);
   const closeTour = () => setIsTourOpen(false);
 
   useEffect(() => {

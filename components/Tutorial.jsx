@@ -1,6 +1,6 @@
-import dynamic from "next/dynamic";
 import React from "react";
 import { useAppContext } from "../contexts/AppContext";
+import dynamic from "next/dynamic";
 const Tour = dynamic(() => import("reactour"), { ssr: false });
 
 // following https://fullstacksoup.blog/2022/06/30/next-js-onboarding-with-reactour-tour-js/
