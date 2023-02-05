@@ -56,8 +56,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function Home() {
-  const { loading, user } = useAppContext();
-  const [open, setOpen] = useState(true);
+  const { loading, user, open, setOpen } = useAppContext();
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
   const [value, setValue] = useState(0);

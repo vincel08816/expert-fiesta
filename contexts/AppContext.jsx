@@ -40,6 +40,7 @@ const useDebug = (form, chatLog, user) => {
 export const useChat = () => {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(true);
 
   const [conversations, setConversations] = useState([]);
   const [selected, setSelected] = useState(); // selected Conversation index
@@ -273,6 +274,8 @@ export const useChat = () => {
     user,
     setUser,
     loading,
+    open,
+    setOpen,
 
     /* Selecting Chat */
     conversations,
