@@ -23,9 +23,10 @@ async function sendModerationRequest(text) {
 
   try {
     const response = await axios.post(url, data, { headers });
-    return response.data;
+    return response?.data?.results;
   } catch (error) {
     console.error(error);
+    throw new Error(error);
   }
 }
 
@@ -93,6 +94,15 @@ router.post(
     try {
       let { payload, text, title, conversationId } = req.body;
 
+      const moderationScore = await sendModerationRequest(text);
+
+      console.log("moderation results", moderationScore);
+
+      console.log(moderationResults);
+      if (moderation[0].flagged === true) {
+        return res.status(403);
+      }
+
       console.log("/api/message", req.body);
       const response = await openai.createCompletion(payload);
       console.log(response.data);
@@ -133,6 +143,13 @@ router.post(
     try {
       let { payload, text, title, conversationId } = req.body;
       console.log("/api/message", req.body);
+
+      const moderationResults = await sendModerationRequest(text);
+
+      console.log(moderationResults);
+      if (moderation[0].flagged === true) {
+        return res.status(403);
+      }
 
       const response = await openai.createImage(payload);
       console.log(response.data);
