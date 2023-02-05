@@ -94,18 +94,26 @@ router.post(
     try {
       let { payload, text, title, conversationId } = req.body;
 
-      const moderationScore = await sendModerationRequest(text);
+      const requestModeration = await sendModerationRequest(text);
 
-      console.log("moderation results", moderationScore);
+      console.log("moderation results", requestModeration);
 
-      console.log(moderationResults);
-      if (moderation[0].flagged === true) {
-        return res.status(403);
+      console.log(requestModeration);
+      if (requestModeration[0].flagged === true) {
+        return res.status(400);
       }
 
       console.log("/api/message", req.body);
       const response = await openai.createCompletion(payload);
       console.log(response.data);
+
+      // const responseModeration = await sendModerationRequest(
+      //   response.choices[0].text
+      // );
+
+      // if (responseModeration[0].flagged === true) {
+      //   return res.status(400);
+      // }
 
       const data = await verifyConversationAndSaveMessage(
         conversationId,
