@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import useWindowSize from "../hooks/useWindowSize";
 
 const AppContext = createContext();
 
@@ -51,10 +52,6 @@ export const useChat = () => {
 
   useDebug(form, chatLog, user);
 
-  function delay(time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-  }
-
   // listener for conversation selection; changes when selected or converation length changes
   useEffect(() => {
     if (loadingMessages) return;
@@ -75,7 +72,6 @@ export const useChat = () => {
         })
         .catch((err) => console.error(err))
         .then(() => {
-          // delay(500).then((_) => setLoadingMessages(false));
           setLoadingMessages(false);
         });
     }
@@ -317,6 +313,7 @@ export const useAppContext = () => {
  */
 
 export const AppContextProvider = ({ children }) => {
+  const { width, height } = useWindowSize();
   const chatProps = useChat();
   const [isTourOpen, setIsTourOpen] = useState(false);
   const closeTour = () => setIsTourOpen(false);
@@ -329,7 +326,9 @@ export const AppContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <AppContext.Provider value={{ ...chatProps, isTourOpen, closeTour }}>
+    <AppContext.Provider
+      value={{ ...chatProps, isTourOpen, closeTour, width, height }}
+    >
       {children}
     </AppContext.Provider>
   );

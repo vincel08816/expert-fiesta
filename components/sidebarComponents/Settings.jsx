@@ -172,6 +172,7 @@ const Settings = () => {
         name="topText"
         onChange={handleChange}
         style={{
+          resize: "none",
           width: "auto",
           padding: "12px",
           minHeight: "100px",

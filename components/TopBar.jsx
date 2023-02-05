@@ -111,6 +111,44 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
+const StyledAppBar = ({ children, open }) => {
+  const { width } = useAppContext();
+  if (width > 600) {
+    return (
+      <AppBar open={open}>
+        <Toolbar
+          sx={{
+            backgroundColor: "white",
+            color: "black",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {children}
+        </Toolbar>
+      </AppBar>
+    );
+  }
+  return (
+    <MuiAppBar>
+      {" "}
+      <Toolbar
+        sx={{
+          backgroundColor: "white",
+          color: "black",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          ml: 0,
+        }}
+      >
+        {children}
+      </Toolbar>
+    </MuiAppBar>
+  );
+};
+
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -129,8 +167,14 @@ const TopBar = ({
   anchorEl,
   setAnchorEl,
 }) => {
-  const { setChatLog, conversations, selected, autoSelect, setAutoSelect } =
-    useAppContext();
+  const {
+    setChatLog,
+    conversations,
+    selected,
+    autoSelect,
+    setAutoSelect,
+    width,
+  } = useAppContext();
   const theme = useTheme();
   const openSelectMenu = Boolean(anchorEl);
 
@@ -143,7 +187,7 @@ const TopBar = ({
 
   return (
     <>
-      <AppBar
+      <StyledAppBar
         position="fixed"
         open={open}
         sx={{
@@ -152,7 +196,7 @@ const TopBar = ({
           backgroundColor: "white",
         }}
       >
-        <Toolbar
+        {/* <Toolbar
           sx={{
             backgroundColor: "white",
             color: "black",
@@ -161,130 +205,130 @@ const TopBar = ({
             justifyContent: "space-between",
             ml: open ? drawerWidth + "px" : 0,
           }}
-        >
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+        > */}
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{ ...(open && width > 600 && { display: "none" }) }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <AlternateEmailIcon />
+          <Typography sx={{ ml: 0.2, mr: 0.3, fontWeight: "bold" }}>
+            OpenAI
+          </Typography>
+          <Typography
+            sx={{
+              ml: 0.3,
+              mr: 0.3,
+              opacity: 0.6,
+              fontWeight: 600,
+              // "@media (max-width: 600px)": {
+              //   display: "none",
+              // },
+            }}
+          >
+            &mdash;
+          </Typography>
+          <Typography
+            sx={{
+              ml: 0.3,
+              opacity: 0.6,
+              fontSize: "12px",
+              // "@media (max-width: 600px)": {
+              //   display: "none",
+              // },
+            }}
+          >
+            {conversations && conversations[selected]?.title.length
+              ? conversations[selected]?.title
+              : "New Chat"}
+          </Typography>
+        </Box>
+
+        <Box sx={{ display: "flex" }}>
+          <SearchModal />
+          <MoveConversationModal />
+
+          <Tooltip title="Automate Chat History">
             <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{ ...(open && { display: "none" }) }}
+              onClick={(event) => setAutoSelect((prev) => !prev)}
+              sx={{
+                // display: "none",
+                border: `2px solid ${
+                  autoSelect ? "#3085d6" : "rgba(0,0,0,.1)"
+                }`,
+                p: 0.5,
+                mt: 0.2,
+                mr: 1,
+                borderRadius: "8px",
+              }}
             >
-              <MenuIcon />
+              <PrecisionManufacturingIcon
+                data-tut="reactour__automate"
+                sx={{
+                  width: 20,
+                  height: 20,
+                  color: autoSelect ? "#3085d6" : "inherit",
+                }}
+              />
             </IconButton>
-            <AlternateEmailIcon />
-            <Typography sx={{ ml: 0.2, mr: 0.3, fontWeight: "bold" }}>
-              OpenAI
-            </Typography>
-            <Typography
+          </Tooltip>
+
+          <Tooltip title="Select or Deselect All">
+            <IconButton
+              onClick={(event) => setAnchorEl(event.currentTarget)}
               sx={{
-                ml: 0.3,
-                mr: 0.3,
-                opacity: 0.6,
-                fontWeight: 600,
-                "@media (max-width: 600px)": {
-                  display: "none",
-                },
+                border: "2px solid rgba(0,0,0,.1)",
+                p: 0.5,
+                mt: 0.2,
+                borderRadius: "8px",
               }}
             >
-              &mdash;
-            </Typography>
-            <Typography
-              sx={{
-                ml: 0.3,
-                opacity: 0.6,
-                fontSize: "12px",
-                "@media (max-width: 600px)": {
-                  display: "none",
-                },
+              <DoneAllIcon sx={{ width: 20, height: 20 }} />
+            </IconButton>
+          </Tooltip>
+
+          <Menu
+            sx={{ borderRadius: "8px" }}
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={openSelectMenu}
+            onClose={() => setAnchorEl(null)}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem
+              sx={{ fontSize: "12px" }}
+              onClick={() => {
+                selectAll(true);
+                setAnchorEl(null);
               }}
             >
-              {conversations && conversations[selected]?.title.length
-                ? conversations[selected]?.title
-                : "New Chat"}
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: "flex" }}>
-            <SearchModal />
-            <MoveConversationModal />
-
-            <Tooltip title="Automate Chat History">
-              <IconButton
-                onClick={(event) => setAutoSelect((prev) => !prev)}
-                sx={{
-                  // display: "none",
-                  border: `2px solid ${
-                    autoSelect ? "#3085d6" : "rgba(0,0,0,.1)"
-                  }`,
-                  p: 0.5,
-                  mt: 0.2,
-                  mr: 1,
-                  borderRadius: "8px",
-                }}
-              >
-                <PrecisionManufacturingIcon
-                  data-tut="reactour__automate"
-                  sx={{
-                    width: 20,
-                    height: 20,
-                    color: autoSelect ? "#3085d6" : "inherit",
-                  }}
-                />
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="Select or Deselect All">
-              <IconButton
-                onClick={(event) => setAnchorEl(event.currentTarget)}
-                sx={{
-                  border: "2px solid rgba(0,0,0,.1)",
-                  p: 0.5,
-                  mt: 0.2,
-                  borderRadius: "8px",
-                }}
-              >
-                <DoneAllIcon sx={{ width: 20, height: 20 }} />
-              </IconButton>
-            </Tooltip>
-
-            <Menu
-              sx={{ borderRadius: "8px" }}
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={openSelectMenu}
-              onClose={() => setAnchorEl(null)}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
+              Select All
+            </MenuItem>
+            <MenuItem
+              sx={{ fontSize: "12px" }}
+              onClick={() => {
+                selectAll(false);
+                setAnchorEl(null);
               }}
             >
-              <MenuItem
-                sx={{ fontSize: "12px" }}
-                onClick={() => {
-                  selectAll(true);
-                  setAnchorEl(null);
-                }}
-              >
-                Select All
-              </MenuItem>
-              <MenuItem
-                sx={{ fontSize: "12px" }}
-                onClick={() => {
-                  selectAll(false);
-                  setAnchorEl(null);
-                }}
-              >
-                Deselect All
-              </MenuItem>
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
+              Deselect All
+            </MenuItem>
+          </Menu>
+        </Box>
+        {/* </Toolbar> */}
+      </StyledAppBar>
       <Drawer
         sx={{
           display: "flex",
           flexDirection: "column",
-          width: drawerWidth,
+          width: width > 600 ? drawerWidth : 0,
           alignItems: "center",
           backgroundColor: "white",
           maxHeight: "100vh",
@@ -295,9 +339,10 @@ const TopBar = ({
             // boxSizing: "border-box",
           },
         }}
-        variant="persistent"
+        variant={width > 600 ? "persistent" : "temporary"}
         anchor="left"
         open={open}
+        onClose={() => width < 600 && handleDrawerClose()}
       >
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>

@@ -33,7 +33,7 @@ function splitString(str) {
 }
 
 const CodeBlock = ({ text }) => {
-  const { width: viewWidth, height: viewHeight } = useWindowSize();
+  const { width: viewWidth } = useWindowSize();
   const fontSize = viewWidth > 600 ? 15 : viewWidth > 400 ? 14 : 13;
 
   return splitString(text).map(({ type, value, language }, index) => {

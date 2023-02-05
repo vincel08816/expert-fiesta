@@ -11,14 +11,17 @@ import { useAppContext } from "../contexts/AppContext";
 
 const drawerWidth = 280;
 
+const mainSx = {
+  flex: 1,
+  padding: 0,
+  display: "flex",
+  flexDirection: "column",
+  height: "100vh",
+};
+
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
-    flex: 1,
-    padding: 0,
-    display: "flex",
-    flexDirection: "column",
-    height: "100vh",
-
+    ...mainSx,
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -35,6 +38,13 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
     }),
   })
 );
+
+const StyledMain = ({ children, open }) =>
+  useAppContext().width > 600 ? (
+    <Main open={open}>{children}</Main>
+  ) : (
+    <Box sx={mainSx}>{children}</Box>
+  );
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -92,10 +102,10 @@ export default function Home() {
         }}
       />
 
-      <Main open={open}>
+      <StyledMain open={open}>
         <DrawerHeader />
-        <Content open={open} drawerWidth={drawerWidth} />
-      </Main>
+        <Content />
+      </StyledMain>
     </Box>
   );
 }
