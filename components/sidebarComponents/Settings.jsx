@@ -55,8 +55,9 @@ const PromptHeaderPreset = () => {
           "aria-labelledby": "basic-button",
         }}
       >
-        {presets.map(({ title, text }) => (
+        {presets.map(({ title, text }, index) => (
           <MenuItem
+            key={title + index}
             sx={{ fontSize: "12px" }}
             name="topText"
             value={text}

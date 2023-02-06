@@ -82,8 +82,7 @@ export const useChat = () => {
   useEffect(() => {
     axios
       .get("/api/auth")
-      .then((res) => {
-        const { user, conversations } = res.data;
+      .then(({ data: { user, conversations } }) => {
         setUser(user);
         setConversations(conversations);
       })
@@ -215,8 +214,6 @@ export const useChat = () => {
       return { ...prev, text: "" };
     });
 
-    // if (form.model === "image-dalle-002") return submitImage(index);
-
     // console.log(
     //   "conversationId",
     //   conversations.length && selected && conversations[selected]._id
@@ -315,17 +312,15 @@ export const useAppContext = () => {
 export const AppContextProvider = ({ children }) => {
   const { width, height } = useWindowSize();
   const chatProps = useChat();
-  const { user } = chatProps;
+  const { loading, user } = chatProps;
   const [isTourOpen, setIsTourOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(true);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarText, setSnackbarText] = useState("");
   const closeTour = () => setIsTourOpen(false);
 
   useEffect(() => {
-    if (
-      (user?.role === "admin" || user?.role === "user") &&
-      !localStorage.getItem("MenheraGPTTour")
-    ) {
+    if (loading || !user) return;
+    if (!["admin", "user"].includes(user.role)) {
       localStorage.setItem("MenheraGPTTour", "true");
       setIsTourOpen(true);
     }

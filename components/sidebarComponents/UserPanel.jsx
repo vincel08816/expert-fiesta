@@ -43,8 +43,8 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 const boxSx = {
   display: "flex",
   flexDirection: "row",
-  width: "calc(100%)",
-  p: 2,
+  width: "100%",
+  p: 1,
   alignItems: "center",
   // justifyContent: "center",
   border: "1px solid transparent",
@@ -221,7 +221,9 @@ const UserPanel = () => {
           sx={boxSx}
           onClick={() => {
             setUser();
-            axios.delete("/api/user/logout").catch((error) => {});
+            axios.delete("/api/user/logout").catch((error) => {
+              console.error(error);
+            });
           }}
         >
           <LogoutIcon />

@@ -74,8 +74,9 @@ const PromptHeaderPreset = () => {
           "aria-labelledby": "basic-button",
         }}
       >
-        {presets.map(({ title, text }) => (
+        {presets.map(({ title, text }, i) => (
           <MenuItem
+            key={title + i}
             sx={{ fontSize: "12px" }}
             name="topText"
             value={text}
@@ -96,6 +97,7 @@ const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   backgroundColor: "white",
+
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,

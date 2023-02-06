@@ -43,7 +43,6 @@ const verifyConversationAndSaveMessage = async (
 
     if (!conversation) {
       conversation = new Conversation({ userId });
-      if (title) conversation.title = title;
       conversationId = conversation._id;
     }
 
@@ -69,6 +68,7 @@ const verifyConversationAndSaveMessage = async (
     };
 
     if (response?.choices) {
+      console.log(response.choices)
       newMessageData.text = response.choices[0].text;
     } else {
       newMessageData.imageUrl = response.data[0].url;

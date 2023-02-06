@@ -6,6 +6,43 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import d from "react-syntax-highlighter/dist/cjs/styles/prism/tomorrow";
 import { useAppContext } from "../../contexts/AppContext";
 
+const CodeBlock = ({ text }) => {
+  const { width, open } = useAppContext();
+  const fontSize = width > 600 ? 15 : width > 400 ? 14 : 13;
+
+  return splitString(text).map(({ type, value, language }, index) => {
+    if (type === "text") {
+      const typeSx = { maxWidth: "95vw", whiteSpace: "pre-wrap", fontSize };
+      return <Typography key={index} sx={typeSx} children={value || ""} />;
+    }
+
+    return (
+      <Box key={index} sx={{ maxWidth: "95vw", mt: 0.3 }}>
+        <CodeHeader language={language?.toLowerCase()} value={value} />
+        <SyntaxHighlighter
+          children={value || ""}
+          wrapLines={true}
+          language={language?.trim().toLowerCase() || "none"}
+          style={d}
+          lineProps={{
+            style: { wordBreak: "break-word", whiteSpace: "pre-wrap" },
+          }}
+          customStyle={{
+            width: "auto",
+            fontSize: `${fontSize}px`,
+            padding: "15px",
+            backgroundColor: "black",
+            fontFamily: "initial",
+            borderBottomRightRadius: "8px",
+            borderBottomLeftRadius: "8px",
+            margin: 0,
+          }}
+        />
+      </Box>
+    );
+  });
+};
+
 function splitString(str) {
   const results = [];
   const regex = /```(\w+)?\n([\s\S]+?)```/g;
@@ -65,43 +102,6 @@ const CodeHeader = ({ language, value }) => {
       </Button>
     </Box>
   );
-};
-
-const CodeBlock = ({ text }) => {
-  const { width, open } = useAppContext();
-  const fontSize = width > 600 ? 15 : width > 400 ? 14 : 13;
-
-  return splitString(text).map(({ type, value, language }, index) => {
-    if (type === "text") {
-      const typeSx = { maxWidth: "95vw", whiteSpace: "pre-wrap", fontSize };
-      return <Typography key={index} sx={typeSx} children={value || ""} />;
-    }
-
-    return (
-      <Box key={index} sx={{ maxWidth: "95vw" }}>
-        <CodeHeader language={language?.toLowerCase()} value={value} />
-        <SyntaxHighlighter
-          children={value || ""}
-          wrapLines={true}
-          language={language?.trim().toLowerCase() || "none"}
-          style={d}
-          lineProps={{
-            style: { wordBreak: "break-word", whiteSpace: "pre-wrap" },
-          }}
-          customStyle={{
-            width: "auto",
-            fontSize: `${fontSize}px`,
-            padding: "15px",
-            backgroundColor: "black",
-            fontFamily: "initial",
-            borderBottomRightRadius: "8px",
-            borderBottomLeftRadius: "8px",
-            margin: 0,
-          }}
-        />
-      </Box>
-    );
-  });
 };
 
 export default CodeBlock;

@@ -3,7 +3,12 @@ import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
-import { Checkbox, Tooltip, Typography } from "@mui/material";
+import {
+  Avatar as UserAvatar,
+  Checkbox,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useState } from "react";
@@ -12,53 +17,27 @@ import { useAppContext } from "../../contexts/AppContext";
 import { formatDate } from "../../utils/util";
 import CodeBlock from "./CodeBlock";
 
-import {
-  Badge,
-  hoverIconSx,
-  iconSx,
-  StyledImage,
-  StyledUserLogo,
-} from "./MessageSx";
+import { Badge, hoverIconSx, iconSx, StyledImage } from "./MessageSx";
 
 const Message = (props) => {
-  const {
-    isBot,
-    user,
-    updatedAt,
-    text,
-    selected,
-    index,
-    imageUrl,
-    bookmarked,
-    _id,
-  } = props;
+  const { isBot, user, updatedAt, text, selected, imageUrl, key } = props;
   const [show, setShow] = useState(false);
   const handleMouseOver = () => setShow(true);
   const handleMouseOut = () => setShow(false);
 
-  const messageSx = {
-    whitespace: "pre",
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "reverse",
-    mb: 1,
-    padding: "5px 12px 15px",
-    borderRadius: 2,
+  const selectedMessageSx = {
     backgroundColor: selected && "#fbfbfb",
     border: `1px solid ${selected ? "#bcdbfd" : "transparent"}`,
-    "&:hover": {
-      backgroundColor: "rgba(52,53,65,0.05)",
-    },
   };
 
   return (
     <Box
+      key={key}
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
-      sx={messageSx}
+      sx={{ ...messageSx, ...selectedMessageSx }}
     >
-      <Avatar />
+      <Avatar isBot={isBot} />
       <Box
         sx={{
           display: "flex",
@@ -67,6 +46,7 @@ const Message = (props) => {
           justifyContent: "center",
         }}
       >
+        <Hoverbar display={show ? "flex" : "none"} {...props} />
         <Box
           sx={{
             display: "flex",
@@ -81,7 +61,6 @@ const Message = (props) => {
           <Typography sx={{ opacity: 0.6, fontSize: 12 }}>
             {formatDate(updatedAt) || ""}
           </Typography>
-          <Hoverbar display={show ? "flex" : "none"} {...props} />
         </Box>
 
         <Box
@@ -104,26 +83,45 @@ const Message = (props) => {
 
 export default Message;
 
+const avatarSize = 48;
+
 const Avatar = ({ isBot }) => (
   <Box sx={LogoContainerSx}>
-    <StyledUserLogo
+    <UserAvatar
+      alt="user_avatar"
+      sx={{
+        width: avatarSize,
+        height: avatarSize,
+      }}
       src={
-        isBot === "OpenAI"
-          ? "https://media.discordapp.net/attachments/594312779545051221/1068575020361715774/sticker2.png"
-          : "https://media.discordapp.net/attachments/594312779545051221/1068574850203009144/sticker29.png"
+        isBot
+          ? `https://cdn.discordapp.com/emojis/998700689964400710.gif?size=48&quality=lossless`
+          : `https://cdn.discordapp.com/emojis/998700676471333014.gif?size=48&quality=lossless`
       }
     />
   </Box>
 );
 
 const BotBadge = ({ isBot }) => {
+  const { user } = useAppContext();
+
   return isBot ? (
     <Badge>
       <DoneIcon style={{ height: "14px", width: "14px", marginRight: "2px" }} />
       Bot
     </Badge>
   ) : (
-    <Box sx={{ width: 8 }} />
+    <Box sx={{ pl: 0.5, pr: 0.5 }}>
+      {user?.role === "admin" ? (
+        <UserAvatar
+          alt="crown"
+          sx={{ width: 24, height: 24 }}
+          src="https://cdn.discordapp.com/emojis/844861855414747148.gif?size=96&quality=lossless"
+        />
+      ) : (
+        ""
+      )}
+    </Box>
   );
 };
 
@@ -155,7 +153,15 @@ const Hoverbar = (props) => {
   };
 
   return (
-    <Box sx={{ flex: 1, display: "flex", flexDirection: "row-reverse" }}>
+    <Box
+      sx={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "row-reverse",
+        mt: 1,
+        mb: -1,
+      }}
+    >
       <Box
         sx={{
           border: "1px solid #dfe1e3",
@@ -200,14 +206,14 @@ const Hoverbar = (props) => {
             <Checkbox
               sx={{ ...iconSx, alignSelf: "center" }}
               checked={selected}
-              onChange={() => toggleCheck(user.username, index)}
+              onChange={() => toggleCheck(user?.username, index)}
               size="small"
             />
           </Box>
         </Tooltip>
 
         <Tooltip title="Delete Message">
-          <Box sx={hoverIconSx} handleDelete={handleDelete}>
+          <Box sx={hoverIconSx} onClick={handleDelete}>
             <DeleteIcon sx={iconSx} />
           </Box>
         </Tooltip>
@@ -216,12 +222,24 @@ const Hoverbar = (props) => {
   );
 };
 
+const messageSx = {
+  whitespace: "pre",
+  width: "100%",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "reverse",
+  mb: 1,
+  padding: "5px 12px 15px",
+  borderRadius: 2,
+  "&:hover": {
+    backgroundColor: "rgba(52,53,65,0.05)",
+  },
+};
+
 const LogoContainerSx = {
-  borderRadius: "50%",
+  borderRadius: "100%",
   mt: 1.5,
-  mr: 1,
-  width: 50,
-  height: 50,
+  mr: 2,
   "@media (max-width: 600px)": {
     display: "none",
   },
