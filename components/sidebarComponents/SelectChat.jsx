@@ -55,7 +55,7 @@ const SelectChat = () => {
         confirmButtonText: "Confirm",
       });
       if (swalResponse.isConfirmed && swalResponse.value?.trim().length) {
-        await axios.put(`/api/message/edit/${_id}`, {
+        await axios.put(`/api/conversation/title/${_id}`, {
           title: swalResponse.value,
         });
 
@@ -82,7 +82,7 @@ const SelectChat = () => {
       });
       if (swalResponse.isConfirmed) {
         console.log({ _id });
-        await axios.delete(`/api/message/conversation/${_id}`);
+        await axios.delete(`/api/conversation/${_id}`);
 
         setConversations((prev) => prev.filter((c) => c._id !== _id));
         setSelected();

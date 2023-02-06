@@ -86,7 +86,6 @@ export const useChat = () => {
         const { user, conversations } = res.data;
         setUser(user);
         setConversations(conversations);
-        console.log(conversations);
       })
       .catch((err) => console.error(err))
       .then((_) => setLoading(false));
@@ -110,7 +109,7 @@ export const useChat = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (isSending) return console.log("already sending");
+    if (isSending) return;
     if (!form.text.length || !form.text.trim().length)
       return Swal.fire({
         icon: "error",
@@ -127,7 +126,7 @@ export const useChat = () => {
       ? chatLog.slice(length)
       : chatLog.filter((message) => message.selected);
 
-    console.log(selectedMessages);
+    // console.log(selectedMessages);
 
     while (selectedMessages?.length) {
       const temp = selectedMessages
@@ -174,7 +173,7 @@ export const useChat = () => {
       });
     }
 
-    console.log({ prompt, max_tokens });
+    // console.log({ prompt, max_tokens });
 
     // create payload
     // prompt should be: pinned + selected previous messages + current text
@@ -218,10 +217,10 @@ export const useChat = () => {
 
     // if (form.model === "image-dalle-002") return submitImage(index);
 
-    console.log(
-      "conversationId",
-      conversations.length && selected && conversations[selected]._id
-    );
+    // console.log(
+    //   "conversationId",
+    //   conversations.length && selected && conversations[selected]._id
+    // );
 
     const axiosUrl =
       form.model === "image-dalle-002"
@@ -237,7 +236,6 @@ export const useChat = () => {
       })
       .then((response) => {
         const { openAIResponse, conversation, userMessageId } = response.data;
-        console.log(response.data);
         setChatLog((prev) => {
           let prevCopy = [...prev];
           prevCopy[index]._id = userMessageId; // replace FE sent message with real message id
@@ -261,7 +259,6 @@ export const useChat = () => {
             error: true,
           },
         ]);
-
         console.error(error);
       })
       .then(() => {
@@ -320,6 +317,8 @@ export const AppContextProvider = ({ children }) => {
   const chatProps = useChat();
   const { user } = chatProps;
   const [isTourOpen, setIsTourOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(true);
+  const [snackbarText, setSnackbarText] = useState("");
   const closeTour = () => setIsTourOpen(false);
 
   useEffect(() => {
@@ -334,7 +333,17 @@ export const AppContextProvider = ({ children }) => {
 
   return (
     <AppContext.Provider
-      value={{ ...chatProps, isTourOpen, closeTour, width, height }}
+      value={{
+        ...chatProps,
+        isTourOpen,
+        closeTour,
+        width,
+        height,
+        snackbarOpen,
+        setSnackbarOpen,
+        snackbarText,
+        setSnackbarText,
+      }}
     >
       {children}
     </AppContext.Provider>

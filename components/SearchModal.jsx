@@ -11,20 +11,17 @@ import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
 import Swal from "sweetalert2";
 import CodeBlock from "../components/chatComponents/CodeBlock";
 import { useAppContext } from "../contexts/AppContext";
 import { formatDate } from "../utils/util";
-
-const iconSx = {
-  width: "25px",
-  height: "25px",
-  "@media (max-width: 600px)": {
-    width: "18px",
-    height: "18px",
-  },
-};
+import {
+  Badge,
+  hoverIconSx,
+  iconSx,
+  StyledImage,
+  StyledUserLogo,
+} from "./chatComponents/MessageSx";
 
 const style = {
   maxWidth: 1200,
@@ -44,15 +41,8 @@ const style = {
   },
 };
 
-const Message = ({
-  isBot,
-  updatedAt,
-  text,
-  selected,
-  imageUrl,
-  bookmarked,
-  _id,
-}) => {
+const Message = (props) => {
+  const { isBot, updatedAt, text, selected, imageUrl, bookmarked, _id } = props;
   const [show, setShow] = useState(false);
   const handleMouseOver = () => setShow(true);
   const handleMouseOut = () => setShow(false);
@@ -158,17 +148,7 @@ const Message = ({
             >
               <Tooltip title="Bookmark">
                 <Box
-                  sx={{
-                    p: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-
-                    alignSelf: "center",
-                    "&:hover": {
-                      backgroundColor: "#dfe1e3",
-                    },
-                  }}
+                  sx={hoverIconSx}
                   onClick={() =>
                     navigator.clipboard.writeText(imageUrl ? imageUrl : text)
                   }
@@ -182,36 +162,18 @@ const Message = ({
               </Tooltip>
               <Tooltip title="Copy to clipboard">
                 <Box
-                  sx={{
-                    p: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    alignSelf: "center",
-                    "&:hover": {
-                      backgroundColor: "#dfe1e3",
-                    },
-                  }}
+                  sx={hoverIconSx}
                   onClick={() =>
                     navigator.clipboard.writeText(imageUrl ? imageUrl : text)
                   }
                 >
-                  <ContentCopyIcon sx={iconSx} />
+                  <ContentCopyIcon sx={{ height: 18, width: 18 }} />
                 </Box>
               </Tooltip>
 
               <Tooltip title="Delete Message">
                 <Box
-                  sx={{
-                    p: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    alignSelf: "center",
-                    "&:hover": {
-                      backgroundColor: "#dfe1e3",
-                    },
-                  }}
+                  sx={hoverIconSx}
                   onClick={async () => {
                     try {
                       const response = await Swal.fire({
@@ -422,31 +384,3 @@ export default function SearchModal() {
     </div>
   );
 }
-
-const StyledImage = styled.img`
-  max-width: 80vw;
-  max-height: 80vw;
-  margin-top: 15px;
-  width: 256px;
-  height: 256px;
-`;
-
-const StyledUserLogo = styled.img`
-  width: 100%;
-`;
-
-const Badge = styled.div`
-  display: flex;
-  white-space: nowrap;
-  align-items: center;
-  justify-content: space-around;
-  padding: 3px 7px;
-  margin: -1.5px 7px 0 7px;
-  background-color: #1a76d2;
-  font-size: 12px;
-  color: white;
-  border-radius: 5px;
-  @media screen and (max-width: 600px) {
-    font-size: 10px;
-  } ;
-`;

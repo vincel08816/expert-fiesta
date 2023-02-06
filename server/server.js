@@ -28,6 +28,7 @@ nextApp
     app.use("/api/auth", require("./routes/auth"));
     app.use("/api/user", require("./routes/user"));
     app.use("/api/message", require("./routes/message"));
+    app.use("/api/conversation", require("./routes/conversation"));
 
     // nextjs here
     [

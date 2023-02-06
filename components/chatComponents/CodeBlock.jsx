@@ -8,7 +8,7 @@ import { useAppContext } from "../../contexts/AppContext";
 
 function splitString(str) {
   const results = [];
-  const regex = /```(\w+)?\n([\s\S]+?)\n```/g;
+  const regex = /```(\w+)?\n([\s\S]+?)```/g;
   let match;
   let lastIndex = 0;
 
@@ -29,35 +29,43 @@ function splitString(str) {
   return results;
 }
 
-const CodeHeader = ({ language, value }) => (
-  <Box
-    sx={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      backgroundColor: "#343441",
-      color: "#d9d9e3",
-      borderTopLeftRadius: "8px",
-      borderTopRightRadius: "8px",
-      padding: "4px 22px",
-    }}
-  >
-    <Typography variant="caption">{language}</Typography>
-    <Button
-      onClick={() => navigator.clipboard.writeText(value)}
+const CodeHeader = ({ language, value }) => {
+  const { setSnackbarOpen, setSnackbarText } = useAppContext();
+
+  return (
+    <Box
       sx={{
         display: "flex",
+        justifyContent: "space-between",
         alignItems: "center",
-        color: "inherit",
-        textTransform: "none",
-        p: 0,
+        backgroundColor: "#343441",
+        color: "#d9d9e3",
+        borderTopLeftRadius: "8px",
+        borderTopRightRadius: "8px",
+        padding: "4px 22px",
       }}
     >
-      <ContentPasteIcon sx={{ width: 16, mr: 1 }} />
-      <Typography variant="caption">Copy code</Typography>
-    </Button>
-  </Box>
-);
+      <Typography variant="caption">{language}</Typography>
+      <Button
+        onClick={() => {
+          navigator.clipboard.writeText(value);
+          setSnackbarText("Copied Code");
+          setSnackbarOpen(true);
+        }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          color: "inherit",
+          textTransform: "none",
+          p: 0,
+        }}
+      >
+        <ContentPasteIcon sx={{ width: 16, mr: 1 }} />
+        <Typography variant="caption">Copy code</Typography>
+      </Button>
+    </Box>
+  );
+};
 
 const CodeBlock = ({ text }) => {
   const { width, open } = useAppContext();
@@ -71,11 +79,11 @@ const CodeBlock = ({ text }) => {
 
     return (
       <Box key={index} sx={{ maxWidth: "95vw" }}>
-        <CodeHeader language={language} value={value} />
+        <CodeHeader language={language?.toLowerCase()} value={value} />
         <SyntaxHighlighter
           children={value || ""}
           wrapLines={true}
-          language={language?.trim() || "none"}
+          language={language?.trim().toLowerCase() || "none"}
           style={d}
           lineProps={{
             style: { wordBreak: "break-word", whiteSpace: "pre-wrap" },

@@ -263,40 +263,6 @@ router.get(
   }
 );
 
-// @route    PUT /api/message/:id
-// @desc     Edit conversation based on converationId and userId
-// @access   Private
-
-router.put(
-  "/edit/:id",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    try {
-      const conversationId = req.params.id;
-      const userId = req.user.id;
-      const { title } = req.body;
-
-      console.log("/api/message/edit/:id", { conversationId, title });
-
-      let conversation = await Conversation.findById(conversationId);
-
-      // this covers the case where conversation does not exist OR user does not match
-      if (conversation?.userId.toString() !== userId) {
-        console.error("Conversation does not exist or user does not match");
-        return res.sendStatus(404);
-      }
-
-      conversation.title = title;
-      conversation = await conversation.save();
-
-      res.sendStatus(200);
-    } catch (error) {
-      console.error(error);
-      res.sendStatus(500);
-    }
-  }
-);
-
 // @route    PUT /api/move-message/:id
 // @desc     Edit conversation based on converationId and userId
 // @access   Private
@@ -313,39 +279,6 @@ router.put(
         { $set: { conversationId } }
       );
       res.sendStatus(200);
-    } catch (error) {
-      console.error(error);
-      res.sendStatus(500);
-    }
-  }
-);
-
-// @route    DELETE /api/message/:id
-// @desc     Delete conversations and associated messages
-// @access   Private
-
-router.delete(
-  "/conversation/:id",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    try {
-      const conversationId = req.params.id;
-      const userId = req.user.id;
-
-      console.log("/api/message/conversation/:id (delete)", req.params.id);
-
-      const conversation = await Conversation.findById(conversationId);
-
-      // this covers the case where conversation does not exist OR user does not match
-      if (conversation?.userId.toString() !== userId) {
-        console.error("Conversation does not exist or user does not match");
-        return res.sendStatus(404);
-      }
-
-      const deletedMessages = await Message.deleteMany({ conversationId });
-      await Conversation.deleteOne({ _id: conversationId });
-
-      res.json({ deletedMessages });
     } catch (error) {
       console.error(error);
       res.sendStatus(500);

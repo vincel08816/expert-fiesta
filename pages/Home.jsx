@@ -1,6 +1,8 @@
+import MuiAlert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import CssBaseline from "@mui/material/CssBaseline";
+import Snackbar from "@mui/material/Snackbar";
 import { styled } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -8,6 +10,10 @@ import Content from "../components/chatComponents/Content";
 import TopBar from "../components/TopBar";
 import Tutorial from "../components/Tutorial";
 import { useAppContext } from "../contexts/AppContext";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={0} ref={ref} variant="filled" {...props} />;
+});
 
 const drawerWidth = 280;
 
@@ -56,12 +62,25 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function Home() {
-  const { loading, user, open, setOpen } = useAppContext();
+  const {
+    loading,
+    user,
+    open,
+    setOpen,
+    snackbarOpen,
+    setSnackbarOpen,
+    snackbarText,
+  } = useAppContext();
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
   const [value, setValue] = useState(0);
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") return;
+    setSnackbarOpen(false);
+  };
 
   useEffect(() => {
     if (!loading && !user) router.push("/login");
@@ -100,6 +119,17 @@ export default function Home() {
           setAnchorEl,
         }}
       />
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          {snackbarText}
+        </Alert>
+      </Snackbar>
 
       <StyledMain open={open}>
         <DrawerHeader />
