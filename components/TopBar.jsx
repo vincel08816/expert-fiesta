@@ -255,7 +255,7 @@ const TopBar = ({
 
           <Tooltip title="Automate Chat History">
             <IconButton
-              onClick={(event) => setAutoSelect((prev) => !prev)}
+              onClick={() => setAutoSelect((prev) => !prev)}
               sx={{
                 // display: "none",
                 border: `2px solid ${

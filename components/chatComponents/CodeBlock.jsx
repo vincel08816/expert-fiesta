@@ -4,7 +4,7 @@ import { Box } from "@mui/system";
 import React from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import d from "react-syntax-highlighter/dist/cjs/styles/prism/tomorrow";
-import useWindowSize from "../../hooks/useWindowSize";
+import { useAppContext } from "../../contexts/AppContext";
 
 function splitString(str) {
   const results = [];
@@ -14,10 +14,7 @@ function splitString(str) {
 
   while ((match = regex.exec(str)) !== null) {
     if (match.index > lastIndex) {
-      results.push({
-        type: "text",
-        value: str.slice(lastIndex, match.index),
-      });
+      results.push({ type: "text", value: str.slice(lastIndex, match.index) });
     }
 
     results.push({ type: "code", value: match[2], language: match[1] || null });
@@ -63,28 +60,20 @@ const CodeHeader = ({ language, value }) => (
 );
 
 const CodeBlock = ({ text }) => {
-  const { width: viewWidth, open } = useWindowSize();
-  const fontSize = viewWidth > 600 ? 15 : viewWidth > 400 ? 14 : 13;
+  const { width, open } = useAppContext();
+  const fontSize = width > 600 ? 15 : width > 400 ? 14 : 13;
 
   return splitString(text).map(({ type, value, language }, index) => {
-    if (type === "text")
-      return (
-        <Typography
-          key={index}
-          sx={{
-            maxWidth: "95vw",
-            whiteSpace: "pre-wrap",
+    if (type === "text") {
+      const typeSx = { maxWidth: "95vw", whiteSpace: "pre-wrap", fontSize };
+      return <Typography key={index} sx={typeSx} children={value || ""} />;
+    }
 
-            fontSize,
-          }}
-        >
-          {value}
-        </Typography>
-      );
     return (
       <Box key={index} sx={{ maxWidth: "95vw" }}>
         <CodeHeader language={language} value={value} />
         <SyntaxHighlighter
+          children={value || ""}
           wrapLines={true}
           language={language?.trim() || "none"}
           style={d}
@@ -101,9 +90,7 @@ const CodeBlock = ({ text }) => {
             borderBottomLeftRadius: "8px",
             margin: 0,
           }}
-        >
-          {value || ""}
-        </SyntaxHighlighter>
+        />
       </Box>
     );
   });

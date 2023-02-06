@@ -78,7 +78,7 @@ const Content = () => {
 
           {isSending ? <DotLoader /> : ""}
 
-          {form.text?.trim().length > 0 ? (
+          {form.text?.trim().length > 0 && !isSending ? (
             <IconsWithTooltips
               sx={{ m: 0, p: 0, mt: -0.5 }}
               title="Submit"

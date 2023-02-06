@@ -318,15 +318,19 @@ export const useAppContext = () => {
 export const AppContextProvider = ({ children }) => {
   const { width, height } = useWindowSize();
   const chatProps = useChat();
+  const { user } = chatProps;
   const [isTourOpen, setIsTourOpen] = useState(false);
   const closeTour = () => setIsTourOpen(false);
 
   useEffect(() => {
-    if (!localStorage.getItem("MenheraGPTTour")) {
+    if (
+      (user?.role === "admin" || user?.role === "user") &&
+      !localStorage.getItem("MenheraGPTTour")
+    ) {
       localStorage.setItem("MenheraGPTTour", "true");
       setIsTourOpen(true);
     }
-  }, []);
+  }, [user]);
 
   return (
     <AppContext.Provider
