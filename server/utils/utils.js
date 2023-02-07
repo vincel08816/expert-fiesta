@@ -37,7 +37,7 @@ const uploadSingleFile = async (fileName, fileUrl) => {
     });
 
     console.log('Filfile.data.e Uploaded', name, id, file.data.thumbnailLink);
-    return thumbnailLink;
+    return file.data.thumbnailLink;
   } catch (error) {
     throw new Error(error);
   }

@@ -37,7 +37,7 @@ const Message = (props) => {
       onMouseOut={handleMouseOut}
       sx={{ ...messageSx, ...selectedMessageSx }}
     >
-      {/* <Avatar isBot={isBot} /> */}
+      <Avatar isBot={isBot} />
       <Box
         sx={{
           display: "flex",
