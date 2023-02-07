@@ -90,12 +90,14 @@ export const useChat = () => {
       .then((_) => setLoading(false));
   }, []);
 
+  // set form fields
   const handleChange = (event) => {
     event.preventDefault();
     const { name, value } = event.target;
     setForm({ ...form, [name]: value });
   };
 
+  // toggle selected message
   const toggleCheck = (user, index) => {
     setChatLog((prev) => {
       let copy = [...prev];
@@ -104,7 +106,7 @@ export const useChat = () => {
     });
   };
 
-  // don't forget to handle edge cases such as empty text field
+  // submit new message
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -117,15 +119,13 @@ export const useChat = () => {
       });
     setIsSending(true);
 
-    // Manually selecting messages to send as chat history.
+    // 1. Manually selecting messages to send as chat history.
     const max = form.model === "text-davinci-003" ? 3500 : 1500;
 
     const length = 6 > chatLog.length ? 0 : chatLog.length - 6;
     let selectedMessages = autoSelect
       ? chatLog.slice(length)
       : chatLog.filter((message) => message.selected);
-
-    // console.log(selectedMessages);
 
     while (selectedMessages?.length) {
       const temp = selectedMessages

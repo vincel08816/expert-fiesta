@@ -154,8 +154,7 @@ router.post(
 
       const moderationResults = await sendModerationRequest(text);
 
-      console.log(moderationResults);
-      if (moderation[0].flagged === true) {
+      if (moderationResults[0].flagged === true) {
         return res.status(403);
       }
 

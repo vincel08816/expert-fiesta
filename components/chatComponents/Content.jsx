@@ -17,6 +17,7 @@ const Content = () => {
     handleSubmit,
     toggleCheck,
     isSending,
+    width,
   } = useAppContext();
 
   return (
@@ -63,14 +64,14 @@ const Content = () => {
             name={"text"}
             onChange={handleChange}
             style={{
+              fontSize: width > 600 ? 14 : 13,
               padding: "10px 20px",
-              minHeight: "22px",
-              maxHeight: "350px",
+              minHeight: 22,
+              maxHeight: 350,
               resize: "none",
               flex: 1,
               overflow: "auto",
               fontFamily: "Noto Sans, sans-serif",
-              // backgroundColor: "#ebedef",
               border: "none",
               outline: "none",
             }}

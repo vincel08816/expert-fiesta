@@ -20,8 +20,14 @@ const presets = [
     text: "",
   },
   {
+    title: "default",
+    text: "The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.",
+  },
+  {
     title: "Code",
-    text: "Wrap code blocks in 3 backticks followed by the language and a new line. But don't do that with for non-code responses",
+    text: `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly. 
+    The assistant will wrap code blocks in 3 backticks followed by the language and a new line.
+  `,
   },
 ];
 
@@ -89,7 +95,7 @@ const FormComponent = ({
   name,
 }) => (
   <FormControl sx={{ mt: 2 }}>
-    <Tooltip title={helperText} placement="bottom">
+    <Tooltip title={helperText} placement="top">
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="body2">{title}</Typography>
         <Typography variant="body2">{state}</Typography>
@@ -110,7 +116,7 @@ const FormComponent = ({
   </FormControl>
 );
 
-const Settings = () => {
+const Settings = (display) => {
   const { form, handleChange } = useAppContext();
 
   const {
@@ -125,9 +131,10 @@ const Settings = () => {
 
   return (
     <Box
+      key={"API Settings"}
       sx={{
         flex: 1,
-        display: "flex",
+        display,
         flexDirection: "column",
         p: 3,
         pt: 1,

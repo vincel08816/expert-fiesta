@@ -60,7 +60,7 @@ const LargeDot = styled(Box)(({ theme }) => ({
   borderRadius: "50%",
 }));
 
-const UserPanel = () => {
+const UserPanel = (display) => {
   const { user, setUser } = useAppContext();
   const [bio, setBio] = useState("");
   const [users, setUsers] = useState([]);
@@ -108,9 +108,10 @@ const UserPanel = () => {
 
   return (
     <Box
+      key="User Panel"
       sx={{
         flex: 1,
-        display: "flex",
+        display,
         flexDirection: "column",
         p: 3,
         overflow: "scroll",

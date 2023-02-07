@@ -38,7 +38,7 @@ const containerSx = {
   scrollbarWidth: "none",
 };
 
-const SelectChat = () => {
+const SelectChat = ({ display }) => {
   const { selected, setSelected, conversations, setConversations, setChatLog } =
     useAppContext();
 
@@ -94,7 +94,7 @@ const SelectChat = () => {
   };
 
   return (
-    <Box sx={containerSx}>
+    <Box key={"Select Chat"} sx={{ ...containerSx, display }}>
       <Box
         sx={{ ...titleSx, border: "1px solid black", padding: "8px" }}
         onClick={() => {

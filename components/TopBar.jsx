@@ -16,7 +16,7 @@ import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import { styled, useTheme } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
-import React, { useState } from "react";
+import React from "react";
 import { useAppContext } from "../contexts/AppContext";
 import MoveConversationModal from "./MoveConversationModal";
 import SearchModal from "./SearchModal";
@@ -27,77 +27,11 @@ import SidebarNav from "./SidebarNav";
 
 const drawerWidth = 280;
 
-const SidebarArray = [<SelectChat />, <Settings />, <UserPanel />];
-
-const presets = [
-  {
-    title: "None",
-    text: "",
-  },
-  {
-    title: "default",
-    text: "The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.",
-  },
-  {
-    title: "Code",
-    text: `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly. 
-    The assistant will wrap code blocks in 3 backticks followed by the language and a new line. But don't do that with for non-code responses.
-  `,
-  },
-];
-
-const PromptHeaderPreset = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const { handleChange } = useAppContext();
-
-  return (
-    <>
-      <Button
-        variant="contained"
-        onClick={(event) => setAnchorEl(event.currentTarget)}
-        sx={{
-          border: "2px solid rgba(0,0,0,.1)",
-          p: 0.5,
-          mt: 0.2,
-          borderRadius: "8px",
-        }}
-      >
-        Preset
-      </Button>
-      <Menu
-        sx={{ borderRadius: "8px" }}
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={openSelectMenu}
-        onClose={() => setAnchorEl(null)}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
-      >
-        {presets.map(({ title, text }, i) => (
-          <MenuItem
-            key={title + i}
-            sx={{ fontSize: "12px" }}
-            name="topText"
-            value={text}
-            onClick={(e) => {
-              handleChange(e);
-              setAnchorEl(null);
-            }}
-          >
-            {title}
-          </MenuItem>
-        ))}
-      </Menu>
-    </>
-  );
-};
-
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
-  backgroundColor: "white",
-
+  backdropFilter: "blur(6px)",
+  backgroundColor: "transparent",
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -120,7 +54,9 @@ const StyledAppBar = ({ children, open }) => {
       <AppBar open={open}>
         <Toolbar
           sx={{
-            backgroundColor: "white",
+            backgroundColor: "transparent",
+            backdropFilter: "blur(6px)",
+
             color: "black",
             flexDirection: "row",
             alignItems: "center",
@@ -134,7 +70,6 @@ const StyledAppBar = ({ children, open }) => {
   }
   return (
     <MuiAppBar>
-      {" "}
       <Toolbar
         sx={{
           backgroundColor: "white",
@@ -355,7 +290,14 @@ const TopBar = ({
             )}
           </IconButton>
         </DrawerHeader>
-        {SidebarArray[value]}
+        {[SelectChat, Settings, UserPanel].map((Panel, index) => {
+          return (
+            <Panel
+              key={index + "panel"}
+              display={value === index ? "flex" : "none"}
+            />
+          );
+        })}
         <SidebarNav value={value} setValue={setValue} />
       </Drawer>
     </>
