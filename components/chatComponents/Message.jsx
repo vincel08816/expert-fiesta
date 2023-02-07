@@ -14,9 +14,10 @@ import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { useAppContext } from "../../contexts/AppContext";
+import { useEventContext } from "../../pages/Home";
+import { useUserContext } from "../../pages/_app";
 import { formatDate } from "../../utils/util";
 import CodeBlock from "./CodeBlock";
-
 import { Badge, hoverIconSx, iconSx, StyledImage } from "./MessageSx";
 
 const Message = (props) => {
@@ -46,7 +47,7 @@ const Message = (props) => {
           justifyContent: "center",
         }}
       >
-        <Hoverbar display={show ? "flex" : "none"} {...props} />
+        {/* <Hoverbar display={show ? "flex" : "none"} {...props} /> */}
         <Box
           sx={{
             display: "flex",
@@ -73,7 +74,13 @@ const Message = (props) => {
           {text ? (
             <CodeBlock text={text?.trim()} />
           ) : imageUrls?.length ? (
-            imageUrls.map((imageUrl) => <StyledImage src={imageUrl} />)
+            imageUrls.map((imageUrl) => (
+              <StyledImage
+                referrerPolicy="no-referrer"
+                src={imageUrl}
+                alt="dalle"
+              />
+            ))
           ) : (
             <StyledImage src="" alt="dalle" />
           )}
@@ -105,7 +112,7 @@ const Avatar = ({ isBot }) => (
 );
 
 const BotBadge = ({ isBot }) => {
-  const { user } = useAppContext();
+  const { user } = useUserContext();
 
   return isBot ? (
     <Badge>
@@ -129,8 +136,9 @@ const BotBadge = ({ isBot }) => {
 
 const Hoverbar = (props) => {
   const { _id, imageUrl, text, bookmarked, selected, index, display } = props;
-  const { setChatLog, toggleCheck, user, setSnackbarOpen, setSnackbarText } =
-    useAppContext();
+  const { setSnackbarOpen, setSnackbarText } = useEventContext();
+  const { setChatLog, toggleCheck } = useAppContext();
+  const { user } = useUserContext();
 
   const handleDelete = async () => {
     try {

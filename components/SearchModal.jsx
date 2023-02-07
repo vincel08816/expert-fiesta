@@ -13,7 +13,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import CodeBlock from "../components/chatComponents/CodeBlock";
-import { useAppContext } from "../contexts/AppContext";
+import { useUserContext } from "../pages/_app";
 import { formatDate } from "../utils/util";
 import {
   Badge,
@@ -48,7 +48,7 @@ const Message = (props) => {
   const handleMouseOut = () => setShow(false);
   const {
     user: { username },
-  } = useAppContext();
+  } = useUserContext();
 
   const display = show ? "flex" : "none";
 
@@ -230,7 +230,7 @@ export default function SearchModal() {
   const [results, setResults] = useState([]);
   const [keyword, setKeyword] = useState("");
 
-  const { user } = useAppContext();
+  const { user } = useUserContext();
 
   useEffect(() => {
     if (keyword?.length < 3) setResults([]);

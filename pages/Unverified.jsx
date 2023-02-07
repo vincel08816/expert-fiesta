@@ -6,11 +6,11 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import { useAppContext } from "../contexts/AppContext";
+import { useUserContext } from "./_app";
 
 export default function Unverified() {
   const router = useRouter();
-  const { loading, user, setUser } = useAppContext();
+  const { loading, user, setUser } = useUserContext();
 
   useEffect(() => {
     console.log(user);

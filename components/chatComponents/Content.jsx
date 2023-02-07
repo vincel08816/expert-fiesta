@@ -2,23 +2,184 @@ import { TextareaAutosize } from "@mui/base";
 import SendIcon from "@mui/icons-material/Send";
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import { useAppContext } from "../../contexts/AppContext";
+import { useFormContext } from "../../contexts/FormContext";
+import useWindowSize from "../../hooks/useWindowSize";
+import { useUserContext } from "../../pages/_app";
 import DotLoader from "../DotLoader";
 import IconsWithTooltips from "../IconsWithTooltips";
 import ChatLog from "./ChatLog";
 
 const Content = () => {
+  const { user, conversations, setConversations } = useUserContext();
+  const { form, handleChange, clearText } = useFormContext();
   const {
-    form,
-    handleChange,
     setChatLog,
     chatLog,
-    handleSubmit,
     toggleCheck,
-    isSending,
-    width,
+    autoSelect,
+    selected,
+    setSelected,
+    // isSending,
   } = useAppContext();
+  const { width } = useWindowSize();
+
+  const [isSending, setIsSending] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (isSending) return;
+    if (!form.text.length || !form.text.trim().length)
+      return Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Please enter a valid message",
+      });
+    setIsSending(true);
+
+    // 1. Manually selecting messages to send as chat history.
+    const max = form.model === "text-davinci-003" ? 3500 : 1500;
+
+    const length = 6 > chatLog.length ? 0 : chatLog.length - 6;
+    let selectedMessages = autoSelect
+      ? chatLog.slice(length)
+      : chatLog.filter((message) => message.selected);
+
+    while (selectedMessages?.length) {
+      const temp = selectedMessages
+        .map(
+          (message) =>
+            `${message.isBot ? "\n AI:" : "\n Human:"}: ${message.text}${
+              message.isBot ? "\n" : ""
+            }`
+        )
+        .join("\n");
+      const prompt =
+        form.topText + "\n" + temp + "Human:\n" + form.text + "\nAI:";
+      const max_tokens = parseInt(max - prompt.length / 4);
+
+      if (max_tokens >= 0) {
+        break;
+      } else {
+        selectedMessages.shift();
+      }
+    }
+
+    selectedMessages = selectedMessages.map(
+      (message) =>
+        `\n${message.isBot ? "\n AI" : "\n Human"}: ${message.text}${
+          message.isBot ? "\n" : ""
+        }`
+    );
+
+    const prompt =
+      form.topText +
+      "\n" +
+      selectedMessages +
+      "\n Human:" +
+      form.text +
+      "\nAI:";
+
+    const max_tokens = parseInt(max - prompt.length / 4);
+
+    if (max_tokens <= 0) {
+      return Swal.fire({
+        icon: "error",
+        title: "Prompt is too long",
+        text: "Please remove some of the selected messages",
+      });
+    }
+
+    // create payload
+    // prompt should be: pinned + selected previous messages + current text
+
+    const payload =
+      form.model === "image-dalle-002"
+        ? {
+            prompt: form.text,
+            n: form.number,
+            size: form.size,
+          }
+        : {
+            model: form.model,
+            temperature: form.temperature,
+            top_p: form.topP,
+            frequency_penalty: form.frequencyPenalty,
+            presence_penalty: form.presencePenalty,
+            best_of: form.bestOf,
+            prompt,
+            max_tokens,
+            stop: [" Human:", " AI:"],
+          };
+
+    // add new message to chat log and clear form
+    // add message to chatLog array
+
+    const index = chatLog.length; // index of new message from user
+    setChatLog((prev) => [
+      ...prev,
+      {
+        user: user.username,
+        isBot: false,
+        updatedAt: Date.now(),
+        text: form.text,
+        selected: true,
+      },
+    ]);
+
+    clearText();
+
+    // console.log(
+    //   "conversationId",
+    //   conversations.length && selected && conversations[selected]._id
+    // );
+
+    const axiosUrl =
+      form.model === "image-dalle-002"
+        ? "/api/message/image"
+        : "/api/message/text";
+
+    axios
+      .post(axiosUrl, {
+        payload,
+        text: form.text,
+        conversationId:
+          selected !== undefined ? conversations[selected]._id : undefined,
+      })
+      .then((response) => {
+        const { openAIResponse, conversation, userMessageId } = response.data;
+        setChatLog((prev) => {
+          let prevCopy = [...prev];
+          prevCopy[index]._id = userMessageId; // replace FE sent message with real message id
+          prevCopy.push({ ...openAIResponse, user: "OpenAI", selected: true });
+          return prevCopy;
+        });
+
+        if (selected === undefined) {
+          setConversations((prev) => [conversation, ...prev]);
+          setSelected(0);
+        }
+      })
+      .catch((error) => {
+        setChatLog((prev) => [
+          ...prev,
+          {
+            user: "OpenAI",
+            updatedAt: Date.now(),
+            text: "Could not send message.",
+            selected: true,
+            error: true,
+          },
+        ]);
+        console.error(error);
+      })
+      .then(() => {
+        setIsSending(false);
+      });
+  };
 
   return (
     <>

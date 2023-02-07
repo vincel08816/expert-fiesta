@@ -11,6 +11,25 @@ const axios = require("axios");
 // @desc     Edit the conversation title
 // @access   Private
 
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    try {
+      const conversations = await Conversation.find({
+        userId: req.user.id,
+      }).sort({
+        updatedAt: -1,
+      });
+
+      res.json({ conversations });
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  }
+);
+
 router.put(
   "/title/:id",
   passport.authenticate("jwt", { session: false }),
@@ -20,7 +39,10 @@ router.put(
       const userId = req.user.id;
       const { title } = req.body;
 
-      console.log("put: /api/conversation/title/:id", { conversationId, title });
+      console.log("put: /api/conversation/title/:id", {
+        conversationId,
+        title,
+      });
 
       let conversation = await Conversation.findById(conversationId);
 
@@ -74,5 +96,4 @@ router.delete(
   }
 );
 
-
-module.exports = router
+module.exports = router;

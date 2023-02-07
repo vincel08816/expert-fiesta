@@ -4,10 +4,12 @@ import { Box } from "@mui/system";
 import React from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import d from "react-syntax-highlighter/dist/cjs/styles/prism/tomorrow";
-import { useAppContext } from "../../contexts/AppContext";
+import useWindowSize from "../../hooks/useWindowSize";
+import { useEventContext } from "../../pages/Home";
 
 const CodeBlock = ({ text }) => {
-  const { width, open } = useAppContext();
+  const { width } = useWindowSize();
+
   const fontSize = width > 600 ? 15 : width > 400 ? 14 : 13;
 
   return splitString(text).map(({ type, value, language }, index) => {
@@ -67,7 +69,7 @@ function splitString(str) {
 }
 
 const CodeHeader = ({ language, value }) => {
-  const { setSnackbarOpen, setSnackbarText } = useAppContext();
+  const { setSnackbarOpen, setSnackbarText } = useEventContext();
 
   return (
     <Box

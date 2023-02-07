@@ -3,13 +3,13 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useAppContext } from "../contexts/AppContext";
+import { useUserContext } from "./_app";
 
 const emptyUsernameError = "Username cannot be empty.";
 const emptyPasswordError = "Password cannot be empty.";
 
 export default function Login() {
-  const { user, setUser } = useAppContext();
+  const { user, setUser } = useUserContext();
   const [username, setUsername] = useState("");
   const [usernameError, setUsernameError] = useState();
   const [password, setPassword] = useState("");

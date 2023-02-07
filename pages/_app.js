@@ -1,13 +1,18 @@
 import { Box } from "@mui/system";
 import axios from "axios";
 import Head from "next/head";
-import React, { createContext, useEffect, useState } from "react";
-import { AppContextProvider } from "../contexts/AppContext";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import "./../styles/_app.css";
 
 const UserContext = createContext();
 
-export const useUserContext = () => {}
+export const useUserContext = () => {
+  const context = useContext(UserContext);
+  if (context === undefined) {
+    throw new Error("useAppContext must be used within a AppProvider");
+  }
+  return context;
+};
 
 function App({ Component, pageProps }) {
   const [user, setUser] = useState();
@@ -22,10 +27,16 @@ function App({ Component, pageProps }) {
         setConversations(conversations);
       })
       .catch((err) => console.error(err))
-      .then((_) => setLoading(false));
+      .then(() => setLoading(false));
   }, []);
 
-  const userValues = { user, setUser, loading, conversations, setConversations };
+  const userValues = {
+    user,
+    setUser,
+    loading,
+    conversations,
+    setConversations,
+  };
 
   return (
     <>
@@ -50,24 +61,22 @@ function App({ Component, pageProps }) {
         <title>MenheraGPT</title>
       </Head>
       <UserContext.Provider value={userValues}>
-        <AppContextProvider>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              position: "absolute",
-              height: "100vh",
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              fontFamily: "Noto Sans, sans-serif",
-              overflow: "hidden",
-            }}
-          >
-            <Component {...pageProps} />
-          </Box>
-        </AppContextProvider>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            position: "absolute",
+            height: "100vh",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            fontFamily: "Noto Sans, sans-serif",
+            overflow: "hidden",
+          }}
+        >
+          <Component {...pageProps} />
+        </Box>
       </UserContext.Provider>
     </>
   );

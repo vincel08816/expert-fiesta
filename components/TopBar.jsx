@@ -18,6 +18,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import React from "react";
 import { useAppContext } from "../contexts/AppContext";
+import useWindowSize from "../hooks/useWindowSize";
 import MoveConversationModal from "./MoveConversationModal";
 import SearchModal from "./SearchModal";
 import SelectChat from "./sidebarComponents/SelectChat";
@@ -48,8 +49,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 const StyledAppBar = ({ children, open }) => {
-  const { width } = useAppContext();
-  if (width > 600) {
+  if (useWindowSize().width > 600) {
     return (
       <AppBar open={open}>
         <Toolbar
@@ -96,22 +96,15 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const TopBar = ({
   open,
-  setOpen,
   value,
   setValue,
-  handleDrawerClose,
-  handleDrawerOpen,
+  handleDrawer,
   anchorEl,
   setAnchorEl,
 }) => {
-  const {
-    setChatLog,
-    conversations,
-    selected,
-    autoSelect,
-    setAutoSelect,
-    width,
-  } = useAppContext();
+  const { width } = useWindowSize();
+  const { setChatLog, conversations, selected, autoSelect, setAutoSelect } =
+    useAppContext();
   const theme = useTheme();
   const openSelectMenu = Boolean(anchorEl);
 
@@ -133,21 +126,11 @@ const TopBar = ({
           backgroundColor: "white",
         }}
       >
-        {/* <Toolbar
-          sx={{
-            backgroundColor: "white",
-            color: "black",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            ml: open ? drawerWidth + "px" : 0,
-          }}
-        > */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
+            onClick={handleDrawer}
             edge="start"
             sx={{ ...(open && width > 600 && { display: "none" }) }}
           >
@@ -259,7 +242,6 @@ const TopBar = ({
             </MenuItem>
           </Menu>
         </Box>
-        {/* </Toolbar> */}
       </StyledAppBar>
       <Drawer
         sx={{
@@ -279,10 +261,10 @@ const TopBar = ({
         variant={width > 600 ? "persistent" : "temporary"}
         anchor="left"
         open={open}
-        onClose={() => width < 600 && handleDrawerClose()}
+        onClose={() => width < 600 && handleDrawer()}
       >
         <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={handleDrawer}>
             {theme.direction === "ltr" ? (
               <ChevronLeftIcon />
             ) : (

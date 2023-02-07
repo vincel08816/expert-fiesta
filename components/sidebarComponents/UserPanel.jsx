@@ -9,7 +9,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { useAppContext } from "../../contexts/AppContext";
+import { useUserContext } from "../../pages/_app";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -61,18 +61,15 @@ const LargeDot = styled(Box)(({ theme }) => ({
 }));
 
 const UserPanel = (display) => {
-  const { user, setUser } = useAppContext();
+  const { user, setUser } = useUserContext();
   const [bio, setBio] = useState("");
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([]); // unverified users of course
 
-  const getUnverifiedUsers = async () => {
+  const getUnverifiedUsers = () => {
     if (user?.role === "admin") {
       axios
         .get("/api/user/unverified")
-        .then((res) => {
-          setUsers(res.data);
-          // console.log("unverified users", res.data);
-        })
+        .then((res) => setUsers(res.data))
         .catch((err) => console.log(err));
     }
   };

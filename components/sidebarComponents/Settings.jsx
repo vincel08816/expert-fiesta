@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
-import { useAppContext } from "../../contexts/AppContext";
+import { useFormContext } from "../../contexts/FormContext";
 
 const presets = [
   {
@@ -33,7 +33,7 @@ const presets = [
 
 const PromptHeaderPreset = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const { handleChange } = useAppContext();
+  const { handleChange } = useFormContext();
   const openSelectMenu = Boolean(anchorEl);
 
   return (
@@ -117,7 +117,7 @@ const FormComponent = ({
 );
 
 const Settings = (display) => {
-  const { form, handleChange } = useAppContext();
+  const { form, handleChange } = useFormContext();
 
   const {
     model,
