@@ -73,7 +73,9 @@ const Message = (props) => {
           {text ? (
             <CodeBlock text={text?.trim()} />
           ) : imageUrls?.length ? (
-            imageUrls.map((imageUrl) => <StyledImage src={imageUrl} />)
+            imageUrls.map((imageUrl) => (
+              <StyledImage key={imageUrl} src={imageUrl} />
+            ))
           ) : (
             <StyledImage src="" alt="dalle" />
           )}
@@ -97,8 +99,8 @@ const Avatar = ({ isBot }) => (
       }}
       src={
         isBot
-          ? `https://cdn.discordapp.com/emojis/998700689964400710.gif?size=48&quality=lossless`
-          : `https://cdn.discordapp.com/emojis/998700676471333014.gif?size=48&quality=lossless`
+          ? `https://cdn.discordapp.com/emojis/998653442425896970.webp?size=240&quality=lossless`
+          : `https://cdn.discordapp.com/emojis/1013877946970284052.webp?size=240&quality=lossless`
       }
     />
   </Box>
@@ -114,15 +116,15 @@ const BotBadge = ({ isBot }) => {
     </Badge>
   ) : (
     <Box sx={{ pl: 0.5, pr: 0.5 }}>
-      {user?.role === "admin" ? (
-        <UserAvatar
-          alt="crown"
-          sx={{ width: 24, height: 24 }}
-          src="https://cdn.discordapp.com/emojis/844861855414747148.gif?size=96&quality=lossless"
-        />
-      ) : (
-        ""
-      )}
+      {user?.role === "admin"
+        ? ""
+        : // <UserAvatar
+          //   alt="crown"
+          //   sx={{ width: 24, height: 24 }}
+          //   src="https://cdn.discordapp.com/emojis/698004549704613974.webp?size=240&quality=lossless"
+          //   // src="https://cdn.discordapp.com/emojis/844861855414747148.gif?size=96&quality=lossless"
+          // />
+          ""}
     </Box>
   );
 };

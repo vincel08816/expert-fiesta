@@ -20,7 +20,10 @@ router.put(
       const userId = req.user.id;
       const { title } = req.body;
 
-      console.log("put: /api/conversation/title/:id", { conversationId, title });
+      console.log("put: /api/conversation/title/:id", {
+        conversationId,
+        title,
+      });
 
       let conversation = await Conversation.findById(conversationId);
 
@@ -74,5 +77,4 @@ router.delete(
   }
 );
 
-
-module.exports = router
+module.exports = router;

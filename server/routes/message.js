@@ -69,7 +69,7 @@ const verifyConversationAndSaveMessage = async (
     };
 
     if (response?.choices) {
-      console.log(response.choices)
+      console.log(response.choices);
       newMessageData.text = response.choices[0].text;
     } else {
       // save image data to google drive?
