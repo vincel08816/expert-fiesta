@@ -6,6 +6,7 @@ const Message = require("../models/Message");
 const Conversation = require("../models/Conversation");
 const mongoose = require("mongoose");
 const axios = require("axios");
+const { scanUrlsForFiles } = require("../utils/utils");
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -71,7 +72,13 @@ const verifyConversationAndSaveMessage = async (
       console.log(response.choices)
       newMessageData.text = response.choices[0].text;
     } else {
-      newMessageData.imageUrl = response.data[0].url;
+      // save image data to google drive?
+      console.log(response.data);
+
+      const googleUrls = await scanUrlsForFiles([response.data[0].url]);
+
+      newMessageData.imageUrl = googleUrls[0];
+      newMessageData.imageUrls = googleUrls;
     }
 
     const openAIResponse = await new Message(newMessageData).save();
@@ -82,6 +89,38 @@ const verifyConversationAndSaveMessage = async (
     throw new Error(error);
   }
 };
+
+// https://oaidalleapiprodscus.blob.core.windows.net/private/org-q7kr2dUOjvmflQuoC8GpLutJ/user-7jFiw4C2fFOE1QY6X8Z85nog/img-2KyyUHSkpcFIa8z4uW2CLKQm.png?st=2023-02-07T05%3A41%3A38Z&se=2023-02-07T07%3A41%3A38Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-02-06T21%3A31%3A00Z&ske=2023-02-07T21%3A31%3A00Z&sks=b&skv=2021-08-06&sig=D6yAmJTEpTKZvDjkhKxu0vCk1Q4mD4e0y4HFDMGRV3A%3D
+
+router.post("/test/uploadMessage", async (req, res) => {
+  try {
+    const urls = await scanUrlsForFiles(["https://oaidalleapiprodscus.blob.core.windows.net/private/org-q7kr2dUOjvmflQuoC8GpLutJ/user-7jFiw4C2fFOE1QY6X8Z85nog/img-2KyyUHSkpcFIa8z4uW2CLKQm.png?st=2023-02-07T05%3A41%3A38Z&se=2023-02-07T07%3A41%3A38Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-02-06T21%3A31%3A00Z&ske=2023-02-07T21%3A31%3A00Z&sks=b&skv=2021-08-06&sig=D6yAmJTEpTKZvDjkhKxu0vCk1Q4mD4e0y4HFDMGRV3A%3D"])
+    res.json({urls});
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
+});
+
+//testing uploading one message
+router.post("/test/updateAllImageMessages", async (req, res) => {
+  try {
+    let messages = await Message.find({ imageUrl: {$exists: true} });
+    let updatedMessages = [];
+    for (let message of messages) {
+      const imageUrl = message.imageUrl;
+      message.imageUrls = [imageUrl];
+      message.imageUrl = undefined;
+      await message.save();
+      updatedMessages.push(message);
+    }
+
+    res.json({ messages: updatedMessages });
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
+})
 
 // @route    POST /api/message/textblank
 // @desc     Send a request to the OpenAI API and save the repsonse to mongodb

@@ -20,7 +20,7 @@ import CodeBlock from "./CodeBlock";
 import { Badge, hoverIconSx, iconSx, StyledImage } from "./MessageSx";
 
 const Message = (props) => {
-  const { isBot, user, updatedAt, text, selected, imageUrl, key } = props;
+  const { isBot, user, updatedAt, text, selected, imageUrls, key } = props;
   const [show, setShow] = useState(false);
   const handleMouseOver = () => setShow(true);
   const handleMouseOut = () => setShow(false);
@@ -37,7 +37,7 @@ const Message = (props) => {
       onMouseOut={handleMouseOut}
       sx={{ ...messageSx, ...selectedMessageSx }}
     >
-      <Avatar isBot={isBot} />
+      {/* <Avatar isBot={isBot} /> */}
       <Box
         sx={{
           display: "flex",
@@ -70,10 +70,12 @@ const Message = (props) => {
             pt: 1,
           }}
         >
-          {imageUrl ? (
-            <StyledImage src={imageUrl} />
-          ) : (
+          {text ? (
             <CodeBlock text={text?.trim()} />
+          ) : imageUrls?.length ? (
+            imageUrls.map((imageUrl) => <StyledImage src={imageUrl} />)
+          ) : (
+            <StyledImage src="" alt="dalle" />
           )}
         </Box>
       </Box>

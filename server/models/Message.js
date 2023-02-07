@@ -13,7 +13,7 @@ module.exports = model(
       },
       isBot: { required: true, type: Boolean },
       text: { type: String }, // will send a text to the all users regardless
-      imageUrl: { type: String }, // url of the image to be sent to the user
+      imageUrls: { type: [String] },
       image: { type: Buffer }, // buffer of the image to be sent to the user
     },
     { timestamps: true }
