@@ -16,7 +16,12 @@ const CodeBlock = ({ text, isBot }) => {
 
   return splitString(text).map(({ type, value, language }, index) => {
     if (type === "text") {
-      const typeSx = { maxWidth: "95vw", whiteSpace: "pre-wrap", fontSize };
+      const typeSx = {
+        maxWidth: "95vw",
+        whiteSpace: "pre-wrap",
+        fontSize,
+        lineHeight: 1.5,
+      };
       if (!isBot) {
         return <Typography key={index} sx={typeSx} children={value || ""} />;
       }
@@ -28,7 +33,6 @@ const CodeBlock = ({ text, isBot }) => {
             mt: -1.5,
             p: 0,
             fontSize,
-            whiteSpace: "pre-wrap",
             lineHeight: 1.5,
           }}
         >

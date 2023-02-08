@@ -13,7 +13,7 @@ const titleSx = {
   display: "flex",
   flexDirection: "row",
   width: "calc(100% - 30px)",
-  padding: "6px",
+  padding: "2px 6px",
   alignItems: "center",
   // justifyContent: "center",
   border: "1px solid transparent",
@@ -96,7 +96,7 @@ const SelectChat = ({ display }) => {
   return (
     <Box key={"Select Chat"} sx={{ ...containerSx, display }}>
       <Box
-        sx={{ ...titleSx, border: "1px solid black", padding: "8px" }}
+        sx={{ ...titleSx, border: "1px solid black", padding: "4px 6px" }}
         onClick={() => {
           setSelected();
           setChatLog([]);
