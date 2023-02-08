@@ -58,9 +58,23 @@ const Message = (props) => {
             wordBreak: "break-word",
           }}
         >
-          <Typography sx={{ fontWeight: 600, fontSize: 16 }}>
-            {isBot ? "OpenAI" : user.username}
-          </Typography>
+          {user.role === "admin" && !isBot ? (
+            <div id="shadowBox">
+              <Typography class="rainbow rainbow_text_animated">
+                {user?.username}
+              </Typography>
+              <UserAvatar
+                alt="crown"
+                sx={{ width: 24, height: 24, ml: 0.5 }}
+                src="https://cdn.discordapp.com/emojis/844861855414747148.gif?size=96&quality=lossless"
+              />
+            </div>
+          ) : (
+            <Typography sx={{ fontWeight: 600, fontSize: 16 }}>
+              {isBot ? "OpenAI" : user.username}
+            </Typography>
+          )}
+
           <BotBadge isBot={isBot} />
           <Typography sx={{ opacity: 0.6, fontSize: 12 }}>
             {formatDate(updatedAt) || ""}
@@ -124,15 +138,14 @@ const BotBadge = ({ isBot }) => {
     </Badge>
   ) : (
     <Box sx={{ pl: 0.5, pr: 0.5 }}>
-      {user?.role === "admin" ? (
-        <UserAvatar
-          alt="crown"
-          sx={{ width: 24, height: 24 }}
-          src="https://cdn.discordapp.com/emojis/844861855414747148.gif?size=96&quality=lossless"
-        />
-      ) : (
-        ""
-      )}
+      {user?.role === "admin"
+        ? // <UserAvatar
+          //   alt="crown"
+          //   sx={{ width: 24, height: 24 }}
+          //   src="https://cdn.discordapp.com/emojis/844861855414747148.gif?size=96&quality=lossless"
+          // />
+          ""
+        : ""}
     </Box>
   );
 };
