@@ -13,8 +13,8 @@ import { AppContextProvider } from "../contexts/AppContext";
 import { FormContextProvider } from "../contexts/FormContext";
 import useWindowSize from "../hooks/useWindowSize";
 import { useUserContext } from "./_app";
-// {!} Move to utility file later
 
+// {!} Move to utility file later
 const EventContext = createContext();
 
 export const useEventContext = () => {
@@ -41,6 +41,17 @@ export default function Home() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarText, setSnackbarText] = useState("");
 
+  const [isTourOpen, setIsTourOpen] = useState(false);
+  const closeTour = () => setIsTourOpen(false);
+
+  useEffect(() => {
+    if (loading || !user) return;
+    if (!["admin", "user"].includes(user.role)) {
+      localStorage.setItem("MenheraGPTTour", "true");
+      setIsTourOpen(true);
+    }
+  }, [user]);
+
   const handleSnackbarClose = (_, reason) => {
     if (reason === "clickaway") return;
     setSnackbarOpen(false);
@@ -57,6 +68,9 @@ export default function Home() {
     setSnackbarOpen,
     snackbarText,
     setSnackbarText,
+    closeTour,
+    isTourOpen,
+    setIsTourOpen,
   };
 
   if (loading)

@@ -22,7 +22,6 @@ const Content = () => {
     autoSelect,
     selected,
     setSelected,
-    // isSending,
   } = useAppContext();
   const { width } = useWindowSize();
 

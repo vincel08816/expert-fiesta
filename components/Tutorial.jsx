@@ -1,6 +1,7 @@
 import React from "react";
 import { useAppContext } from "../contexts/AppContext";
 import dynamic from "next/dynamic";
+import { useEventContext } from "../pages/Home";
 const Tour = dynamic(() => import("reactour"), { ssr: false });
 
 // following https://fullstacksoup.blog/2022/06/30/next-js-onboarding-with-reactour-tour-js/
@@ -46,7 +47,7 @@ const steps = [
 ];
 
 const Tutorial = () => {
-  const { isTourOpen, closeTour } = useAppContext();
+  const { isTourOpen, closeTour } = useEventContext();
 
   return <Tour steps={steps} isOpen={isTourOpen} onRequestClose={closeTour} />;
 };

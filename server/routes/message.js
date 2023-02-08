@@ -69,7 +69,7 @@ const verifyConversationAndSaveMessage = async (
     };
 
     if (response?.choices) {
-      console.log(response.choices)
+      console.log(response.choices);
       newMessageData.text = response.choices[0].text;
     } else {
       // save image data to google drive?
@@ -238,7 +238,7 @@ router.get(
 );
 
 // @route    GET /api/message/:id
-// @desc     Get conversation based on converationId and userId
+// @desc     Get messages for a specific conversation.
 // @access   Private
 
 router.get(
