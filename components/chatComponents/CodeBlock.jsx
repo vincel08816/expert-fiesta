@@ -23,7 +23,14 @@ const CodeBlock = ({ text, isBot }) => {
       return (
         <Box
           key={index}
-          sx={{ maxWidth: "95vw", mt: -2, mb: -1, p: 0, fontSize }}
+          sx={{
+            maxWidth: "95vw",
+            mt: -1.5,
+            p: 0,
+            fontSize,
+            whiteSpace: "pre-wrap",
+            lineHeight: 1.5,
+          }}
         >
           <ReactMarkdown children={value} remarkPlugins={[remarkGfm]} />
         </Box>
