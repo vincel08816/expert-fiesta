@@ -15,7 +15,6 @@ const titleSx = {
   width: "calc(100% - 30px)",
   padding: "2px 6px",
   alignItems: "center",
-  // justifyContent: "center",
   border: "1px solid transparent",
   borderRadius: "5px",
   "&:hover": {
