@@ -21,7 +21,8 @@ import CodeBlock from "./CodeBlock";
 import { Badge, hoverIconSx, iconSx, StyledImage } from "./MessageSx";
 
 const Message = (props) => {
-  const { isBot, user, updatedAt, text, selected, imageUrls, key } = props;
+  const { isBot, updatedAt, text, selected, imageUrls, key } = props;
+  const { user } = useUserContext();
   const [show, setShow] = useState(false);
   const handleMouseOver = () => setShow(true);
   const handleMouseOut = () => setShow(false);
@@ -47,7 +48,7 @@ const Message = (props) => {
           justifyContent: "center",
         }}
       >
-        {/* <Hoverbar display={show ? "flex" : "none"} {...props} /> */}
+        <Hoverbar display={show ? "flex" : "none"} {...props} />
         <Box
           sx={{
             display: "flex",
@@ -57,7 +58,9 @@ const Message = (props) => {
             wordBreak: "break-word",
           }}
         >
-          <Typography sx={{ fontWeight: 600, fontSize: 16 }}>{user}</Typography>
+          <Typography sx={{ fontWeight: 600, fontSize: 16 }}>
+            {isBot ? "OpenAI" : user.username}
+          </Typography>
           <BotBadge isBot={isBot} />
           <Typography sx={{ opacity: 0.6, fontSize: 12 }}>
             {formatDate(updatedAt) || ""}
@@ -72,7 +75,7 @@ const Message = (props) => {
           }}
         >
           {text ? (
-            <CodeBlock text={text?.trim()} />
+            <CodeBlock text={text?.trim()} isBot={isBot} />
           ) : imageUrls?.length ? (
             imageUrls.map((imageUrl) => (
               <StyledImage
@@ -121,15 +124,15 @@ const BotBadge = ({ isBot }) => {
     </Badge>
   ) : (
     <Box sx={{ pl: 0.5, pr: 0.5 }}>
-      {user?.role === "admin"
-        ? ""
-        : // <UserAvatar
-          //   alt="crown"
-          //   sx={{ width: 24, height: 24 }}
-          //   src="https://cdn.discordapp.com/emojis/698004549704613974.webp?size=240&quality=lossless"
-          //   // src="https://cdn.discordapp.com/emojis/844861855414747148.gif?size=96&quality=lossless"
-          // />
-          ""}
+      {user?.role === "admin" ? (
+        <UserAvatar
+          alt="crown"
+          sx={{ width: 24, height: 24 }}
+          src="https://cdn.discordapp.com/emojis/844861855414747148.gif?size=96&quality=lossless"
+        />
+      ) : (
+        ""
+      )}
     </Box>
   );
 };

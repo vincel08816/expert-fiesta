@@ -2,12 +2,14 @@ import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import { Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
+import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import d from "react-syntax-highlighter/dist/cjs/styles/prism/tomorrow";
+import remarkGfm from "remark-gfm";
 import useWindowSize from "../../hooks/useWindowSize";
 import { useEventContext } from "../../pages/Home";
 
-const CodeBlock = ({ text }) => {
+const CodeBlock = ({ text, isBot }) => {
   const { width } = useWindowSize();
 
   const fontSize = width > 600 ? 15 : width > 400 ? 14 : 13;
@@ -15,7 +17,17 @@ const CodeBlock = ({ text }) => {
   return splitString(text).map(({ type, value, language }, index) => {
     if (type === "text") {
       const typeSx = { maxWidth: "95vw", whiteSpace: "pre-wrap", fontSize };
-      return <Typography key={index} sx={typeSx} children={value || ""} />;
+      if (!isBot) {
+        return <Typography key={index} sx={typeSx} children={value || ""} />;
+      }
+      return (
+        <Box
+          key={index}
+          sx={{ maxWidth: "95vw", mt: -2, mb: -1, p: 0, fontSize }}
+        >
+          <ReactMarkdown children={value} remarkPlugins={[remarkGfm]} />
+        </Box>
+      );
     }
 
     return (

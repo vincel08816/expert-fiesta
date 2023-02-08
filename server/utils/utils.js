@@ -1,57 +1,23 @@
-const { google } = require("googleapis");
-
+const AWS = require("aws-sdk");
 const axios = require("axios");
+const stream = require("stream");
 
-//get drive service
-const getDriveService = () => {
-  const auth = new google.auth.GoogleAuth({
-    credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS),
-    scopes: ["https://www.googleapis.com/auth/drive"],
-  });
-  const driveService = google.drive({ version: "v3", auth });
-  return driveService;
-};
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+});
 
-const drive = getDriveService();
+const s3 = new AWS.S3();
 
-const uploadSingleFile = async (fileName, fileUrl) => {
-  try {
-    const folderId = "16YuMtXI-WX9iTK5aAyg0juvWY7PPKL1a";
-    const response = await axios.get(fileUrl, { responseType: "stream" });
-    const mimeType = response.headers["content-type"];
-    const { data: { id, name } = {} } = await drive.files.create({
-      resource: {
-        name: fileName,
-        parents: [folderId],
-      },
-      media: {
-        mimeType,
-        body: response.data,
-      },
-      fields: "id,name",
-    });
-
-    const file = await drive.files.get({
-      fileId: id,
-      fields: "thumbnailLink",
-    });
-
-    console.log("Filfile.data.e Uploaded", name, id, file.data.thumbnailLink);
-    return file.data.thumbnailLink;
-  } catch (error) {
-    throw new Error(error);
-  }
-};
-
-const scanUrlsForFiles = async (fileUrls) => {
+const scanUrlsForFiles = async (fileUrls, userId) => {
   try {
     const fileLinks = [];
     for (const fileUrl of fileUrls) {
       const fileName = fileUrl.split("/").pop();
       console.log("fileName", fileName);
 
-      const link = await uploadSingleFile(fileName, fileUrl);
-      fileLinks.push(link);
+      const result = await uploadToS3(fileUrl, fileName, userId);
+      fileLinks.push(result.Location);
     }
     return fileLinks;
   } catch (error) {
@@ -59,6 +25,24 @@ const scanUrlsForFiles = async (fileUrls) => {
   }
 };
 
+const uploadToS3 = async (url, fileName, userId) => {
+  const response = await axios.get(url, { responseType: "arraybuffer" });
+  const buffer = response.data;
+
+  const readableStream = new stream.Readable();
+  readableStream.push(buffer);
+  readableStream.push(null);
+
+  const s3UploadParams = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: `${userId}/${fileName}`,
+    Body: readableStream,
+  };
+
+  return s3.upload(s3UploadParams).promise();
+};
+
 module.exports = {
   scanUrlsForFiles,
+  uploadToS3,
 };

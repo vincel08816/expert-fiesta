@@ -6,7 +6,7 @@ const Message = require("../models/Message");
 const Conversation = require("../models/Conversation");
 const mongoose = require("mongoose");
 const axios = require("axios");
-const { scanUrlsForFiles } = require("../utils/utils");
+const { scanUrlsForFiles, uploadToS3 } = require("../utils/utils");
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
