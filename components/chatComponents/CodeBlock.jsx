@@ -8,10 +8,8 @@ import d from "react-syntax-highlighter/dist/cjs/styles/prism/tomorrow";
 import remarkGfm from "remark-gfm";
 import useWindowSize from "../../hooks/useWindowSize";
 import { useEventContext } from "../../pages/Home";
-import { useUserContext } from "../../pages/_app";
 
-const CodeBlock = ({ text, isBot }) => {
-  const { user } = useUserContext();
+const CodeBlock = ({ text, isBot, enableMarkdown }) => {
   const { width } = useWindowSize();
 
   const fontSize = width > 600 ? 15 : width > 400 ? 14 : 13;
@@ -24,17 +22,22 @@ const CodeBlock = ({ text, isBot }) => {
         fontSize,
         lineHeight: 1.5,
       };
-      if (!isBot) {
+      if (!enableMarkdown) {
         return <Typography key={index} sx={typeSx} children={value || ""} />;
       }
-
       return (
-        <ReactMarkdown
-          className="markdown"
-          children={value}
-          remarkPlugins={[remarkGfm]}
-          unwrapDisallowed
-        />
+        <Box
+          key={index}
+          sx={{
+            maxWidth: "95vw",
+            mt: -1.5,
+            p: 0,
+            fontSize,
+            lineHeight: 1.5,
+          }}
+        >
+          <ReactMarkdown children={value} remarkPlugins={[remarkGfm]} />
+        </Box>
       );
     }
 

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const iconSx = { width: "20px", height: "20px" };
 export const hoverIconSx = {
@@ -9,6 +9,7 @@ export const hoverIconSx = {
   alignItems: "center",
   justifyContent: "center",
   alignSelf: "center",
+  borderRadius: "5px",
   "&:hover": {
     backgroundColor: "#dfe1e3",
   },

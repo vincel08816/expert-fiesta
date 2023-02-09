@@ -3,6 +3,8 @@ import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
+import FormatColorTextIcon from "@mui/icons-material/FormatColorText";
+
 import {
   Avatar as UserAvatar,
   Checkbox,
@@ -26,6 +28,7 @@ const Message = (props) => {
   const [show, setShow] = useState(false);
   const handleMouseOver = () => setShow(true);
   const handleMouseOut = () => setShow(false);
+  const [enableMarkdown, setEnableMarkdown] = useState(true);
 
   const selectedMessageSx = {
     backgroundColor: selected && "#fbfbfb",
@@ -48,7 +51,10 @@ const Message = (props) => {
           justifyContent: "center",
         }}
       >
-        <Hoverbar display={show ? "flex" : "none"} {...props} />
+        <Hoverbar
+          display={show ? "flex" : "none"}
+          {...{ ...props, enableMarkdown, setEnableMarkdown }}
+        />
         <Box
           sx={{
             display: "flex",
@@ -58,22 +64,7 @@ const Message = (props) => {
             wordBreak: "break-word",
           }}
         >
-          {user.role === "admin" && !isBot ? (
-            <div id="shadowBox">
-              <Typography class="rainbow rainbow_text_animated">
-                {user?.username}
-              </Typography>
-              <UserAvatar
-                alt="crown"
-                sx={{ width: 24, height: 24, ml: 0.5 }}
-                src="https://cdn.discordapp.com/emojis/844861855414747148.gif?size=96&quality=lossless"
-              />
-            </div>
-          ) : (
-            <Typography sx={{ fontWeight: 600, fontSize: 16 }}>
-              {isBot ? "OpenAI" : user.username}
-            </Typography>
-          )}
+          <AdminTypography isBot={isBot} />
 
           <BotBadge isBot={isBot} />
           <Typography sx={{ opacity: 0.6, fontSize: 12 }}>
@@ -89,7 +80,11 @@ const Message = (props) => {
           }}
         >
           {text ? (
-            <CodeBlock text={text?.trim()} isBot={isBot} />
+            <CodeBlock
+              text={text?.trim()}
+              isBot={isBot}
+              enableMarkdown={enableMarkdown}
+            />
           ) : imageUrls?.length ? (
             imageUrls.map((imageUrl) => (
               <StyledImage
@@ -109,15 +104,31 @@ const Message = (props) => {
 
 export default Message;
 
-const avatarSize = 48;
+const AdminTypography = ({ isBot, user = useUserContext() }) =>
+  user.user.role === "admin" && !isBot ? (
+    <div id="shadowBox">
+      <Typography class="rainbow rainbow_text_animated">
+        {user?.user?.username}
+      </Typography>
+      <UserAvatar
+        alt="crown"
+        sx={{ width: 24, height: 24, ml: 0.5 }}
+        src="https://cdn.discordapp.com/emojis/844861855414747148.gif?size=96&quality=lossless"
+      />
+    </div>
+  ) : (
+    <Typography sx={{ fontWeight: 600, fontSize: 16 }}>
+      {isBot ? "OpenAI" : user?.user?.username}
+    </Typography>
+  );
 
 const Avatar = ({ isBot }) => (
   <Box sx={LogoContainerSx}>
     <UserAvatar
       alt="user_avatar"
       sx={{
-        width: avatarSize,
-        height: avatarSize,
+        width: 48,
+        height: 48,
       }}
       src={
         isBot
@@ -129,29 +140,28 @@ const Avatar = ({ isBot }) => (
 );
 
 const BotBadge = ({ isBot }) => {
-  const { user } = useUserContext();
-
   return isBot ? (
     <Badge>
       <DoneIcon style={{ height: "14px", width: "14px", marginRight: "2px" }} />
       Bot
     </Badge>
   ) : (
-    <Box sx={{ pl: 0.5, pr: 0.5 }}>
-      {user?.role === "admin"
-        ? // <UserAvatar
-          //   alt="crown"
-          //   sx={{ width: 24, height: 24 }}
-          //   src="https://cdn.discordapp.com/emojis/844861855414747148.gif?size=96&quality=lossless"
-          // />
-          ""
-        : ""}
-    </Box>
+    <Box sx={{ pl: 0.5, pr: 0.5 }} />
   );
 };
 
 const Hoverbar = (props) => {
-  const { _id, imageUrl, text, bookmarked, selected, index, display } = props;
+  const {
+    _id,
+    imageUrl,
+    text,
+    bookmarked,
+    selected,
+    index,
+    display,
+    enableMarkdown,
+    setEnableMarkdown,
+  } = props;
   const { setSnackbarOpen, setSnackbarText } = useEventContext();
   const { setChatLog, toggleCheck } = useAppContext();
   const { user } = useUserContext();
@@ -201,6 +211,18 @@ const Hoverbar = (props) => {
           color: "#505761",
         }}
       >
+        <Tooltip title="Enable Markdown">
+          <Box
+            sx={{
+              ...hoverIconSx,
+              backgroundColor: enableMarkdown && "#dfe1e3",
+              borderRadius: "5px",
+            }}
+            onClick={() => setEnableMarkdown((prev) => !prev)}
+          >
+            <FormatColorTextIcon sx={iconSx} />
+          </Box>
+        </Tooltip>
         <Tooltip title="Bookmark">
           <Box
             sx={hoverIconSx}
