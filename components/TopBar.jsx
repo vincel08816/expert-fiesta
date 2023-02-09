@@ -32,7 +32,7 @@ const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   backdropFilter: "blur(6px)",
-  backgroundColor: "transparent",
+  backgroundColor: "inherit",
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -72,7 +72,7 @@ const StyledAppBar = ({ children, open }) => {
     <MuiAppBar>
       <Toolbar
         sx={{
-          backgroundColor: "white",
+          backgroundColor: "inherit",
           color: "black",
           flexDirection: "row",
           alignItems: "center",
@@ -249,7 +249,7 @@ const TopBar = ({
           flexDirection: "column",
           width: width > 600 ? drawerWidth : 0,
           alignItems: "center",
-          backgroundColor: "white",
+          backgroundColor: "inherit",
           maxHeight: "100vh",
           flexShrink: 0,
           "& .MuiDrawer-paper": {

@@ -181,6 +181,7 @@ const Hoverbar = (props) => {
   return (
     <Box
       sx={{
+        backgroundColor: "inherit",
         flex: 1,
         display: "flex",
         flexDirection: "row-reverse",

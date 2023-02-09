@@ -133,3 +133,10 @@
     background-position: 100% 0;
   }
 }
+
+.markdown {
+  /* max-width: 95vw; */
+  margin-top: -10px;
+  font-size: inherit;
+  white-space: pre-wrap;
+}

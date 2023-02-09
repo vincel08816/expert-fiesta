@@ -2,6 +2,8 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import Head from "next/head";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { Provider } from "react-redux";
+import store from "../store";
 import "./../styles/_app.css";
 
 const UserContext = createContext();
@@ -61,22 +63,24 @@ function App({ Component, pageProps }) {
         <title>MenheraGPT</title>
       </Head>
       <UserContext.Provider value={userValues}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            position: "absolute",
-            height: "100vh",
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            fontFamily: "Noto Sans, sans-serif",
-            overflow: "hidden",
-          }}
-        >
-          <Component {...pageProps} />
-        </Box>
+        <Provider store={store}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              position: "absolute",
+              height: "100vh",
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              fontFamily: "Noto Sans, sans-serif",
+              overflow: "hidden",
+            }}
+          >
+            <Component {...pageProps} />
+          </Box>
+        </Provider>
       </UserContext.Provider>
     </>
   );
