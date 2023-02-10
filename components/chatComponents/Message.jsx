@@ -258,9 +258,24 @@ const Hoverbar = (props) => {
 
         <Tooltip title="Include relevant data as part of chat history">
           <Box sx={hoverIconSx}>
+            {/* <label>
+              <input
+                style={{
+                  width: 15,
+                  height: 15,
+                  marginTop: 6,
+                  marginBottom: -6,
+                }}
+                type="checkbox"
+                checked={selected}
+                onChange={() => handleToggleCheckbox(index)}
+              />
+              <span class="checkmark" />
+            </label> */}
             <Checkbox
               sx={{ ...iconSx, alignSelf: "center" }}
               checked={selected}
+              defaultValue={false}
               onChange={() => handleToggleCheckbox(index)}
               size="small"
             />

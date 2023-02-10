@@ -45,12 +45,10 @@ const SelectChat = ({ display }) => {
     conversations: { conversations, selected },
   } = useSelector((state) => state);
 
-  const handleSetSelected = (payload) => {
-    dispatch(setSelected(payload));
-  };
-  const handleSetConversations = (payload) => {
+  const handleSetSelected = (payload) => dispatch(setSelected(payload));
+  const handleSetConversations = (payload) =>
     dispatch(setConversations(payload));
-  };
+  const handleSetChatLog = (payload) => dispatch(setChatLog(payload));
 
   /* edit conversation name */
   const handleEdit = async (_id) => {
@@ -92,7 +90,7 @@ const SelectChat = ({ display }) => {
         console.log({ _id });
         await axios.delete(`/api/conversation/${_id}`);
         handleSetConversations(conversations.filter((c) => c._id !== _id));
-        handleSetSelected();
+        handleSetSelected(-1);
         handleSetChatLog([]);
       }
     } catch (error) {
@@ -105,7 +103,7 @@ const SelectChat = ({ display }) => {
       <Box
         sx={{ ...titleSx, border: "1px solid black", padding: "4px 6px" }}
         onClick={() => {
-          handleSetSelected();
+          handleSetSelected(-1);
           setChatLog([]);
         }}
       >
