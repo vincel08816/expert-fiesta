@@ -4,7 +4,9 @@ import { Box } from "@mui/system";
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import d from "react-syntax-highlighter/dist/cjs/styles/prism/tomorrow";
+// import d from "react-syntax-highlighter/dist/cjs/styles/prism/tomorrow";
+
+import { tomorrow as d } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import remarkGfm from "remark-gfm";
 import useWindowSize from "../../hooks/useWindowSize";
 import { useEventContext } from "../../pages/Home";
@@ -17,28 +19,36 @@ const CodeBlock = ({ text, enableMarkdown }) => {
     if (type === "text") {
       const typeSx = {
         maxWidth: "95vw",
-        whiteSpace: "pre-wrap",
+        whiteSpace: "pre-line",
         fontSize,
         lineHeight: 1.5,
       };
+      // return <Typography key={index} sx={typeSx} children={value} />;
+
       if (!enableMarkdown)
         return <Typography key={index} sx={typeSx} children={value} />;
 
       return (
-        <Box
+        // <Box
+        //   key={index}
+        //   sx={{
+        //     fontSize,
+        //     maxWidth: "95vw",
+        //     mt: -1.5,
+        //     mb: -1,
+        //     p: 0,
+        //     lineHeight: 1.5,
+        //     wordWrap: "break-word",
+        //     whiteSpace: "pre",
+        //   }}
+        // >
+        <ReactMarkdown
           key={index}
-          sx={{
-            fontSize,
-            maxWidth: "95vw",
-            mt: -1.5,
-            mb: -1,
-            p: 0,
-            lineHeight: 1.5,
-            whiteSpace: "pre-wrap",
-          }}
-        >
-          <ReactMarkdown children={value} remarkPlugins={[remarkGfm]} />
-        </Box>
+          className="markdown-section"
+          children={value}
+          remarkPlugins={[remarkGfm]}
+        />
+        // </Box>
       );
     }
 
@@ -55,13 +65,16 @@ const CodeBlock = ({ text, enableMarkdown }) => {
           }}
           customStyle={{
             width: "auto",
-            fontSize: `${fontSize}px`,
+            fontSize,
             padding: 15,
             backgroundColor: "black",
             fontFamily: "initial",
-            borderBottomRightRadius: 8,
-            borderBottomLeftRadius: 8,
             margin: 0,
+            borderBottomRightRadius: "8px",
+            borderBottomLeftRadius: "8px",
+            borderRadius: "8px",
+            borderTopRightRadius: "0px",
+            borderTopLeftRadius: "0px",
           }}
         />
       </Box>

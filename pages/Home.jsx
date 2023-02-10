@@ -112,6 +112,7 @@ export default function Home() {
               autoHideDuration={1000}
               onClose={handleSnackbarClose}
               anchorOrigin={{ vertical: "top", horizontal: "center" }}
+              sx={{ opacity: 0.85 }}
             >
               <Alert
                 onClose={handleSnackbarClose}

@@ -133,3 +133,18 @@
     background-position: 100% 0;
   }
 }
+
+.markdown-section {
+  font-size: 15px;
+  max-width: 95vw;
+  margin-top: -10px;
+  margin-bottom: -7px;
+  /* line-height: 1.5; */
+  /* white-space: pre-wrap; */
+  @media screen and (min-width: 600px) {
+    font-size: 14px;
+  }
+  @media screen and (min-width: 300px) {
+    font-size: 13px;
+  }
+}
