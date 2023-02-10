@@ -12,8 +12,9 @@ import {
 import Box from "@mui/material/Box";
 import axios from "axios";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { useAppContext } from "../contexts/AppContext";
+import { setChatLog } from "../store/chatLogSlice";
 
 const style = {
   borderRadius: "10px",
@@ -48,8 +49,14 @@ const titleSx = {
 };
 
 function ChildModal({ newConversationIndex, closeParentModal }) {
-  const [open, setOpen] = React.useState(false);
-  const { chatLog, setChatLog, conversations } = useAppContext();
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const {
+    chatLog: { chatLog },
+    conversations: { conversations },
+  } = useSelector((state) => state);
+
+  const handleSetChatLog = (payload) => dispatch(setChatLog(payload));
 
   const handleOpen = () => {
     setOpen(true);
@@ -118,7 +125,7 @@ function ChildModal({ newConversationIndex, closeParentModal }) {
                     });
 
                     // if it is successful send remove the messages from chatlog
-                    setChatLog((prev) => prev.filter((chat) => !chat.selected));
+                    handleSetChatLog(chatLog.filter((chat) => !chat.selected));
 
                     handleClose();
                     closeParentModal();
@@ -140,7 +147,10 @@ function ChildModal({ newConversationIndex, closeParentModal }) {
 export default function MoveConversationModal() {
   const [open, setOpen] = useState(false);
   const [newConversationIndex, setNewConversationIndex] = useState(null);
-  const { conversations, chatLog, selected } = useAppContext();
+  const {
+    chatLog: { chatLog },
+    conversations: { conversations, selected },
+  } = useSelector((state) => state);
 
   const handleOpen = () => {
     if (chatLog.filter((chat) => chat.selected).length === 0)

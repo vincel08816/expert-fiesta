@@ -1,6 +1,5 @@
-import React from "react";
-import { useAppContext } from "../contexts/AppContext";
 import dynamic from "next/dynamic";
+import React from "react";
 import { useEventContext } from "../pages/Home";
 const Tour = dynamic(() => import("reactour"), { ssr: false });
 

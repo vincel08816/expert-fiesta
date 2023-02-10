@@ -6,13 +6,13 @@ import Snackbar from "@mui/material/Snackbar";
 import { styled } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Content from "../components/chatComponents/Content";
 import TopBar from "../components/TopBar";
 import Tutorial from "../components/Tutorial";
 import { AppContextProvider } from "../contexts/AppContext";
 import { FormContextProvider } from "../contexts/FormContext";
 import useWindowSize from "../hooks/useWindowSize";
-import { useUserContext } from "./_app";
 
 // {!} Move to utility file later
 const EventContext = createContext();
@@ -31,7 +31,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export default function Home() {
   const router = useRouter();
-  const { loading, user } = useUserContext();
+  const { user, loading } = useSelector((state) => state.user);
 
   // events
   const [open, setOpen] = useState(true); // drawer open

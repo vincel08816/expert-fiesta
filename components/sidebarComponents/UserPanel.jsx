@@ -8,8 +8,9 @@ import Stack from "@mui/material/Stack";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { useUserContext } from "../../pages/_app";
+import { logout } from "../../store/userSlice";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -48,7 +49,7 @@ const boxSx = {
   alignItems: "center",
   // justifyContent: "center",
   border: "1px solid transparent",
-  borderRadius: "5px",
+  borderRadius: 5,
   "&:hover": {
     backgroundColor: "#f1f1f1",
     cursor: "pointer",
@@ -61,15 +62,18 @@ const LargeDot = styled(Box)(({ theme }) => ({
 }));
 
 const UserPanel = (display) => {
-  const { user, setUser } = useUserContext();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
   const [bio, setBio] = useState("");
-  const [users, setUsers] = useState([]); // unverified users of course
+  const [unverifiedUsers, setUnverifiedUsers] = useState([]); // unverified unverifiedUsers of course
+
+  const handleLogout = () => dispatch(logout());
 
   const getUnverifiedUsers = () => {
     if (user?.role === "admin") {
       axios
         .get("/api/user/unverified")
-        .then((res) => setUsers(res.data))
+        .then((res) => setUnverifiedUsers(res.data))
         .catch((err) => console.log(err));
     }
   };
@@ -136,7 +140,7 @@ const UserPanel = (display) => {
       </Stack>
       <Divider light />
       <Stack direction="row" sx={{ display: "flex", alignItems: "center" }}>
-        <Typography variant="h5" sx={{ minWidth: "70px" }}>
+        <Typography variant="h5" sx={{ minWidth: 70 }}>
           {user?.username}
         </Typography>
       </Stack>
@@ -158,9 +162,9 @@ const UserPanel = (display) => {
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             style={{
-              padding: "12px",
-              minHeight: "100px",
-              maxHeight: "250px",
+              padding: 12,
+              minHeight: 100,
+              maxHeight: 250,
               fontFamily: "Noto Sans, sans-serif",
               overflow: "auto",
               flex: 1,
@@ -180,7 +184,7 @@ const UserPanel = (display) => {
                 <RefreshIcon />
               </IconButton>
             </Box>
-            {users.map(({ _id, username, why }) => (
+            {unverifiedUsers.map(({ _id, username, why }) => (
               <Box
                 key={_id}
                 sx={{
@@ -218,7 +222,7 @@ const UserPanel = (display) => {
         <Box
           sx={boxSx}
           onClick={() => {
-            setUser();
+            handleLogout();
             axios.delete("/api/user/logout").catch((error) => {
               console.error(error);
             });

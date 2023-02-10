@@ -11,9 +11,9 @@ import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import CodeBlock from "../components/chatComponents/CodeBlock";
-import { useUserContext } from "../pages/_app";
 import { formatDate } from "../utils/util";
 import {
   Badge,
@@ -48,7 +48,7 @@ const Message = (props) => {
   const handleMouseOut = () => setShow(false);
   const {
     user: { username },
-  } = useUserContext();
+  } = useSelector((state) => state.user);
 
   const display = show ? "flex" : "none";
 
@@ -230,7 +230,7 @@ export default function SearchModal() {
   const [results, setResults] = useState([]);
   const [keyword, setKeyword] = useState("");
 
-  const { user } = useUserContext();
+  const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (keyword?.length < 3) setResults([]);

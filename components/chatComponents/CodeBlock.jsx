@@ -9,9 +9,8 @@ import remarkGfm from "remark-gfm";
 import useWindowSize from "../../hooks/useWindowSize";
 import { useEventContext } from "../../pages/Home";
 
-const CodeBlock = ({ text, isBot, enableMarkdown }) => {
+const CodeBlock = ({ text, enableMarkdown }) => {
   const { width } = useWindowSize();
-
   const fontSize = width > 600 ? 15 : width > 400 ? 14 : 13;
 
   return splitString(text).map(({ type, value, language }, index) => {
@@ -22,18 +21,20 @@ const CodeBlock = ({ text, isBot, enableMarkdown }) => {
         fontSize,
         lineHeight: 1.5,
       };
-      if (!enableMarkdown) {
-        return <Typography key={index} sx={typeSx} children={value || ""} />;
-      }
+      if (!enableMarkdown)
+        return <Typography key={index} sx={typeSx} children={value} />;
+
       return (
         <Box
           key={index}
           sx={{
+            fontSize,
             maxWidth: "95vw",
             mt: -1.5,
+            mb: -1,
             p: 0,
-            fontSize,
             lineHeight: 1.5,
+            whiteSpace: "pre-wrap",
           }}
         >
           <ReactMarkdown children={value} remarkPlugins={[remarkGfm]} />
@@ -55,11 +56,11 @@ const CodeBlock = ({ text, isBot, enableMarkdown }) => {
           customStyle={{
             width: "auto",
             fontSize: `${fontSize}px`,
-            padding: "15px",
+            padding: 15,
             backgroundColor: "black",
             fontFamily: "initial",
-            borderBottomRightRadius: "8px",
-            borderBottomLeftRadius: "8px",
+            borderBottomRightRadius: 8,
+            borderBottomLeftRadius: 8,
             margin: 0,
           }}
         />
@@ -75,12 +76,10 @@ function splitString(str) {
   let lastIndex = 0;
 
   while ((match = regex.exec(str)) !== null) {
-    if (match.index > lastIndex) {
+    if (match.index > lastIndex)
       results.push({ type: "text", value: str.slice(lastIndex, match.index) });
-    }
 
     results.push({ type: "code", value: match[2], language: match[1] || null });
-
     lastIndex = regex.lastIndex;
   }
 
@@ -102,8 +101,8 @@ const CodeHeader = ({ language, value }) => {
         alignItems: "center",
         backgroundColor: "#343441",
         color: "#d9d9e3",
-        borderTopLeftRadius: "8px",
-        borderTopRightRadius: "8px",
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
         padding: "4px 22px",
       }}
     >

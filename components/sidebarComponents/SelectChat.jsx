@@ -6,8 +6,10 @@ import { IconButton, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { useAppContext } from "../../contexts/AppContext";
+import { setChatLog } from "../../store/chatLogSlice";
+import { setConversations, setSelected } from "../../store/conversationsSlice";
 
 const titleSx = {
   display: "flex",
@@ -38,8 +40,17 @@ const containerSx = {
 };
 
 const SelectChat = ({ display }) => {
-  const { selected, setSelected, conversations, setConversations, setChatLog } =
-    useAppContext();
+  const dispatch = useDispatch();
+  const {
+    conversations: { conversations, selected },
+  } = useSelector((state) => state);
+
+  const handleSetSelected = (payload) => {
+    dispatch(setSelected(payload));
+  };
+  const handleSetConversations = (payload) => {
+    dispatch(setConversations(payload));
+  };
 
   /* edit conversation name */
   const handleEdit = async (_id) => {
@@ -58,12 +69,10 @@ const SelectChat = ({ display }) => {
           title: swalResponse.value,
         });
 
-        setConversations((prev) => {
-          let newConversations = [...prev];
-          if (newConversations?.length)
-            newConversations[selected].title = swalResponse.value;
-          return newConversations;
-        });
+        let newConversations = conversations;
+        if (newConversations?.length)
+          newConversations[selected].title = swalResponse.value;
+        handleSetSelected(newConversations);
       }
     } catch (error) {
       console.error(error);
@@ -82,10 +91,9 @@ const SelectChat = ({ display }) => {
       if (swalResponse.isConfirmed) {
         console.log({ _id });
         await axios.delete(`/api/conversation/${_id}`);
-
-        setConversations((prev) => prev.filter((c) => c._id !== _id));
-        setSelected();
-        setChatLog([]);
+        handleSetConversations(conversations.filter((c) => c._id !== _id));
+        handleSetSelected();
+        handleSetChatLog([]);
       }
     } catch (error) {
       console.error(error);
@@ -97,7 +105,7 @@ const SelectChat = ({ display }) => {
       <Box
         sx={{ ...titleSx, border: "1px solid black", padding: "4px 6px" }}
         onClick={() => {
-          setSelected();
+          handleSetSelected();
           setChatLog([]);
         }}
       >
@@ -121,7 +129,7 @@ const SelectChat = ({ display }) => {
             ...titleSx,
             backgroundColor: selected === index ? "#f2f2f2" : "",
           }}
-          onClick={() => setSelected(index)}
+          onClick={() => handleSetSelected(index)}
         >
           <Box sx={{ p: 0.3, pr: 1, mt: 1 }}>
             <ChatBubbleOutlineIcon style={{ width: "18px" }} />

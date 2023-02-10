@@ -4,7 +4,6 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneIcon from "@mui/icons-material/Done";
 import FormatColorTextIcon from "@mui/icons-material/FormatColorText";
-
 import {
   Avatar as UserAvatar,
   Checkbox,
@@ -14,17 +13,16 @@ import {
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { useAppContext } from "../../contexts/AppContext";
 import { useEventContext } from "../../pages/Home";
-import { useUserContext } from "../../pages/_app";
+import { setChatLog, toggleCheckbox } from "../../store/chatLogSlice";
 import { formatDate } from "../../utils/util";
 import CodeBlock from "./CodeBlock";
 import { Badge, hoverIconSx, iconSx, StyledImage } from "./MessageSx";
 
 const Message = (props) => {
   const { isBot, updatedAt, text, selected, imageUrls, key } = props;
-  const { user } = useUserContext();
   const [show, setShow] = useState(false);
   const handleMouseOver = () => setShow(true);
   const handleMouseOut = () => setShow(false);
@@ -104,11 +102,13 @@ const Message = (props) => {
 
 export default Message;
 
-const AdminTypography = ({ isBot, user = useUserContext() }) =>
-  user.user.role === "admin" && !isBot ? (
+const AdminTypography = ({ isBot }) => {
+  const { username, role } = useSelector((state) => state.user?.user);
+
+  return role === "admin" && !isBot ? (
     <div id="shadowBox">
-      <Typography class="rainbow rainbow_text_animated">
-        {user?.user?.username}
+      <Typography className="rainbow rainbow_text_animated">
+        {username}
       </Typography>
       <UserAvatar
         alt="crown"
@@ -118,9 +118,10 @@ const AdminTypography = ({ isBot, user = useUserContext() }) =>
     </div>
   ) : (
     <Typography sx={{ fontWeight: 600, fontSize: 16 }}>
-      {isBot ? "OpenAI" : user?.user?.username}
+      {isBot ? "OpenAI" : username}
     </Typography>
   );
+};
 
 const Avatar = ({ isBot }) => (
   <Box sx={LogoContainerSx}>
@@ -163,8 +164,13 @@ const Hoverbar = (props) => {
     setEnableMarkdown,
   } = props;
   const { setSnackbarOpen, setSnackbarText } = useEventContext();
-  const { setChatLog, toggleCheck } = useAppContext();
-  const { user } = useUserContext();
+  const dispatch = useDispatch();
+  const {
+    chatLog: { chatLog },
+  } = useSelector((state) => state);
+
+  const handleSetChatLog = (payload) => dispatch(setChatLog(payload));
+  const handleToggleCheckbox = (payload) => dispatch(toggleCheckbox(payload));
 
   const handleDelete = async () => {
     try {
@@ -176,7 +182,7 @@ const Hoverbar = (props) => {
       });
       if (response.isConfirmed) {
         await axios.delete(`/api/message/${_id}`);
-        setChatLog((prev) => prev.filter((msg) => msg._id !== _id));
+        handleSetChatLog(chatLog.filter((msg) => msg._id !== _id));
       }
     } catch (error) {
       Swal.fire({
@@ -255,7 +261,7 @@ const Hoverbar = (props) => {
             <Checkbox
               sx={{ ...iconSx, alignSelf: "center" }}
               checked={selected}
-              onChange={() => toggleCheck(user?.username, index)}
+              onChange={() => handleToggleCheckbox(index)}
               size="small"
             />
           </Box>

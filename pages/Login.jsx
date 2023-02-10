@@ -3,19 +3,23 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useUserContext } from "./_app";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../store/userSlice";
 
 const emptyUsernameError = "Username cannot be empty.";
 const emptyPasswordError = "Password cannot be empty.";
 
 export default function Login() {
-  const { user, setUser } = useUserContext();
+  const user = useSelector((state) => state.user?.user);
   const [username, setUsername] = useState("");
   const [usernameError, setUsernameError] = useState();
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState();
   const [error, setError] = useState();
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const handleSetUser = (payload) => dispatch(setUser(payload));
 
   useEffect(() => {
     if (user) router.push("/");
@@ -40,7 +44,7 @@ export default function Login() {
         username,
         password,
       });
-      setUser(result.data);
+      handleSetUser(result.data);
     } catch (error) {
       setError(
         "Unable to login. Please make sure your username and password are correct then try again."

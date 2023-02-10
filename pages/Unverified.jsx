@@ -6,14 +6,14 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import { useUserContext } from "./_app";
+import { logout } from "../store/userSlice";
 
 export default function Unverified() {
   const router = useRouter();
-  const { loading, user, setUser } = useUserContext();
+  const { user, loading } = useSelector((state) => state.user);
+  const handleLogout = () => dispatch(logout());
 
   useEffect(() => {
-    console.log(user);
     if (!loading && !user) router.push("/login");
     if (user?.role === "admin" || user?.role === "user") {
       router.push("/");
@@ -106,7 +106,7 @@ export default function Unverified() {
           <Button
             variant="contained"
             onClick={() => {
-              setUser();
+              handleLogout();
               axios.delete("/api/user/logout").catch((error) => {
                 console.error(error);
               });

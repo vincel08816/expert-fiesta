@@ -156,9 +156,11 @@ const Settings = (display) => {
         >
           {[
             "text-davinci-003",
-            "text-davinci-002",
-            "text-davinci-001",
+            // "text-davinci-002",
+            // "text-davinci-001",
             "text-curie-001",
+            "text-babbage-001",
+            "text-ada-001",
             "code-cushman-001",
             "code-davinci-002",
             "image-dalle-002",
@@ -182,9 +184,9 @@ const Settings = (display) => {
         style={{
           resize: "none",
           width: "auto",
-          padding: "12px",
-          minHeight: "100px",
-          maxHeight: "250px",
+          padding: 12,
+          minHeight: 100,
+          maxHeight: 250,
           fontFamily: "Noto Sans, sans-serif",
           overflow: "auto",
         }}

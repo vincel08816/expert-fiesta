@@ -17,8 +17,9 @@ import Box from "@mui/material/Box";
 import { styled, useTheme } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import React from "react";
-import { useAppContext } from "../contexts/AppContext";
+import { useDispatch, useSelector } from "react-redux";
 import useWindowSize from "../hooks/useWindowSize";
+import { setAutoSelect, setChatLog } from "../store/chatLogSlice";
 import MoveConversationModal from "./MoveConversationModal";
 import SearchModal from "./SearchModal";
 import SelectChat from "./sidebarComponents/SelectChat";
@@ -32,7 +33,7 @@ const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   backdropFilter: "blur(6px)",
-  backgroundColor: "inherit",
+  backgroundColor: "white",
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -54,7 +55,7 @@ const StyledAppBar = ({ children, open }) => {
       <AppBar open={open}>
         <Toolbar
           sx={{
-            backgroundColor: "transparent",
+            backgroundColor: "white",
             backdropFilter: "blur(6px)",
 
             color: "black",
@@ -72,7 +73,8 @@ const StyledAppBar = ({ children, open }) => {
     <MuiAppBar>
       <Toolbar
         sx={{
-          backgroundColor: "inherit",
+          // backgroundColor: "inherit",
+          backgroundColor: "white",
           color: "black",
           flexDirection: "row",
           alignItems: "center",
@@ -102,15 +104,22 @@ const TopBar = ({
   anchorEl,
   setAnchorEl,
 }) => {
+  const dispatch = useDispatch();
   const { width } = useWindowSize();
-  const { setChatLog, conversations, selected, autoSelect, setAutoSelect } =
-    useAppContext();
+  const {
+    conversations: { conversations, selected },
+    chatLog: { chatLog, autoSelect },
+  } = useSelector((state) => state);
+
   const theme = useTheme();
   const openSelectMenu = Boolean(anchorEl);
 
+  const handleSetChatLog = (payload) => dispatch(setChatLog(payload));
+  const handleSetAutoSelect = () => dispatch(setAutoSelect());
+
   const selectAll = (selected) =>
-    setChatLog((prev) =>
-      prev.map((message) => {
+    handleSetChatLog(
+      chatLog.map((message) => {
         return { ...message, selected };
       })
     );
@@ -175,9 +184,8 @@ const TopBar = ({
 
           <Tooltip title="Automate Chat History">
             <IconButton
-              onClick={() => setAutoSelect((prev) => !prev)}
+              onClick={handleSetAutoSelect}
               sx={{
-                // display: "none",
                 border: `2px solid ${
                   autoSelect ? "#3085d6" : "rgba(0,0,0,.1)"
                 }`,

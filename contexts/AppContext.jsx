@@ -12,15 +12,8 @@ export const useAppContext = () => {
   return context;
 };
 
-/*
- * This is a wrapper component that provides context to all the components.
- * This includes user, form, and chatLog.
- */
-
-const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));
-
 export const AppContextProvider = ({ children }) => {
-  const { user, conversations, setConversations } = useUserContext();
+  const { conversations, setConversations } = useUserContext();
   const [selected, setSelected] = useState(); // selected Conversation index
   const [loadingMessages, setLoadingMessages] = useState(false);
 
@@ -40,27 +33,13 @@ export const AppContextProvider = ({ children }) => {
 
   // listener for conversation selection; changes when selected or converation length changes
   useEffect(() => {
-    if (loadingMessages) return;
-
-    if (conversations?.length > 0 && typeof selected !== "undefined") {
+    if (!loadingMessages && typeof selected !== "undefined") {
       setLoadingMessages(true);
-
       axios
-        .get(`/api/message/` + conversations[selected]?._id)
-        .then((res) => {
-          const messages = res.data.messages.map((message) => {
-            return {
-              ...message,
-              user: message.isBot ? "OpenAI" : user.username,
-            };
-          });
-          setChatLog(messages);
-        })
+        .get(`/api/message/${conversations[selected]?._id}`)
+        .then((res) => setChatLog(res.data.messages))
         .catch((err) => console.error(err))
-        .then(async () => {
-          await delay(500);
-          setLoadingMessages(false);
-        });
+        .then(() => setLoadingMessages(false));
     }
   }, [selected, conversations?.length]);
 
@@ -88,3 +67,5 @@ export const AppContextProvider = ({ children }) => {
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
+
+// const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));

@@ -2,15 +2,16 @@ import CheckIcon from "@mui/icons-material/Check";
 import { Divider, IconButton, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { useUserContext } from "./_app";
 
 const Admin = () => {
-  const { user, loading } = useUserContext();
+  const { user, loading } = useSelector((state) => state.user);
+
   const [users, setUsers] = useState([]);
 
-  const getUnverifiedUsers = async () => {
+  const getUnverifiedUsers = useCallback(async () => {
     if (user?.role === "admin") {
       axios
         .get("/api/user/unverified")
@@ -20,7 +21,7 @@ const Admin = () => {
         })
         .catch((err) => console.log(err));
     }
-  };
+  }, []);
 
   useEffect(() => getUnverifiedUsers, [user?.role]);
 
@@ -32,7 +33,7 @@ const Admin = () => {
     );
   }
 
-  const HandleVerify = async (userId) => {
+  const handleVerify = async (userId) => {
     const response = await Swal.fire({
       title: "Verify User?",
       text: "HEHEHEHEHEHEHEHEHEHE!",
@@ -81,7 +82,7 @@ const Admin = () => {
           >
             <Typography>User: {username}</Typography>
             <Typography sx={{ ml: 1.5, flex: 1 }}>Desc: {why}</Typography>
-            <IconButton onClick={() => HandleVerify(_id)}>
+            <IconButton onClick={() => handleVerify(_id)}>
               <CheckIcon />
             </IconButton>
           </Box>

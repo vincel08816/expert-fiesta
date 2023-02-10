@@ -3,29 +3,67 @@ import SendIcon from "@mui/icons-material/Send";
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
-import React, { useState } from "react";
-import { useAppContext } from "../../contexts/AppContext";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useFormContext } from "../../contexts/FormContext";
 import useWindowSize from "../../hooks/useWindowSize";
-import { useUserContext } from "../../pages/_app";
+
+import {
+  appendChatLog,
+  setChatLog,
+  setLoadingChatLog,
+} from "../../store/chatLogSlice";
+import {
+  prependConversation,
+  setSelected,
+} from "../../store/conversationsSlice";
 import DotLoader from "../DotLoader";
 import IconsWithTooltips from "../IconsWithTooltips";
 import ChatLog from "./ChatLog";
 
 const Content = () => {
-  const { user, conversations, setConversations } = useUserContext();
+  const [isSending, setIsSending] = useState(false);
   const { form, handleChange, clearText } = useFormContext();
-  const {
-    setChatLog,
-    chatLog,
-    toggleCheck,
-    autoSelect,
-    selected,
-    setSelected,
-  } = useAppContext();
   const { width } = useWindowSize();
 
-  const [isSending, setIsSending] = useState(false);
+  const {
+    conversations: { conversations, selected },
+    chatLog: { chatLog, loadingMessages, autoSelect },
+  } = useSelector((state) => state);
+
+  const dispatch = useDispatch();
+  const handlePrepend = (newConversation) =>
+    dispatch(prependConversation(newConversation));
+
+  const handleAppendChatLog = (payload) => dispatch(appendChatLog(payload));
+  const handleSetLoadingChatLog = (payload) =>
+    dispatch(setLoadingChatLog(payload));
+  const handleSetChatLog = (payload) => dispatch(setChatLog(payload));
+  const handleSetSelected = (payload) => dispatch(setSelected(payload));
+
+  /* load messages into chatLog */
+  useEffect(() => {
+    console.log(selected);
+    if ((loadingMessages && selected < 0) || selected !== -1) {
+      handleSetLoadingChatLog(true);
+      console.log({
+        conversations,
+        selected,
+        selectedConversation: conversations[selected],
+      });
+      axios
+        .get(`/api/message/${conversations[selected]?._id}`)
+        .then((res) => {
+          handleSetChatLog(
+            res.data.messages.map((messages) => {
+              return { ...messages, selected: false };
+            })
+          );
+        })
+        .catch((err) => console.error(err))
+        .then(() => handleSetLoadingChatLog(false));
+    }
+  }, [selected, conversations?.length]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -121,13 +159,20 @@ const Content = () => {
     setChatLog((prev) => [
       ...prev,
       {
-        user: user.username,
         isBot: false,
         updatedAt: Date.now(),
         text: form.text,
         selected: true,
       },
     ]);
+
+    // {!} fix this immediately
+    handleAppendChatLog({
+      isBot: false,
+      updatedAt: Date.now(),
+      text: form.text,
+      selected: true,
+    });
 
     clearText();
 
@@ -150,29 +195,26 @@ const Content = () => {
       })
       .then((response) => {
         const { openAIResponse, conversation, userMessageId } = response.data;
-        setChatLog((prev) => {
-          let prevCopy = [...prev];
-          prevCopy[index]._id = userMessageId; // replace FE sent message with real message id
-          prevCopy.push({ ...openAIResponse, user: "OpenAI", selected: true });
-          return prevCopy;
-        });
+        let newChatLog = [...chatLog];
+        newChatLog[index]._id = userMessageId;
+        newChatLog.push({ ...openAIResponse, selected: true });
+        setChatLog(newChatLog);
 
-        if (selected === undefined) {
-          setConversations((prev) => [conversation, ...prev]);
-          setSelected(0);
+        // {!} this function has yet to be imported from slice
+        handleSetChatLog(newChatLog);
+
+        if (selected === -1 || selected === undefined) {
+          handlePrepend(conversation);
+          handleSetSelected(0);
         }
       })
       .catch((error) => {
-        setChatLog((prev) => [
-          ...prev,
-          {
-            user: "OpenAI",
-            updatedAt: Date.now(),
-            text: "Could not send message.",
-            selected: true,
-            error: true,
-          },
-        ]);
+        handleAppendChatLog({
+          updatedAt: Date.now(),
+          text: "Could not send message.",
+          selected: true,
+          error: true,
+        });
         console.error(error);
       })
       .then(() => {
@@ -183,11 +225,7 @@ const Content = () => {
   return (
     <>
       {/* chatLog */}
-      <ChatLog
-        chatLog={chatLog}
-        setChatLog={setChatLog}
-        toggleCheck={toggleCheck}
-      />
+      <ChatLog />
 
       {/* input field */}
       <Box
@@ -211,7 +249,7 @@ const Content = () => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            borderRadius: "5px",
+            borderRadius: 5,
             boxShadow: "0 0 10px rgba(0,0,0,.1);",
           }}
         >
