@@ -3,7 +3,7 @@ const cors = require("cors");
 const cp = require("cookie-parser");
 const passport = require("passport");
 const connectDB = require("./modules/db");
-const fs = require('fs');
+const fs = require("fs");
 
 const next = require("next");
 require("dotenv").config();

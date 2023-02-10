@@ -33,6 +33,10 @@ const chatLogSlice = createSlice({
       state.chatLog[action.payload].selected =
         !state.chatLog[action.payload]?.selected;
     },
+    appendBotMessage: ({ chatLog }, { payload: { newElement, _id } }) => {
+      chatLog[chatLog.length - 1]._id = _id;
+      chatLog.push(newElement);
+    },
   },
 });
 
@@ -54,6 +58,7 @@ export const {
   setIsSending,
   setAutoSelect,
   toggleCheckbox,
+  appendBotMessage,
 } = chatLogSlice.actions;
 
 export const chatLogReducer = chatLogSlice.reducer;

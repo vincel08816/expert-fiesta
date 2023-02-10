@@ -7,8 +7,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormContext } from "../../contexts/FormContext";
 import useWindowSize from "../../hooks/useWindowSize";
-
 import {
+  appendBotMessage,
   appendChatLog,
   setChatLog,
   setLoadingChatLog,
@@ -28,7 +28,7 @@ const Content = () => {
 
   const {
     conversations: { conversations, selected },
-    chatLog: { chatLog, loadingMessages, autoSelect },
+    chatLog: { chatLog, loadingChatLog, autoSelect },
   } = useSelector((state) => state);
 
   const dispatch = useDispatch();
@@ -43,14 +43,8 @@ const Content = () => {
 
   /* load messages into chatLog */
   useEffect(() => {
-    console.log(selected);
-    if ((loadingMessages && selected < 0) || selected !== -1) {
+    if (!loadingChatLog && selected >= 0) {
       handleSetLoadingChatLog(true);
-      console.log({
-        conversations,
-        selected,
-        selectedConversation: conversations[selected],
-      });
       axios
         .get(`/api/message/${conversations[selected]?._id}`)
         .then((res) => {
@@ -156,15 +150,6 @@ const Content = () => {
     // add message to chatLog array
 
     const index = chatLog.length; // index of new message from user
-    setChatLog((prev) => [
-      ...prev,
-      {
-        isBot: false,
-        updatedAt: Date.now(),
-        text: form.text,
-        selected: true,
-      },
-    ]);
 
     // {!} fix this immediately
     handleAppendChatLog({
@@ -172,6 +157,7 @@ const Content = () => {
       updatedAt: Date.now(),
       text: form.text,
       selected: true,
+      _id: null,
     });
 
     clearText();
@@ -190,23 +176,20 @@ const Content = () => {
       .post(axiosUrl, {
         payload,
         text: form.text,
-        conversationId:
-          selected !== undefined ? conversations[selected]._id : undefined,
+        conversationId: selected >= 0 ? conversations[selected]._id : undefined,
       })
       .then((response) => {
         const { openAIResponse, conversation, userMessageId } = response.data;
-        let newChatLog = [...chatLog];
-        newChatLog[index]._id = userMessageId;
-        newChatLog.push({ ...openAIResponse, selected: true });
-        setChatLog(newChatLog);
+        const reduxPayload = {
+          newElement: { ...openAIResponse, selected: true },
+          _id: userMessageId,
+        };
 
-        // {!} this function has yet to be imported from slice
-        handleSetChatLog(newChatLog);
-
-        if (selected === -1 || selected === undefined) {
+        if (selected === -1) {
           handlePrepend(conversation);
           handleSetSelected(0);
         }
+        dispatch(appendBotMessage(reduxPayload));
       })
       .catch((error) => {
         handleAppendChatLog({
