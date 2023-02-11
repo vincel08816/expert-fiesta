@@ -23,7 +23,7 @@ const CodeBlock = ({ text, enableMarkdown }) => {
         fontSize,
         lineHeight: 1.5,
       };
-      // return <Typography key={index} sx={typeSx} children={value} />;
+      return <Typography key={index} sx={typeSx} children={value} />;
 
       if (!enableMarkdown)
         return <Typography key={index} sx={typeSx} children={value} />;

@@ -3,7 +3,7 @@ import SendIcon from "@mui/icons-material/Send";
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormContext } from "../../contexts/FormContext";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -25,7 +25,6 @@ const Content = () => {
   const [isSending, setIsSending] = useState(false);
   const { form, handleChange, clearText } = useFormContext();
   const { width } = useWindowSize();
-
   const {
     conversations: { conversations, selected },
     chatLog: { chatLog, loadingChatLog, autoSelect },
@@ -42,22 +41,22 @@ const Content = () => {
   const handleSetSelected = (payload) => dispatch(setSelected(payload));
 
   /* load messages into chatLog */
-  useEffect(() => {
-    if (!loadingChatLog && selected >= 0) {
-      handleSetLoadingChatLog(true);
-      axios
-        .get(`/api/message/${conversations[selected]?._id}`)
-        .then((res) => {
-          handleSetChatLog(
-            res.data.messages.map((messages) => {
-              return { ...messages, selected: false };
-            })
-          );
-        })
-        .catch((err) => console.error(err))
-        .then(() => handleSetLoadingChatLog(false));
-    }
-  }, [selected, conversations?.length]);
+  // useEffect(() => {
+  //   if (!loadingChatLog && selected >= 0) {
+  //     handleSetLoadingChatLog(true);
+  //     axios
+  //       .get(`/api/message/${conversations[selected]?._id}`)
+  //       .then((res) => {
+  //         handleSetChatLog(
+  //           res.data.messages.map((messages) => {
+  //             return { ...messages, selected: false };
+  //           })
+  //         );
+  //       })
+  //       .catch((err) => console.error(err))
+  //       .then(() => handleSetLoadingChatLog(false));
+  //   }
+  // }, [selected, conversations?.length]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

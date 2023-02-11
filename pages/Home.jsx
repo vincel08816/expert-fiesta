@@ -34,7 +34,7 @@ export default function Home() {
   const { user, loading } = useSelector((state) => state.user);
 
   // events
-  const [open, setOpen] = useState(true); // drawer open
+  const [open, setOpen] = useState(false); // drawer open
   const [value, setValue] = useState(0); // which tab value is selected
   const [anchorEl, setAnchorEl] = React.useState(null); // what is this for again?
 

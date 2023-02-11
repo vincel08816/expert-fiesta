@@ -155,9 +155,6 @@ const TopBar = ({
               mr: 0.3,
               opacity: 0.6,
               fontWeight: 600,
-              // "@media (max-width: 600px)": {
-              //   display: "none",
-              // },
             }}
           >
             &mdash;
@@ -167,9 +164,6 @@ const TopBar = ({
               ml: 0.3,
               opacity: 0.6,
               fontSize: "12px",
-              // "@media (max-width: 600px)": {
-              //   display: "none",
-              // },
             }}
           >
             {conversations && conversations[selected]?.title.length

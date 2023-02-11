@@ -245,12 +245,15 @@ router.get(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
+    const conversationId = req.params.id;
+    const userId = req.user.id;
+    const { page = 0 } = req.query;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = page * limit;
+
+    console.log("/api/message/:id", req.params.id);
+
     try {
-      const conversationId = req.params.id;
-      const userId = req.user.id;
-
-      console.log("/api/message/:id", req.params.id);
-
       const conversation = await Conversation.findById(conversationId);
 
       // this covers the case where conversation does not exist OR user does not match
@@ -259,15 +262,58 @@ router.get(
         return res.sendStatus(404);
       }
 
-      const messages = await Message.find({ conversationId });
+      const messages = await Message.find({ conversationId })
+        .sort({
+          createdAt: -1,
+        })
+        .skip(skip)
+        .limit(limit);
+      const totalCount = await Message.countDocuments({ conversationId });
+      const hasMore = totalCount > skip + limit;
 
-      res.json({ messages });
+      console.log({ totalCount, skip, limit, hasMore });
+
+      // console.log("/api/message", {
+      //   conversationId,
+      //   query: req.query,
+      //   messages: messages.reverse(),
+      // });
+
+      res.json({ messages: messages.reverse(), hasMore });
     } catch (error) {
       console.error(error);
       res.sendStatus(500);
     }
   }
 );
+
+// router.get(
+//   "/:id",
+//   passport.authenticate("jwt", { session: false }),
+//   async (req, res) => {
+//     try {
+//       const conversationId = req.params.id;
+//       const userId = req.user.id;
+
+//       console.log("/api/message/:id", req.params.id);
+
+//       const conversation = await Conversation.findById(conversationId);
+
+//       // this covers the case where conversation does not exist OR user does not match
+//       if (conversation?.userId.toString() !== userId) {
+//         console.error("Conversation does not exist or user does not match");
+//         return res.sendStatus(404);
+//       }
+
+//       const messages = await Message.find({ conversationId });
+
+//       res.json({ messages });
+//     } catch (error) {
+//       console.error(error);
+//       res.sendStatus(500);
+//     }
+//   }
+// );
 
 // @route    PUT /api/move-message/:id
 // @desc     Edit conversation based on converationId and userId

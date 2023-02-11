@@ -140,7 +140,7 @@
   margin-top: -10px;
   margin-bottom: -7px;
   /* line-height: 1.5; */
-  /* white-space: pre-wrap; */
+  white-space: pre-wrap;
   @media screen and (min-width: 600px) {
     font-size: 14px;
   }
