@@ -6,6 +6,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { logout } from "../store/userSlice";
 
 export default function Unverified() {
