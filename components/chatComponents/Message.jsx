@@ -26,7 +26,7 @@ const Message = (props) => {
   const [show, setShow] = useState(false);
   const handleMouseOver = () => setShow(true);
   const handleMouseOut = () => setShow(false);
-  const [enableMarkdown, setEnableMarkdown] = useState(true);
+  const [enableMarkdown, setEnableMarkdown] = useState(false);
 
   const selectedMessageSx = {
     backgroundColor: selected && "#fbfbfb",
@@ -86,6 +86,7 @@ const Message = (props) => {
           ) : imageUrls?.length ? (
             imageUrls.map((imageUrl) => (
               <StyledImage
+                key={imageUrl}
                 referrerPolicy="no-referrer"
                 src={imageUrl}
                 alt="dalle"
@@ -248,7 +249,7 @@ const Hoverbar = (props) => {
             sx={hoverIconSx}
             onClick={() => {
               navigator.clipboard.writeText(imageUrl ? imageUrl : text);
-              setSnackbarText("Copied to clipboard");
+              setSnackbarText("Message copied to clipboard.");
               setSnackbarOpen(true);
             }}
           >
@@ -310,7 +311,7 @@ const LogoContainerSx = {
   borderRadius: "100%",
   mt: 1.5,
   mr: 2,
-  "@media (max-width: 600px)": {
-    display: "none",
-  },
+  // "@media (max-width: 600px)": {
+  //   display: "none",
+  // },
 };

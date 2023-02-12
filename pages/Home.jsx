@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Content from "../components/chatComponents/Content";
+import { CodeModal, useCodeModal } from "../components/CodeModal";
 import TopBar from "../components/TopBar";
 import Tutorial from "../components/Tutorial";
 import { AppContextProvider } from "../contexts/AppContext";
@@ -71,6 +72,7 @@ export default function Home() {
     closeTour,
     isTourOpen,
     setIsTourOpen,
+    ...useCodeModal(),
   };
 
   if (loading)
@@ -107,6 +109,7 @@ export default function Home() {
               }}
             />
 
+            <CodeModal />
             <Snackbar
               open={snackbarOpen}
               autoHideDuration={1000}

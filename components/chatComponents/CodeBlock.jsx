@@ -1,11 +1,10 @@
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
-import { Button, Typography } from "@mui/material";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import { Button, IconButton, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-// import d from "react-syntax-highlighter/dist/cjs/styles/prism/tomorrow";
-
 import { tomorrow as d } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import remarkGfm from "remark-gfm";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -14,6 +13,13 @@ import { useEventContext } from "../../pages/Home";
 const CodeBlock = ({ text, enableMarkdown }) => {
   const { width } = useWindowSize();
   const fontSize = width > 600 ? 15 : width > 400 ? 14 : 13;
+  const { setCodeLanguage, setCodeText, handleOpenModal } = useEventContext();
+
+  const handleFullScreen = (language, value) => {
+    setCodeLanguage(language);
+    setCodeText(value);
+    handleOpenModal();
+  };
 
   return splitString(text).map(({ type, value, language }, index) => {
     if (type === "text") {
@@ -23,7 +29,7 @@ const CodeBlock = ({ text, enableMarkdown }) => {
         fontSize,
         lineHeight: 1.5,
       };
-      return <Typography key={index} sx={typeSx} children={value} />;
+      // return <Typography key={index} sx={typeSx} children={value} />;
 
       if (!enableMarkdown)
         return <Typography key={index} sx={typeSx} children={value} />;
@@ -55,6 +61,20 @@ const CodeBlock = ({ text, enableMarkdown }) => {
     return (
       <Box key={index} sx={{ maxWidth: "95vw", mt: 0.3 }}>
         <CodeHeader language={language?.toLowerCase()} value={value} />
+        <Box
+          sx={{
+            mt: -0.5,
+            mb: -5,
+            display: "flex",
+            backgroundColor: "black",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          <IconButton onClick={() => handleFullScreen(language, value)}>
+            <FullscreenIcon sx={{ width: 22, mr: 1, color: "white" }} />
+          </IconButton>
+        </Box>
         <SyntaxHighlighter
           children={value || ""}
           wrapLines={true}
@@ -65,7 +85,7 @@ const CodeBlock = ({ text, enableMarkdown }) => {
           }}
           customStyle={{
             width: "auto",
-            fontSize,
+            fontSize: fontSize - 1,
             padding: 15,
             backgroundColor: "black",
             fontFamily: "initial",
@@ -123,7 +143,7 @@ const CodeHeader = ({ language, value }) => {
       <Button
         onClick={() => {
           navigator.clipboard.writeText(value);
-          setSnackbarText("Copied Code");
+          setSnackbarText("Code copied to clipboard.");
           setSnackbarOpen(true);
         }}
         sx={{

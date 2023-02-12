@@ -7,12 +7,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormContext } from "../../contexts/FormContext";
 import useWindowSize from "../../hooks/useWindowSize";
-import {
-  appendBotMessage,
-  appendChatLog,
-  setChatLog,
-  setLoadingChatLog,
-} from "../../store/chatLogSlice";
+import { appendBotMessage, appendChatLog } from "../../store/chatLogSlice";
 import {
   prependConversation,
   setSelected,
@@ -26,8 +21,8 @@ const Content = () => {
   const { form, handleChange, clearText } = useFormContext();
   const { width } = useWindowSize();
   const {
-    conversations: { conversations, selected },
-    chatLog: { chatLog, loadingChatLog, autoSelect },
+    conversations: { conversations, selected, loadingConversations },
+    chatLog: { chatLog, autoSelect },
   } = useSelector((state) => state);
 
   const dispatch = useDispatch();
@@ -35,28 +30,7 @@ const Content = () => {
     dispatch(prependConversation(newConversation));
 
   const handleAppendChatLog = (payload) => dispatch(appendChatLog(payload));
-  const handleSetLoadingChatLog = (payload) =>
-    dispatch(setLoadingChatLog(payload));
-  const handleSetChatLog = (payload) => dispatch(setChatLog(payload));
   const handleSetSelected = (payload) => dispatch(setSelected(payload));
-
-  /* load messages into chatLog */
-  // useEffect(() => {
-  //   if (!loadingChatLog && selected >= 0) {
-  //     handleSetLoadingChatLog(true);
-  //     axios
-  //       .get(`/api/message/${conversations[selected]?._id}`)
-  //       .then((res) => {
-  //         handleSetChatLog(
-  //           res.data.messages.map((messages) => {
-  //             return { ...messages, selected: false };
-  //           })
-  //         );
-  //       })
-  //       .catch((err) => console.error(err))
-  //       .then(() => handleSetLoadingChatLog(false));
-  //   }
-  // }, [selected, conversations?.length]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -199,15 +173,13 @@ const Content = () => {
         });
         console.error(error);
       })
-      .then(() => {
-        setIsSending(false);
-      });
+      .then(() => setIsSending(false));
   };
 
   return (
     <>
       {/* chatLog */}
-      <ChatLog />
+      {loadingConversations ? <Box sx={{ flex: 1 }} /> : <ChatLog />}
 
       {/* input field */}
       <Box

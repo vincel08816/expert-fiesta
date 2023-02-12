@@ -57,6 +57,7 @@ export default function Login() {
     <Box
       sx={{
         display: "flex",
+        // flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#f3f2ee",
@@ -64,41 +65,13 @@ export default function Login() {
         width: "100vw",
       }}
     >
-      <Box
-        sx={{
-          top: 25,
-          left: 50,
-          position: "absolute",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          display: "none",
-        }}
-      >
-        <Typography variant="h5" sx={{ fontWeight: 600 }}>
-          Menhera
-        </Typography>
-        <Box sx={{ ml: 0.1 }}>
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 600,
-              backgroundColor: "black",
-              color: "white",
-              p: 0.2,
-              borderRadius: 1,
-            }}
-          >
-            GPT
-          </Typography>
-        </Box>
-      </Box>
       <Paper
         sx={{
           display: "flex",
           flexDirection: "column",
+          justifyContent: "center",
           borderRadius: "10px",
-          width: 400,
+          width: 350,
           p: 3,
           boxShadow: 3,
           m: 1,
@@ -160,15 +133,14 @@ export default function Login() {
         <Button
           variant="outlined"
           sx={{
-            padding: "15px 10px",
+            padding: "15px",
             marginBottom: "25px",
             borderRadius: "50px",
             fontSize: "14px",
           }}
           onClick={() => router.push({ pathname: "/register" })}
-        >
-          Register
-        </Button>
+          children="Register"
+        />
       </Paper>
     </Box>
   );
