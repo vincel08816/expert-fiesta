@@ -1,3 +1,4 @@
+import { CircularProgress } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, {
@@ -57,9 +58,9 @@ const ChatLog = () => {
 
   return (
     <Box ref={chatRef} sx={chatContainerSx}>
-      {/* {selected > 0 && loading && hasMore && (
+      {selected > 0 && loading && hasMore && (
         <CircularProgress style={{ width: 60, height: 60, mt: -6 }} />
-      )} */}
+      )}
 
       {memoizedChatLog}
     </Box>

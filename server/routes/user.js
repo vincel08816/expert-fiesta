@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const secret = process.env.SECRET;
 const passport = require("passport");
 
-const expiresIn = 36000;
+const expiresIn = 360000;
 
 // @route    POST /users/register
 // @desc     Register user

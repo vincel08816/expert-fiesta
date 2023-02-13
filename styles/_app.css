@@ -129,7 +129,6 @@
   100% {
     background-position: 0 0;
   }
-
   50% {
     background-position: 100% 0;
   }
@@ -138,14 +137,43 @@
 .markdown-section {
   font-size: 15px;
   max-width: 95vw;
-  margin-top: -10px;
-  margin-bottom: -7px;
+  /* margin-top: -10px; */
+  /* margin-bottom: -7px; */
   /* line-height: 1.5; */
+  /* white-space: pre-wrap; */
+  font-size: clamp(14px, 2vw, 16px);
+}
+.markdown-section > section,
+.markdown-section > div {
+  max-width: 95vw;
+  padding: 0;
+  margin: 0;
+  line-height: 1.5;
+  white-space: pre-line;
+  height: auto;
+}
+
+.markdown-section > p {
+  margin: 0 0 12px 0;
   white-space: pre-wrap;
-  @media screen and (min-width: 600px) {
-    font-size: 14px;
-  }
-  @media screen and (min-width: 300px) {
-    font-size: 13px;
-  }
+}
+
+.markdown-section > pre,
+.markdown-section > code {
+  max-width: 95vw;
+  white-space: pre-wrap;
+  padding: 0 0 0 15px;
+  margin: 0 0 0 15px;
+  overflow-wrap: anywhere;
+  height: auto;
+  font-size: clamp(14px, 2vw, 16px);
+}
+
+.markdown-section > li,
+.markdown-section > ol {
+  white-space: pre-line;
+  padding: 0 0 0 12px;
+  margin: 0 0 0 12px;
+  line-height: 1.5;
+  height: auto;
 }

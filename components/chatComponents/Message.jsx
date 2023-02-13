@@ -26,7 +26,7 @@ const Message = (props) => {
   const [show, setShow] = useState(false);
   const handleMouseOver = () => setShow(true);
   const handleMouseOut = () => setShow(false);
-  const [enableMarkdown, setEnableMarkdown] = useState(false);
+  const [enableMarkdown, setEnableMarkdown] = useState(true);
 
   const selectedMessageSx = {
     backgroundColor: selected && "#fbfbfb",

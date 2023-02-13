@@ -7,12 +7,9 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow as d } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import remarkGfm from "remark-gfm";
-import useWindowSize from "../../hooks/useWindowSize";
 import { useEventContext } from "../../pages/Home";
 
 const CodeBlock = ({ text, enableMarkdown }) => {
-  const { width } = useWindowSize();
-  const fontSize = width > 600 ? 15 : width > 400 ? 14 : 13;
   const { setCodeLanguage, setCodeText, handleOpenModal } = useEventContext();
 
   const handleFullScreen = (language, value) => {
@@ -26,7 +23,7 @@ const CodeBlock = ({ text, enableMarkdown }) => {
       const typeSx = {
         maxWidth: "95vw",
         whiteSpace: "pre-line",
-        fontSize,
+        fontSize: "clamp(14px, 2vw, 16px)",
         lineHeight: 1.5,
       };
 
@@ -71,7 +68,7 @@ const CodeBlock = ({ text, enableMarkdown }) => {
           }}
           customStyle={{
             width: "auto",
-            fontSize: fontSize - 1,
+            fontSize: "clamp(13px, 2vw, 16px)",
             padding: 15,
             backgroundColor: "black",
             fontFamily: "initial",

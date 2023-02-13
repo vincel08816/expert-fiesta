@@ -6,7 +6,6 @@ import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow as theme } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import useWindowSize from "../hooks/useWindowSize";
 import { useEventContext } from "../pages/Home";
 
 export const useCodeModal = () => {
@@ -34,8 +33,6 @@ export const CodeModal = () => {
     codeLanguage: language,
     codeText: value,
   } = useEventContext();
-  const { width } = useWindowSize();
-  const fontSize = width > 600 ? 15 : width > 400 ? 14 : 13;
 
   return (
     <div>
@@ -46,7 +43,7 @@ export const CodeModal = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         sx={{
-          backdropFilter: "blur(2px)",
+          backdropFilter: "blur(4px)",
         }}
       >
         <Box sx={style}>
@@ -57,7 +54,7 @@ export const CodeModal = () => {
               alignItems: "center",
               position: "absolute",
               color: "white",
-              mt: -8,
+              mt: -7,
               right: 0,
               top: 0,
               border: "1px solid white",
@@ -71,7 +68,7 @@ export const CodeModal = () => {
           </IconButton>
           <CodeHeader language={language?.toLowerCase()} value={value} />
           <SyntaxHighlighter
-            showLineNumbers
+            // showLineNumbers
             children={value}
             wrapLines={true}
             language={language?.trim().toLowerCase() || "none"}
@@ -83,7 +80,7 @@ export const CodeModal = () => {
               overflowY: "auto",
               flex: 1,
               width: "auto",
-              fontSize: fontSize - 1,
+              fontSize: "clamp(14px, 2vw, 16px)",
               padding: 15,
               backgroundColor: "black",
               fontFamily: "initial",
@@ -140,6 +137,7 @@ const CodeHeader = ({ language, value }) => {
 };
 
 const style = {
+  mt: 3,
   outline: "none",
   maxWidth: 1200,
   borderRadius: "8px",

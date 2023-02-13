@@ -31,7 +31,7 @@ export default function Login() {
   }, [username, password]);
 
   const login = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     if (!username && !password) {
       setPasswordError(emptyPasswordError);
       return setUsernameError(emptyUsernameError);
