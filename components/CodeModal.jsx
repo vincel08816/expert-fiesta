@@ -1,5 +1,5 @@
+import CloseIcon from "@mui/icons-material/Close";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
-import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import { Button, IconButton, Typography } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import { Box } from "@mui/system";
@@ -11,8 +11,8 @@ import { useEventContext } from "../pages/Home";
 
 export const useCodeModal = () => {
   const [openCodeModal, setOpenCodeModal] = useState(false);
-  const [codeLanguage, setCodeLanguage] = useState("");
-  const [codeText, setCodeText] = useState("");
+  const [codeLanguage, setCodeLanguage] = useState("javascript");
+  const [codeText, setCodeText] = useState("asd;flkjasd;lkfjasdf");
   const handleOpenModal = () => setOpenCodeModal(true);
   const handleCloseModal = () => setOpenCodeModal(false);
 
@@ -45,23 +45,33 @@ export const CodeModal = () => {
         onClose={handleCloseModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{
+          backdropFilter: "blur(2px)",
+        }}
       >
         <Box sx={style}>
-          <CodeHeader language={language?.toLowerCase()} value={value} />
-          <Box
+          <IconButton
             sx={{
-              backgroundColor: "black",
-              mb: -5,
               display: "flex",
-              justifyContent: "flex-end",
+              justifyContent: "center",
+              alignItems: "center",
+              position: "absolute",
+              color: "white",
+              mt: -8,
+              right: 0,
+              top: 0,
+              border: "1px solid white",
+              borderRadius: "50%",
+              width: 40,
+              height: 40,
             }}
             onClick={handleCloseModal}
           >
-            <IconButton>
-              <FullscreenExitIcon sx={{ color: "white" }} />
-            </IconButton>
-          </Box>
+            <CloseIcon />
+          </IconButton>
+          <CodeHeader language={language?.toLowerCase()} value={value} />
           <SyntaxHighlighter
+            showLineNumbers
             children={value}
             wrapLines={true}
             language={language?.trim().toLowerCase() || "none"}
@@ -130,6 +140,7 @@ const CodeHeader = ({ language, value }) => {
 };
 
 const style = {
+  outline: "none",
   maxWidth: 1200,
   borderRadius: "8px",
   position: "absolute",

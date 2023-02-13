@@ -29,32 +29,17 @@ const CodeBlock = ({ text, enableMarkdown }) => {
         fontSize,
         lineHeight: 1.5,
       };
-      // return <Typography key={index} sx={typeSx} children={value} />;
 
       if (!enableMarkdown)
         return <Typography key={index} sx={typeSx} children={value} />;
 
       return (
-        // <Box
-        //   key={index}
-        //   sx={{
-        //     fontSize,
-        //     maxWidth: "95vw",
-        //     mt: -1.5,
-        //     mb: -1,
-        //     p: 0,
-        //     lineHeight: 1.5,
-        //     wordWrap: "break-word",
-        //     whiteSpace: "pre",
-        //   }}
-        // >
         <ReactMarkdown
           key={index}
           className="markdown-section"
           children={value}
           remarkPlugins={[remarkGfm]}
         />
-        // </Box>
       );
     }
 
@@ -78,6 +63,7 @@ const CodeBlock = ({ text, enableMarkdown }) => {
         <SyntaxHighlighter
           children={value || ""}
           wrapLines={true}
+          wrapLongLines={true}
           language={language?.trim().toLowerCase() || "none"}
           style={d}
           lineProps={{
