@@ -1,7 +1,8 @@
 import { TextareaAutosize } from "@mui/base";
 import ImageSearchIcon from "@mui/icons-material/ImageSearch";
 import SendIcon from "@mui/icons-material/Send";
-import { Typography } from "@mui/material";
+import TextsmsIcon from "@mui/icons-material/Textsms";
+import { IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useState } from "react";
@@ -15,6 +16,78 @@ import {
 import DotLoader from "../DotLoader";
 import IconsWithTooltips from "../IconsWithTooltips";
 import ChatLog from "./ChatLog";
+
+const SelectType = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openSelectMenu = Boolean(anchorEl);
+  const { form, handleChange } = useFormContext();
+  const iconSx = { width: 20, height: 20 };
+  const iconButtonSx = {
+    ml: 1,
+    mb: 0.5,
+    // border: "2px solid rgba(0,0,0,.1)",
+  };
+
+  return (
+    <Box>
+      <Tooltip title="GPT-3 Or DALL·E 2">
+        <IconButton
+          sx={iconButtonSx}
+          onClick={(event) => setAnchorEl(event.currentTarget)}
+        >
+          {form.type === "text" ? (
+            <TextsmsIcon sx={iconSx} />
+          ) : (
+            <ImageSearchIcon sx={iconSx} />
+          )}
+        </IconButton>
+      </Tooltip>
+
+      <Menu
+        sx={{ borderRadius: "8px" }}
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={openSelectMenu}
+        onClose={() => setAnchorEl(null)}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+      >
+        {[
+          {
+            title: "GPT3 Text Generation",
+            value: "text",
+            icon: <TextsmsIcon />,
+          },
+          {
+            title: "DALL·E 2 Image Generation",
+            value: "image",
+            icon: <ImageSearchIcon />,
+          },
+        ].map(({ title, value, icon }, index) => (
+          <MenuItem
+            key={title + index}
+            sx={{ fontSize: "12px", display: "flex", alignItems: "center" }}
+            name="topText"
+            value={value}
+            onClick={(e) => {
+              handleChange({
+                target: { name: "type", value },
+                preventDefault: () => {},
+              });
+              setAnchorEl(null);
+            }}
+          >
+            {icon}
+            <Typography variant="body-2" sx={{ ml: 0.5 }}>
+              {title}
+            </Typography>
+          </MenuItem>
+        ))}
+      </Menu>
+    </Box>
+  );
+};
 
 const Content = () => {
   const [isSending, setIsSending] = useState(false);
@@ -35,6 +108,13 @@ const Content = () => {
     e.preventDefault();
 
     if (isSending) return;
+    if (form.type === "image" && form.text.length > 400) {
+      return Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Text must be less than 400 characters",
+      });
+    }
     if (!form.text.length || !form.text.trim().length)
       return Swal.fire({
         icon: "error",
@@ -100,10 +180,10 @@ const Content = () => {
     // prompt should be: pinned + selected previous messages + current text
 
     const payload =
-      form.model === "image-dalle-002"
+      form.type === "image"
         ? {
             prompt: form.text,
-            n: form.number,
+            n: form.n,
             size: form.size,
           }
         : {
@@ -123,7 +203,6 @@ const Content = () => {
 
     const index = chatLog.length; // index of new message from user
 
-    // {!} fix this immediately
     handleAppendChatLog({
       isBot: false,
       updatedAt: Date.now(),
@@ -139,13 +218,8 @@ const Content = () => {
     //   conversations.length && selected && conversations[selected]._id
     // );
 
-    const axiosUrl =
-      form.model === "image-dalle-002"
-        ? "/api/message/image"
-        : "/api/message/text";
-
     axios
-      .post(axiosUrl, {
+      .post(`/api/message/${form.type}`, {
         payload,
         text: form.text,
         conversationId: selected >= 0 ? conversations[selected]._id : undefined,
@@ -206,6 +280,7 @@ const Content = () => {
             boxShadow: "0 0 10px rgba(0,0,0,.1);",
           }}
         >
+          <SelectType />
           <TextareaAutosize
             placeholder="Message @OpenAI"
             onKeyDown={(e) =>
@@ -215,7 +290,7 @@ const Content = () => {
             name={"text"}
             onChange={handleChange}
             style={{
-              fontSize: "clamp(14px, 2vw, 16px)",
+              fontSize: "clamp(13px, 2vw, 14px)",
               padding: "10px 20px",
               minHeight: 22,
               maxHeight: 350,

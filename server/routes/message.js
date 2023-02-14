@@ -75,10 +75,10 @@ const verifyConversationAndSaveMessage = async (
       // save image data to google drive?
       console.log(response.data);
 
-      const googleUrls = await scanUrlsForFiles([response.data[0].url]);
+      const urls = await scanUrlsForFiles(response.data.map((url) => url.url));
 
-      newMessageData.imageUrl = googleUrls[0];
-      newMessageData.imageUrls = googleUrls;
+      newMessageData.imageUrl = urls[0];
+      newMessageData.imageUrls = urls;
     }
 
     const openAIResponse = await new Message(newMessageData).save();
@@ -157,7 +157,7 @@ router.post(
   async (req, res) => {
     try {
       let { payload, text, title, conversationId } = req.body;
-      console.log("/api/message", req.body);
+      console.log("/api/message/image", req.body);
 
       const moderationResults = await sendModerationRequest(text);
 

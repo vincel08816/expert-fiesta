@@ -3,8 +3,9 @@ import { createContext, useContext, useState } from "react";
 const FormContext = createContext();
 
 const initialForm = {
+  type: "text",
   model: "text-davinci-003",
-  size: "256x256",
+  size: "512x512",
   n: 1,
   temperature: 1,
   topP: 1,
@@ -13,7 +14,7 @@ const initialForm = {
   bestOf: 1,
   text: "",
   topText: `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly. 
-    The assistant will wrap code blocks in 3 backticks followed by the language and a new line. But don't do that with for non-code responses.
+    The assistant will wrap code blocks in 3 backticks followed by the language and a new line.
   `,
 };
 
