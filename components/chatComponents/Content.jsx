@@ -1,4 +1,5 @@
 import { TextareaAutosize } from "@mui/base";
+import ImageSearchIcon from "@mui/icons-material/ImageSearch";
 import SendIcon from "@mui/icons-material/Send";
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
@@ -6,7 +7,6 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormContext } from "../../contexts/FormContext";
-import useWindowSize from "../../hooks/useWindowSize";
 import { appendBotMessage, appendChatLog } from "../../store/chatLogSlice";
 import {
   prependConversation,
@@ -19,7 +19,6 @@ import ChatLog from "./ChatLog";
 const Content = () => {
   const [isSending, setIsSending] = useState(false);
   const { form, handleChange, clearText } = useFormContext();
-  const { width } = useWindowSize();
   const {
     conversations: { conversations, selected, loadingConversations },
     chatLog: { chatLog, autoSelect },
@@ -216,7 +215,7 @@ const Content = () => {
             name={"text"}
             onChange={handleChange}
             style={{
-              fontSize: width > 600 ? 14 : 13,
+              fontSize: "clamp(14px, 2vw, 16px)",
               padding: "10px 20px",
               minHeight: 22,
               maxHeight: 350,

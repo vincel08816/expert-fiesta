@@ -61,7 +61,6 @@ const ChatLog = () => {
       {selected > 0 && loading && hasMore && (
         <CircularProgress style={{ width: 60, height: 60, mt: -6 }} />
       )}
-
       {memoizedChatLog}
     </Box>
   );
@@ -115,10 +114,10 @@ const useInfiniteScroll = (lastElement, scrollRef) => {
         dispatch(setChatLog(sortedMessages));
 
         setHasMore(data.hasMore);
+        executeScroll(scrollRef);
       })
       .catch(console.error)
       .then(async () => {
-        executeScroll(scrollRef);
         await delay(1000);
         setLoading(false);
       });

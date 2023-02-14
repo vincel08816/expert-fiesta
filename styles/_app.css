@@ -139,7 +139,7 @@
   max-width: 95vw;
   /* margin-top: -10px; */
   /* margin-bottom: -7px; */
-  /* line-height: 1.5; */
+  line-height: 1.5;
   /* white-space: pre-wrap; */
   font-size: clamp(14px, 2vw, 16px);
 }
@@ -154,7 +154,8 @@
 }
 
 .markdown-section > p {
-  margin: 0 0 12px 0;
+  margin: 3px 0 12px 0;
+  line-height: 1.5;
   white-space: pre-wrap;
 }
 

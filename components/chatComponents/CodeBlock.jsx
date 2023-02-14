@@ -68,7 +68,7 @@ const CodeBlock = ({ text, enableMarkdown }) => {
           }}
           customStyle={{
             width: "auto",
-            fontSize: "clamp(13px, 2vw, 16px)",
+            fontSize: "clamp(13px, 2vw, 14px)",
             padding: 15,
             backgroundColor: "black",
             fontFamily: "initial",

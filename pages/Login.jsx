@@ -4,6 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
 import { setUser } from "../store/userSlice";
 
 const emptyUsernameError = "Username cannot be empty.";
@@ -31,7 +32,7 @@ export default function Login() {
   }, [username, password]);
 
   const login = async (e) => {
-    // e.preventDefault();
+    e.preventDefault();
     if (!username && !password) {
       setPasswordError(emptyPasswordError);
       return setUsernameError(emptyUsernameError);
@@ -97,37 +98,39 @@ export default function Login() {
             {error}
           </Typography>
         )}
+        <Form onSubmit={login} noValidate autoComplete="off">
+          <TextField
+            label="Username"
+            name="username"
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
+            error={Boolean(usernameError)}
+            helperText={usernameError}
+          />
+          <TextField
+            label="Password"
+            name="password"
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            error={Boolean(passwordError)}
+            helperText={passwordError}
+            type="password"
+            style={{ margin: "20px 0" }}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              padding: "15px 10px",
+              marginBottom: "25px",
+              borderRadius: "50px",
+              fontSize: "14px",
+            }}
+          >
+            Login
+          </Button>
+        </Form>
 
-        <TextField
-          label="Username"
-          name="username"
-          onChange={(e) => setUsername(e.target.value)}
-          value={username}
-          error={Boolean(usernameError)}
-          helperText={usernameError}
-        />
-        <TextField
-          label="Password"
-          name="password"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-          error={Boolean(passwordError)}
-          helperText={passwordError}
-          type="password"
-          style={{ margin: "20px 0" }}
-        />
-        <Button
-          variant="contained"
-          sx={{
-            padding: "15px 10px",
-            marginBottom: "25px",
-            borderRadius: "50px",
-            fontSize: "14px",
-          }}
-          onClick={login}
-        >
-          Login
-        </Button>
         <Divider sx={{ fontSize: "15px", mb: 2 }}>or</Divider>
 
         <Button
@@ -145,3 +148,8 @@ export default function Login() {
     </Box>
   );
 }
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+`;
