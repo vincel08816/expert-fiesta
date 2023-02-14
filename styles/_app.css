@@ -141,7 +141,7 @@
   /* margin-bottom: -7px; */
   line-height: 1.5;
   /* white-space: pre-wrap; */
-  font-size: clamp(14px, 2vw, 16px);
+  font-size: clamp(13px, 2vw, 15px);
 }
 .markdown-section > section,
 .markdown-section > div {
@@ -163,8 +163,8 @@
 .markdown-section > code {
   max-width: 95vw;
   white-space: pre-wrap;
-  padding: 0 0 0 15px;
-  margin: 0 0 0 15px;
+  /* padding: 0 0 0 15px; */
+  /* margin: 0 0 0 15px; */
   overflow-wrap: anywhere;
   height: auto;
   font-size: clamp(14px, 2vw, 16px);
@@ -172,7 +172,8 @@
 
 .markdown-section > li,
 .markdown-section > ol {
-  white-space: pre-line;
+  /* white-space: pre-wrap; */
+  overflow-wrap: anywhere;
   padding: 0 0 0 12px;
   margin: 0 0 0 12px;
   line-height: 1.5;

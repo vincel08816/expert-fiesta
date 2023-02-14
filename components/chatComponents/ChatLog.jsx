@@ -16,7 +16,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const executeScroll = (ref) => ref?.current?.scrollIntoView();
 
-const ChatLog = () => {
+const ChatLog = ({ isSending }) => {
   const chatRef = useRef(null);
   const scrollRef = useRef(null);
   const [lastElement, setLastElement] = useState(null);
@@ -26,11 +26,19 @@ const ChatLog = () => {
     chatLog: { chatLog, loadingChatLog },
   } = useSelector((state) => state);
 
+  const scrollToBottom = useCallback(() => {
+    if (!chatRef || !chatRef.current) return;
+    chatRef.current.scrollTop = chatRef.current.scrollHeight;
+  }, [chatRef]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [isSending]);
+
   // scroll to bottom
   useEffect(() => {
     if (page === 0) {
-      if (!chatRef || !chatRef.current) return;
-      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+      scrollToBottom();
     }
   }, [loadingChatLog, chatLog?.length]);
 
@@ -47,14 +55,6 @@ const ChatLog = () => {
       }),
     [chatLog]
   );
-
-  // if (loadingChatLog) {
-  //   return (
-  //     <Box ref={chatRef} sx={loadingSx}>
-  //       <CircularProgress style={{ width: 60, height: 60 }} />
-  //     </Box>
-  //   );
-  // }
 
   return (
     <Box ref={chatRef} sx={chatContainerSx}>

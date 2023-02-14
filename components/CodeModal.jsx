@@ -1,13 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
-import {
-  Button,
-  FormControl,
-  IconButton,
-  InputLabel,
-  Select,
-  Typography,
-} from "@mui/material";
+import { Button, IconButton, Typography } from "@mui/material";
 import Modal from "@mui/material/Modal";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
@@ -121,13 +114,6 @@ const CodeHeader = ({ language, value }) => {
         padding: "4px 22px",
       }}
     >
-      <FormControl>
-        <InputLabel>Type</InputLabel>
-        <Select>
-          <MenuItem>DALL·E 2</MenuItem>
-          <MenuItem>GPT-3</MenuItem>
-        </Select>
-      </FormControl>
       <Typography variant="caption">{language}</Typography>
       <Button
         onClick={() => {

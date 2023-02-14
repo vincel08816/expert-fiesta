@@ -252,7 +252,11 @@ const Content = () => {
   return (
     <>
       {/* chatLog */}
-      {loadingConversations ? <Box sx={{ flex: 1 }} /> : <ChatLog />}
+      {loadingConversations ? (
+        <Box sx={{ flex: 1 }} />
+      ) : (
+        <ChatLog isSending={isSending} />
+      )}
 
       {/* input field */}
       <Box
@@ -291,7 +295,7 @@ const Content = () => {
             onChange={handleChange}
             style={{
               fontSize: "clamp(13px, 2vw, 14px)",
-              padding: "10px 20px",
+              padding: "10px",
               minHeight: 22,
               maxHeight: 350,
               resize: "none",

@@ -11,7 +11,6 @@ import Content from "../components/chatComponents/Content";
 import { CodeModal, useCodeModal } from "../components/CodeModal";
 import TopBar from "../components/TopBar";
 import Tutorial from "../components/Tutorial";
-import { AppContextProvider } from "../contexts/AppContext";
 import { FormContextProvider } from "../contexts/FormContext";
 import useWindowSize from "../hooks/useWindowSize";
 
@@ -93,45 +92,45 @@ export default function Home() {
   return (
     <EventContext.Provider value={eventProps}>
       <FormContextProvider>
-        <AppContextProvider>
-          <Box sx={{ display: "flex", maxHeight: "100vh" }}>
-            <Tutorial />
+        {/* <AppContextProvider> */}
+        <Box sx={{ display: "flex", maxHeight: "100vh" }}>
+          <Tutorial />
 
-            <CssBaseline />
-            <TopBar
-              {...{
-                open,
-                value,
-                setValue,
-                handleDrawer: () => setOpen((prev) => !prev),
-                anchorEl,
-                setAnchorEl,
-              }}
-            />
+          <CssBaseline />
+          <TopBar
+            {...{
+              open,
+              value,
+              setValue,
+              handleDrawer: () => setOpen((prev) => !prev),
+              anchorEl,
+              setAnchorEl,
+            }}
+          />
 
-            <CodeModal />
-            <Snackbar
-              open={snackbarOpen}
-              autoHideDuration={1000}
+          <CodeModal />
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={1000}
+            onClose={handleSnackbarClose}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            sx={{ opacity: 0.85 }}
+          >
+            <Alert
               onClose={handleSnackbarClose}
-              anchorOrigin={{ vertical: "top", horizontal: "center" }}
-              sx={{ opacity: 0.85 }}
+              severity="success"
+              sx={{ width: "100%" }}
             >
-              <Alert
-                onClose={handleSnackbarClose}
-                severity="success"
-                sx={{ width: "100%" }}
-              >
-                {snackbarText}
-              </Alert>
-            </Snackbar>
+              {snackbarText}
+            </Alert>
+          </Snackbar>
 
-            <StyledMain open={open}>
-              <DrawerHeader />
-              <Content />
-            </StyledMain>
-          </Box>
-        </AppContextProvider>
+          <StyledMain open={open}>
+            <DrawerHeader />
+            <Content />
+          </StyledMain>
+        </Box>
+        {/* </AppContextProvider> */}
       </FormContextProvider>
     </EventContext.Provider>
   );

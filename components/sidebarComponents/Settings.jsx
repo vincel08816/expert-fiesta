@@ -54,7 +54,7 @@ const TextGenerationSettings = () => {
   return (
     <Box
       sx={{
-        display: form.type !== "image" ? "flex" : "none",
+        display: type !== "image" ? "flex" : "none",
         flexDirection: "column",
         flex: 1,
       }}

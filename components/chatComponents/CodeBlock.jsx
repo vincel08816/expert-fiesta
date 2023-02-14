@@ -18,6 +18,36 @@ const CodeBlock = ({ text, enableMarkdown }) => {
     handleOpenModal();
   };
 
+  return (
+    <ReactMarkdown
+      className="markdown-section"
+      children={text}
+      remarkPlugins={[remarkGfm]}
+      components={{
+        code({ node, inline, className, children, ...props }) {
+          const match = /language-(\w+)/.exec(className || "");
+          return !inline && match ? (
+            <>
+              <CodeHeader language={match[1]?.toLowerCase()} value={children} />
+              <SyntaxHighlighter
+                children={String(children).replace(/\n$/, "")}
+                style={d}
+                language={match[1]}
+                PreTag="div"
+                {...props}
+                customStyle={customStyle}
+              />
+            </>
+          ) : (
+            <code className={className} {...props}>
+              {children}
+            </code>
+          );
+        },
+      }}
+    />
+  );
+
   return splitString(text).map(({ type, value, language }, index) => {
     if (type === "text") {
       const typeSx = {
@@ -36,6 +66,24 @@ const CodeBlock = ({ text, enableMarkdown }) => {
           className="markdown-section"
           children={value}
           remarkPlugins={[remarkGfm]}
+          components={{
+            code({ node, inline, className, children, ...props }) {
+              const match = /language-(\w+)/.exec(className || "");
+              return !inline && match ? (
+                <SyntaxHighlighter
+                  children={String(children).replace(/\n$/, "")}
+                  style={d}
+                  language={match[1]}
+                  PreTag="div"
+                  {...props}
+                />
+              ) : (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              );
+            },
+          }}
         />
       );
     }
@@ -83,6 +131,20 @@ const CodeBlock = ({ text, enableMarkdown }) => {
       </Box>
     );
   });
+};
+
+const customStyle = {
+  width: "auto",
+  fontSize: "clamp(13px, 2vw, 14px)",
+  padding: 15,
+  backgroundColor: "black",
+  fontFamily: "initial",
+  margin: 0,
+  borderBottomRightRadius: "8px",
+  borderBottomLeftRadius: "8px",
+  borderRadius: "8px",
+  borderTopRightRadius: "0px",
+  borderTopLeftRadius: "0px",
 };
 
 function splitString(str) {
