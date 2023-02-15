@@ -135,47 +135,21 @@
 }
 
 .markdown-section {
+  max-width: inherit;
+  display: flex;
+  flex-direction: column;
   font-size: 15px;
-  max-width: 95vw;
-  /* margin-top: -10px; */
-  /* margin-bottom: -7px; */
   line-height: 1.5;
   /* white-space: pre-wrap; */
   font-size: clamp(13px, 2vw, 15px);
 }
 .markdown-section > section,
 .markdown-section > div {
-  max-width: 95vw;
+  /* max-width: 100%; */
   padding: 0;
   margin: 0;
   line-height: 1.5;
-  white-space: pre-line;
-  height: auto;
-}
-
-.markdown-section > p {
-  margin: 3px 0 12px 0;
-  line-height: 1.5;
   white-space: pre-wrap;
-}
-
-.markdown-section > pre,
-.markdown-section > code {
-  max-width: 95vw;
-  white-space: pre-wrap;
-  /* padding: 0 0 0 15px; */
-  /* margin: 0 0 0 15px; */
-  overflow-wrap: anywhere;
-  height: auto;
-  font-size: clamp(14px, 2vw, 16px);
-}
-
-.markdown-section > li,
-.markdown-section > ol {
-  /* white-space: pre-wrap; */
-  overflow-wrap: anywhere;
-  padding: 0 0 0 12px;
-  margin: 0 0 0 12px;
-  line-height: 1.5;
+  word-break: break-all;
   height: auto;
 }

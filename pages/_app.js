@@ -89,7 +89,7 @@ export const UserProvider = ({ children }) => {
       .get("/api/auth")
       .then(({ data: { user, conversations } }) => {
         setUser(user);
-        setConversations(conversations);
+        // setConversations(conversations);
       })
       .catch((err) => console.error(err))
       .then(() => setLoading(false));

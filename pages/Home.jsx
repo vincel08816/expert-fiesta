@@ -63,6 +63,7 @@ export default function Home() {
   }, [loading, user]);
 
   const eventProps = {
+    open,
     // snackbar props
     snackbarOpen,
     setSnackbarOpen,

@@ -25,7 +25,6 @@ const SelectType = () => {
   const iconButtonSx = {
     ml: 1,
     mb: 0.5,
-    // border: "2px solid rgba(0,0,0,.1)",
   };
 
   return (
@@ -280,7 +279,7 @@ const Content = () => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            borderRadius: 5,
+            borderRadius: 50,
             boxShadow: "0 0 10px rgba(0,0,0,.1);",
           }}
         >

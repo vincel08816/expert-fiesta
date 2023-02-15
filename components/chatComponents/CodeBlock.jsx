@@ -7,10 +7,12 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow as d } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import remarkGfm from "remark-gfm";
+import styled from "styled-components";
 import { useEventContext } from "../../pages/Home";
 
 const CodeBlock = ({ text, enableMarkdown }) => {
-  const { setCodeLanguage, setCodeText, handleOpenModal } = useEventContext();
+  const { open, setCodeLanguage, setCodeText, handleOpenModal } =
+    useEventContext();
 
   const handleFullScreen = (language, value) => {
     setCodeLanguage(language);
@@ -19,123 +21,61 @@ const CodeBlock = ({ text, enableMarkdown }) => {
   };
 
   return (
-    <ReactMarkdown
-      className="markdown-section"
-      children={text}
-      remarkPlugins={[remarkGfm]}
-      components={{
-        code({ node, inline, className, children, ...props }) {
-          const match = /language-(\w+)/.exec(className || "");
-          return !inline && match ? (
-            <>
-              <CodeHeader language={match[1]?.toLowerCase()} value={children} />
-              <SyntaxHighlighter
-                children={String(children).replace(/\n$/, "")}
-                style={d}
-                language={match[1]}
-                PreTag="div"
-                {...props}
-                customStyle={customStyle}
-              />
-            </>
-          ) : (
-            <code className={className} {...props}>
-              {children}
-            </code>
-          );
-        },
-      }}
-    />
-  );
-
-  return splitString(text).map(({ type, value, language }, index) => {
-    if (type === "text") {
-      const typeSx = {
-        maxWidth: "95vw",
-        whiteSpace: "pre-line",
-        fontSize: "clamp(14px, 2vw, 16px)",
-        lineHeight: 1.5,
-      };
-
-      if (!enableMarkdown)
-        return <Typography key={index} sx={typeSx} children={value} />;
-
-      return (
-        <ReactMarkdown
-          key={index}
-          className="markdown-section"
-          children={value}
-          remarkPlugins={[remarkGfm]}
-          components={{
-            code({ node, inline, className, children, ...props }) {
-              const match = /language-(\w+)/.exec(className || "");
-              return !inline && match ? (
+    <Container open={open ? 300 : 0}>
+      <ReactMarkdown
+        children={text}
+        remarkPlugins={[remarkGfm]}
+        components={{
+          code({ node, inline, className, children, ...props }) {
+            const match = /language-(\w+)/.exec(className || "");
+            return !inline && match ? (
+              <>
+                <CodeHeader
+                  language={match[1]?.toLowerCase()}
+                  value={children}
+                />
+                <Box
+                  sx={{
+                    mt: -0.5,
+                    mb: -5,
+                    display: "flex",
+                    backgroundColor: "black",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                  }}
+                >
+                  <IconButton
+                    onClick={() => handleFullScreen(match[1], children)}
+                  >
+                    <FullscreenIcon sx={{ width: 22, mr: 1, color: "white" }} />
+                  </IconButton>
+                </Box>
                 <SyntaxHighlighter
                   children={String(children).replace(/\n$/, "")}
                   style={d}
                   language={match[1]}
                   PreTag="div"
                   {...props}
+                  customStyle={customStyle}
                 />
-              ) : (
-                <code className={className} {...props}>
-                  {children}
-                </code>
-              );
-            },
-          }}
-        />
-      );
-    }
-
-    return (
-      <Box key={index} sx={{ maxWidth: "95vw", mt: 0.3 }}>
-        <CodeHeader language={language?.toLowerCase()} value={value} />
-        <Box
-          sx={{
-            mt: -0.5,
-            mb: -5,
-            display: "flex",
-            backgroundColor: "black",
-            justifyContent: "flex-end",
-            alignItems: "center",
-          }}
-        >
-          <IconButton onClick={() => handleFullScreen(language, value)}>
-            <FullscreenIcon sx={{ width: 22, mr: 1, color: "white" }} />
-          </IconButton>
-        </Box>
-        <SyntaxHighlighter
-          children={value || ""}
-          wrapLines={true}
-          wrapLongLines={true}
-          language={language?.trim().toLowerCase() || "none"}
-          style={d}
-          lineProps={{
-            style: { wordBreak: "break-word", whiteSpace: "pre-wrap" },
-          }}
-          customStyle={{
-            width: "auto",
-            fontSize: "clamp(13px, 2vw, 14px)",
-            padding: 15,
-            backgroundColor: "black",
-            fontFamily: "initial",
-            margin: 0,
-            borderBottomRightRadius: "8px",
-            borderBottomLeftRadius: "8px",
-            borderRadius: "8px",
-            borderTopRightRadius: "0px",
-            borderTopLeftRadius: "0px",
-          }}
-        />
-      </Box>
-    );
-  });
+              </>
+            ) : (
+              <code className={className} {...props}>
+                {children}
+              </code>
+            );
+          },
+        }}
+      />
+    </Container>
+  );
 };
 
 const customStyle = {
+  // overflowY: "auto",
+  flex: 1,
   width: "auto",
-  fontSize: "clamp(13px, 2vw, 14px)",
+  fontSize: "clamp(13px, 2vw, 15px)",
   padding: 15,
   backgroundColor: "black",
   fontFamily: "initial",
@@ -207,3 +147,26 @@ const CodeHeader = ({ language, value }) => {
 };
 
 export default CodeBlock;
+
+const Container = styled.div`
+  line-height: 1.5;
+  font-size: clamp(13px, 2vw, 15px);
+  max-width: calc(95vw - 60px - ${({ open }) => open}px);
+
+  p {
+    margin: 3px 0 12px 0;
+    line-height: 1.5;
+    word-break: break-word;
+    max-width: inherit;
+  }
+
+  li,
+  ol {
+    white-space: pre-wrap;
+    padding: 0 0 0 12px;
+    margin: 0 0 0 12px;
+    line-height: 1.5;
+    height: auto;
+    max-width: inherit;
+  }
+`;

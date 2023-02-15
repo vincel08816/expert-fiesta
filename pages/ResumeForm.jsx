@@ -82,7 +82,7 @@ const ResumeForm = () => {
   Vincent`;
 
   return (
-    <Box sx={{ p: 3, mt: 7 }}>
+    <Box sx={{ p: 3 }}>
       <Box sx={{ pt: 2, pb: 2 }}>
         {Object.entries(form).map(([key, value]) => (
           <TextField

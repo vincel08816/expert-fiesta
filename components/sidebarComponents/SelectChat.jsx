@@ -5,7 +5,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { IconButton, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
-import React from "react";
+import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { setChatLog } from "../../store/chatLogSlice";
@@ -52,6 +52,7 @@ const SelectChat = ({ display }) => {
 
   /* edit conversation name */
   const handleEdit = async (_id) => {
+    console.log(_id);
     try {
       const swalResponse = await Swal.fire({
         icon: "warning",
@@ -66,11 +67,12 @@ const SelectChat = ({ display }) => {
         await axios.put(`/api/conversation/title/${_id}`, {
           title: swalResponse.value,
         });
+        console.log(swalResponse.value);
 
-        let newConversations = conversations;
+        const newConversations = [...conversations];
         if (newConversations?.length)
-          newConversations[selected].title = swalResponse.value;
-        handleSetSelected(newConversations);
+          newConversations[selected] = { title: swalResponse.value, _id };
+        handleSetConversations(newConversations);
       }
     } catch (error) {
       console.error(error);
@@ -98,29 +100,9 @@ const SelectChat = ({ display }) => {
     }
   };
 
-  return (
-    <Box key={"Select Chat"} sx={{ ...containerSx, display }}>
-      <Box
-        sx={{ ...titleSx, border: "1px solid black", padding: "4px 6px" }}
-        onClick={() => {
-          handleSetSelected(-1);
-          setChatLog([]);
-        }}
-      >
-        <Box sx={{ p: 0.5, pr: 1 }}>
-          <AddIcon style={{ width: "20px" }} />
-        </Box>
-        <Box
-          sx={{
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            whiteSpace: "nowrap",
-          }}
-        >
-          <Typography variant="body2">New chat</Typography>
-        </Box>
-      </Box>
-      {conversations?.map(({ title, _id }, index) => (
+  const memoizedConversations = useMemo(
+    () =>
+      conversations.map(({ title, _id }, index) => (
         <Box
           key={index}
           sx={{
@@ -180,7 +162,33 @@ const SelectChat = ({ display }) => {
             ""
           )}
         </Box>
-      ))}
+      )),
+    [conversations, selected]
+  );
+
+  return (
+    <Box key={"Select Chat"} sx={{ ...containerSx, display }}>
+      <Box
+        sx={{ ...titleSx, border: "1px solid black", padding: "4px 6px" }}
+        onClick={() => {
+          handleSetSelected(-1);
+          setChatLog([]);
+        }}
+      >
+        <Box sx={{ p: 0.5, pr: 1 }}>
+          <AddIcon style={{ width: "20px" }} />
+        </Box>
+        <Box
+          sx={{
+            textOverflow: "ellipsis",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+          }}
+        >
+          <Typography variant="body2">New chat</Typography>
+        </Box>
+      </Box>
+      {memoizedConversations}
     </Box>
   );
 };
