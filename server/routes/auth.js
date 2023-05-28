@@ -43,12 +43,6 @@ router.post("/test", async (req, res) => {
 
     console.log("auth test");
 
-    // const titles = ["Node.js", "Mongodb", "Express.js", "React.js", "Redux.js"];
-
-    // for (let title of titles) {
-    //   await new Conversation({ userId, title }).save();
-    // }
-
     res.json({ msg: "success" });
   } catch (error) {
     console.error(error);

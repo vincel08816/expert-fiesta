@@ -30,8 +30,8 @@ const chatLogSlice = createSlice({
       state.autoSelect = !state.autoSelect;
     },
     toggleCheckbox: (state, action) => {
-      state.chatLog[action.payload].selected =
-        !state.chatLog[action.payload]?.selected;
+      state.chatLog[action.payload].selected = !state.chatLog[action.payload]
+        ?.selected;
     },
     appendBotMessage: ({ chatLog }, { payload: { newElement, _id } }) => {
       chatLog[chatLog.length - 1]._id = _id;

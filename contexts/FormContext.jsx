@@ -4,7 +4,7 @@ const FormContext = createContext();
 
 const initialForm = {
   type: "text",
-  model: "text-davinci-003",
+  model: "gpt-3.5-turbo",
   size: "512x512",
   n: 1,
   temperature: 1,
@@ -13,7 +13,7 @@ const initialForm = {
   presencePenalty: 0,
   bestOf: 1,
   text: "",
-  topText: `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly. 
+  promptHeader: `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly. 
     The assistant will wrap code blocks in 3 backticks followed by the language and a new line.
   `,
 };

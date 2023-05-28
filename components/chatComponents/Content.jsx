@@ -1,12 +1,11 @@
 import { TextareaAutosize } from "@mui/base";
-import ImageSearchIcon from "@mui/icons-material/ImageSearch";
 import SendIcon from "@mui/icons-material/Send";
-import TextsmsIcon from "@mui/icons-material/Textsms";
-import { IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
 import { useFormContext } from "../../contexts/FormContext";
 import { appendBotMessage, appendChatLog } from "../../store/chatLogSlice";
 import {
@@ -16,77 +15,7 @@ import {
 import DotLoader from "../DotLoader";
 import IconsWithTooltips from "../IconsWithTooltips";
 import ChatLog from "./ChatLog";
-
-const SelectType = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const openSelectMenu = Boolean(anchorEl);
-  const { form, handleChange } = useFormContext();
-  const iconSx = { width: 20, height: 20 };
-  const iconButtonSx = {
-    ml: 1,
-    mb: 0.5,
-  };
-
-  return (
-    <Box>
-      <Tooltip title="GPT-3 Or DALL·E 2">
-        <IconButton
-          sx={iconButtonSx}
-          onClick={(event) => setAnchorEl(event.currentTarget)}
-        >
-          {form.type === "text" ? (
-            <TextsmsIcon sx={iconSx} />
-          ) : (
-            <ImageSearchIcon sx={iconSx} />
-          )}
-        </IconButton>
-      </Tooltip>
-
-      <Menu
-        sx={{ borderRadius: "8px" }}
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={openSelectMenu}
-        onClose={() => setAnchorEl(null)}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
-      >
-        {[
-          {
-            title: "GPT3 Text Generation",
-            value: "text",
-            icon: <TextsmsIcon />,
-          },
-          {
-            title: "DALL·E 2 Image Generation",
-            value: "image",
-            icon: <ImageSearchIcon />,
-          },
-        ].map(({ title, value, icon }, index) => (
-          <MenuItem
-            key={title + index}
-            sx={{ fontSize: "12px", display: "flex", alignItems: "center" }}
-            name="topText"
-            value={value}
-            onClick={(e) => {
-              handleChange({
-                target: { name: "type", value },
-                preventDefault: () => {},
-              });
-              setAnchorEl(null);
-            }}
-          >
-            {icon}
-            <Typography variant="body-2" sx={{ ml: 0.5 }}>
-              {title}
-            </Typography>
-          </MenuItem>
-        ))}
-      </Menu>
-    </Box>
-  );
-};
+import GenerationTypeSelector from "./GenerationTypeSelector";
 
 const Content = () => {
   const [isSending, setIsSending] = useState(false);
@@ -103,105 +32,175 @@ const Content = () => {
   const handleAppendChatLog = (payload) => dispatch(appendChatLog(payload));
   const handleSetSelected = (payload) => dispatch(setSelected(payload));
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (isSending) return;
+  //   if (form.type === "image" && form.text.length > 400) {
+  //     return Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: "Text must be less than 400 characters",
+  //     });
+  //   }
+  //   // {!} Add gpt-3.5-turbo model to route and send messages
+
+  //   if (!form.text.length || !form.text.trim().length) {
+  //     return Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: "Please enter a valid message",
+  //     });
+  //   }
+
+  //   setIsSending(true);
+
+  //   // 1. Manually selecting messages to send as chat history.
+  //   const max = form.model === "text-davinci-003" ? 3500 : 1500;
+
+  //   console.log(chatLog);
+  //   const length = 6 > chatLog.length ? 0 : chatLog.length - 6;
+  //   let selectedMessages = autoSelect
+  //     ? chatLog.slice(length)
+  //     : chatLog.filter((message) => message.selected);
+
+  //   while (selectedMessages?.length) {
+  //     const temp = selectedMessages
+  //       .map(
+  //         (message) =>
+  //           `${message.isBot ? "\n AI:" : "\n Human:"}: ${message.text}${
+  //             message.isBot ? "\n" : ""
+  //           }`
+  //       )
+  //       .join("\n");
+  //     const prompt =
+  //       form.promptHeader + "\n" + temp + "Human:\n" + form.text + "\nAI:";
+  //     const max_tokens = parseInt(max - prompt.length / 4);
+
+  //     if (max_tokens >= 0) break;
+
+  //     selectedMessages.shift();
+  //   }
+
+  //   selectedMessages = selectedMessages.map(
+  //     (message) =>
+  //       `\n${message.isBot ? "\n AI" : "\n Human"}: ${message.text}${
+  //         message.isBot ? "\n" : ""
+  //       }`
+  //   );
+
+  //   const prompt =
+  //     form.promptHeader +
+  //     "\n" +
+  //     selectedMessages +
+  //     "\n Human:" +
+  //     form.text +
+  //     "\nAI:";
+
+  //   const max_tokens = parseInt(max - prompt.length / 4);
+
+  //   if (max_tokens <= 0) {
+  //     return Swal.fire({
+  //       icon: "error",
+  //       title: "Prompt is too long",
+  //       text: "Please remove some of the selected messages",
+  //     });
+  //   }
+
+  //   // create payload
+  //   // prompt should be: pinned + selected previous messages + current text
+
+  //   const payload =
+  //     form.type === "image"
+  //       ? {
+  //           prompt: form.text,
+  //           n: form.n,
+  //           size: form.size,
+  //         }
+  //       : {
+  //           model: form.model,
+  //           temperature: form.temperature,
+  //           top_p: form.topP,
+  //           frequency_penalty: form.frequencyPenalty,
+  //           presence_penalty: form.presencePenalty,
+  //           best_of: form.bestOf,
+  //           prompt,
+  //           max_tokens,
+  //           stop: [" Human:", " AI:"],
+  //         };
+
+  //   // add new message to chat log and clear form
+  //   // add message to chatLog array
+
+  //   const index = chatLog.length; // index of new message from user
+
+  //   handleAppendChatLog({
+  //     isBot: false,
+  //     updatedAt: Date.now(),
+  //     text: form.text,
+  //     selected: true,
+  //     _id: null,
+  //   });
+
+  //   clearText();
+
+  //   // console.log(
+  //   //   "conversationId",
+  //   //   conversations.length && selected && conversations[selected]._id
+  //   // );
+
+  //   axios
+  //     .post(`/api/message/${form.type}`, {
+  //       payload,
+  //       text: form.text,
+  //       conversationId: selected >= 0 ? conversations[selected]._id : undefined,
+  //     })
+  //     .then((response) => {
+  //       const { openAIResponse, conversation, userMessageId } = response.data;
+  //       const reduxPayload = {
+  //         newElement: { ...openAIResponse, selected: true },
+  //         _id: userMessageId,
+  //       };
+
+  //       if (selected === -1) {
+  //         handlePrepend(conversation);
+  //         handleSetSelected(0);
+  //       }
+  //       dispatch(appendBotMessage(reduxPayload));
+  //     })
+  //     .catch((error) => {
+  //       handleAppendChatLog({
+  //         updatedAt: Date.now(),
+  //         text: "Could not send message.",
+  //         selected: true,
+  //         error: true,
+  //       });
+  //       console.error(error);
+  //     })
+  //     .then(() => setIsSending(false));
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (isSending) return;
-    if (form.type === "image" && form.text.length > 400) {
-      return Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Text must be less than 400 characters",
-      });
-    }
+
+    let errorMessage;
+    const MAX_IMAGE_PROMPT_LENGTH = 400;
+
+    if (form.type === "image" && form.text.length > MAX_IMAGE_PROMPT_LENGTH)
+      errorMessage = "Text must be less than 400 characters";
     if (!form.text.length || !form.text.trim().length)
-      return Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Please enter a valid message",
-      });
+      errorMessage = "Please enter a valid message";
+
+    if (errorMessage)
+      return Swal.fire({ icon: "error", title: "Error", text: errorMessage });
+
+    const payload = createPayload();
+
+    console.log(payload);
+
     setIsSending(true);
-
-    // 1. Manually selecting messages to send as chat history.
-    const max = form.model === "text-davinci-003" ? 3500 : 1500;
-
-    const length = 6 > chatLog.length ? 0 : chatLog.length - 6;
-    let selectedMessages = autoSelect
-      ? chatLog.slice(length)
-      : chatLog.filter((message) => message.selected);
-
-    while (selectedMessages?.length) {
-      const temp = selectedMessages
-        .map(
-          (message) =>
-            `${message.isBot ? "\n AI:" : "\n Human:"}: ${message.text}${
-              message.isBot ? "\n" : ""
-            }`
-        )
-        .join("\n");
-      const prompt =
-        form.topText + "\n" + temp + "Human:\n" + form.text + "\nAI:";
-      const max_tokens = parseInt(max - prompt.length / 4);
-
-      if (max_tokens >= 0) {
-        break;
-      } else {
-        selectedMessages.shift();
-      }
-    }
-
-    selectedMessages = selectedMessages.map(
-      (message) =>
-        `\n${message.isBot ? "\n AI" : "\n Human"}: ${message.text}${
-          message.isBot ? "\n" : ""
-        }`
-    );
-
-    const prompt =
-      form.topText +
-      "\n" +
-      selectedMessages +
-      "\n Human:" +
-      form.text +
-      "\nAI:";
-
-    const max_tokens = parseInt(max - prompt.length / 4);
-
-    if (max_tokens <= 0) {
-      return Swal.fire({
-        icon: "error",
-        title: "Prompt is too long",
-        text: "Please remove some of the selected messages",
-      });
-    }
-
-    // create payload
-    // prompt should be: pinned + selected previous messages + current text
-
-    const payload =
-      form.type === "image"
-        ? {
-            prompt: form.text,
-            n: form.n,
-            size: form.size,
-          }
-        : {
-            model: form.model,
-            temperature: form.temperature,
-            top_p: form.topP,
-            frequency_penalty: form.frequencyPenalty,
-            presence_penalty: form.presencePenalty,
-            best_of: form.bestOf,
-            prompt,
-            max_tokens,
-            stop: [" Human:", " AI:"],
-          };
-
-    // add new message to chat log and clear form
-    // add message to chatLog array
-
-    const index = chatLog.length; // index of new message from user
-
     handleAppendChatLog({
       isBot: false,
       updatedAt: Date.now(),
@@ -209,43 +208,82 @@ const Content = () => {
       selected: true,
       _id: null,
     });
-
     clearText();
 
-    // console.log(
-    //   "conversationId",
-    //   conversations.length && selected && conversations[selected]._id
-    // );
+    // return;
 
-    axios
-      .post(`/api/message/${form.type}`, {
+    try {
+      const response = await axios.post(`/api/message/${form.type}`, {
         payload,
         text: form.text,
         conversationId: selected >= 0 ? conversations[selected]._id : undefined,
-      })
-      .then((response) => {
-        const { openAIResponse, conversation, userMessageId } = response.data;
-        const reduxPayload = {
-          newElement: { ...openAIResponse, selected: true },
-          _id: userMessageId,
-        };
+      });
 
-        if (selected === -1) {
-          handlePrepend(conversation);
-          handleSetSelected(0);
-        }
-        dispatch(appendBotMessage(reduxPayload));
-      })
-      .catch((error) => {
-        handleAppendChatLog({
-          updatedAt: Date.now(),
-          text: "Could not send message.",
-          selected: true,
-          error: true,
-        });
-        console.error(error);
-      })
-      .then(() => setIsSending(false));
+      const { openAIResponse, conversation, userMessageId } = response.data;
+
+      const reduxPayload = {
+        newElement: { ...openAIResponse, selected: true },
+        _id: userMessageId,
+      };
+
+      if (selected === -1) {
+        handlePrepend(conversation);
+        handleSetSelected(0);
+      }
+
+      dispatch(appendBotMessage(reduxPayload));
+      setIsSending(false);
+    } catch (error) {
+      handleAppendChatLog({
+        updatedAt: Date.now(),
+        text: "Could not send message.",
+        selected: true,
+        error: true,
+        isBot: true,
+      });
+      console.error(error);
+      setIsSending(false);
+    }
+  };
+
+  const createPayload = () => {
+    if (form.type === "image") {
+      return { prompt: form.text, n: form.n, size: form.size };
+    }
+
+    const CHAR_PER_TOKEN = 4;
+    const MAX_TOKENS = 4096;
+    const MAX_CHARACTERS = MAX_TOKENS * CHAR_PER_TOKEN;
+    const MAX_MESSAGES = 5;
+
+    let messages = autoSelect
+      ? chatLog.slice(length)
+      : chatLog.filter((message) => message.selected);
+
+    let currentTotalCharacters = form.text.length + form.promptHeader;
+    let i = 0;
+    for (i; i < messages.length; i++) {
+      const messageIndex = messages.length - i - 1;
+      const messageLength = messages[messageIndex].text.length;
+      if (
+        messageLength + currentTotalCharacters > MAX_CHARACTERS ||
+        i >= MAX_MESSAGES
+      ) {
+        break;
+      }
+      currentTotalCharacters += messageLength;
+    }
+
+    return {
+      model: "gpt-3.5-turbo",
+      messages: [
+        { role: "system", content: form.promptHeader },
+        ...messages.slice(messages.length - i + 1).map(({ isBot, text }) => {
+          return { role: isBot ? "assistant" : "user", content: text };
+        }),
+        { role: "user", content: form.text },
+      ],
+    };
   };
 
   return (
@@ -283,7 +321,7 @@ const Content = () => {
             boxShadow: "0 0 10px rgba(0,0,0,.1);",
           }}
         >
-          <SelectType />
+          <GenerationTypeSelector />
           <TextareaAutosize
             placeholder="Message @OpenAI"
             onKeyDown={(e) =>

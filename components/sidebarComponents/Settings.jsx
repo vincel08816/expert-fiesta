@@ -41,15 +41,7 @@ const Settings = (display) => {
 const TextGenerationSettings = () => {
   const { form, handleChange } = useFormContext();
 
-  const {
-    type,
-    model,
-    topP,
-    temperature,
-    frequencyPenalty,
-    presencePenalty,
-    bestOf,
-  } = form;
+  const { type, model } = form;
 
   return (
     <Box
@@ -68,17 +60,7 @@ const TextGenerationSettings = () => {
           name="model"
           onChange={handleChange}
         >
-          {[
-            "text-davinci-003",
-            "text-davinci-002",
-            "text-davinci-001",
-            "text-curie-001",
-            // "text-babbage-001",
-            // "text-ada-001",
-            // "code-cushman-001",
-            // "code-davinci-002",
-            // "image-dalle-002",
-          ].map((value, index) => (
+          {["gpt-3.5-turbo"].map((value, index) => (
             <MenuItem key={index} value={value}>
               {value}
             </MenuItem>
@@ -91,8 +73,8 @@ const TextGenerationSettings = () => {
       </Typography>
       <TextareaAutosize
         placeholder="This header allows you to write a short description on top of the prompt"
-        value={form.topText}
-        name="topText"
+        value={form.promptHeader}
+        name="promptHeader"
         onChange={handleChange}
         style={{
           resize: "none",
@@ -105,52 +87,6 @@ const TextGenerationSettings = () => {
           marginBottom: "12px",
         }}
       />
-      {[
-        {
-          helperText:
-            "The temperature parameter controls the randomness of the model. 0 is the most logical and 1 is the most creative",
-          state: temperature,
-          title: "Temperature",
-          name: "temperature",
-        },
-        {
-          helperText:
-            "Top-p sampling is a way to select the most likely words or phrases from a language model. It allows for control over the coherence and relevance of the generated text.",
-          state: topP,
-          title: "Top P",
-          name: "topP",
-        },
-        {
-          helperText:
-            "Frequency Penalty: Encourages diverse, non-repeating text by reducing likelihood of frequent words/phrases.",
-          state: frequencyPenalty,
-          title: "Frequency Penalty",
-          name: "frequencyPenalty",
-          max: 2,
-          defaultValue: 0,
-        },
-        {
-          helperText:
-            "Presence Penalty: Encourages diverse text by reducing likelihood of input-matching words/phrases.",
-          state: presencePenalty,
-          title: "Presence Penalty",
-          name: "presencePenalty",
-          max: 2,
-          defaultValue: 0,
-        },
-        {
-          helperText:
-            "Best of: Generates multiple outputs, selects the best based on specified criteria",
-          state: bestOf,
-          name: "bestOf",
-          title: "Best Of",
-          min: 1,
-          max: 20,
-          step: 1,
-        },
-      ].map((value, index) => (
-        <FormComponent key={index} {...value} handleChange={handleChange} />
-      ))}
     </Box>
   );
 };
@@ -257,11 +193,11 @@ const PromptHeaderPreset = () => {
           <MenuItem
             key={title + index}
             sx={{ fontSize: "12px" }}
-            name="topText"
+            name="promptHeader"
             value={text}
             onClick={(e) => {
               handleChange({
-                target: { name: "topText", value: text },
+                target: { name: "promptHeader", value: text },
                 preventDefault: () => {},
               });
               setAnchorEl(null);

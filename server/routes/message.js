@@ -50,7 +50,6 @@ const verifyConversationAndSaveMessage = async (
     conversation.updatedAt = new Date();
     await conversation.save();
 
-    // save message to mongodb
     const userMessage = new Message({
       userId,
       conversationId,
@@ -58,7 +57,6 @@ const verifyConversationAndSaveMessage = async (
       text,
     });
 
-    // save response to mongodb
     await userMessage.save();
 
     let newMessageData = {
@@ -70,9 +68,8 @@ const verifyConversationAndSaveMessage = async (
 
     if (response?.choices) {
       console.log(response.choices);
-      newMessageData.text = response.choices[0].text;
+      newMessageData.text = response.choices[0].message.content;
     } else {
-      // save image data to google drive?
       console.log(response.data);
 
       const urls = await scanUrlsForFiles(response.data.map((url) => url.url));
@@ -81,10 +78,15 @@ const verifyConversationAndSaveMessage = async (
       newMessageData.imageUrls = urls;
     }
 
-    const openAIResponse = await new Message(newMessageData).save();
+    const openAIResponse = new Message(newMessageData);
+    openAIResponse.save();
 
     // {!} Handle _id when message is created (do this for image)
-    return { conversation, userMessageId: userMessage._id, openAIResponse };
+    return {
+      conversation,
+      userMessageId: userMessage._id,
+      openAIResponse: newMessageData,
+    };
   } catch (error) {
     throw new Error(error);
   }
@@ -105,22 +107,14 @@ router.post(
 
       console.log("moderation results", requestModeration);
 
-      console.log(requestModeration);
       if (requestModeration[0].flagged === true) {
         return res.status(400);
       }
 
       console.log("/api/message", req.body);
-      const response = await openai.createCompletion(payload);
+      // const response = await openai.createCompletion(payload);
+      const response = await openai.createChatCompletion(payload);
       console.log(response.data);
-
-      // const responseModeration = await sendModerationRequest(
-      //   response.choices[0].text
-      // );
-
-      // if (responseModeration[0].flagged === true) {
-      //   return res.status(400);
-      // }
 
       const data = await verifyConversationAndSaveMessage(
         conversationId,
@@ -238,7 +232,7 @@ router.get(
 );
 
 // @route    GET /api/message/:id
-// @desc     Get messages for a specific conversation.
+// @desc     Get messages by conversation id
 // @access   Private
 
 router.get(
@@ -262,7 +256,7 @@ router.get(
         return res.sendStatus(404);
       }
 
-      const messages = await Message.find({ conversationId })
+      let messages = await Message.find({ conversationId })
         .sort({
           createdAt: -1,
         })
@@ -271,13 +265,7 @@ router.get(
       const totalCount = await Message.countDocuments({ conversationId });
       const hasMore = totalCount > skip + limit;
 
-      console.log({ totalCount, skip, limit, hasMore });
-
-      // console.log("/api/message", {
-      //   conversationId,
-      //   query: req.query,
-      //   messages: messages.reverse(),
-      // });
+      // console.log({ totalCount, skip, limit, hasMore });
 
       res.json({ messages: messages.reverse(), hasMore });
     } catch (error) {
@@ -286,34 +274,6 @@ router.get(
     }
   }
 );
-
-// router.get(
-//   "/:id",
-//   passport.authenticate("jwt", { session: false }),
-//   async (req, res) => {
-//     try {
-//       const conversationId = req.params.id;
-//       const userId = req.user.id;
-
-//       console.log("/api/message/:id", req.params.id);
-
-//       const conversation = await Conversation.findById(conversationId);
-
-//       // this covers the case where conversation does not exist OR user does not match
-//       if (conversation?.userId.toString() !== userId) {
-//         console.error("Conversation does not exist or user does not match");
-//         return res.sendStatus(404);
-//       }
-
-//       const messages = await Message.find({ conversationId });
-
-//       res.json({ messages });
-//     } catch (error) {
-//       console.error(error);
-//       res.sendStatus(500);
-//     }
-//   }
-// );
 
 // @route    PUT /api/move-message/:id
 // @desc     Edit conversation based on converationId and userId

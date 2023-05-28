@@ -37,7 +37,13 @@ export const AppContextProvider = ({ children }) => {
       setLoadingMessages(true);
       axios
         .get(`/api/message/${conversations[selected]?._id}`)
-        .then((res) => setChatLog(res.data.messages))
+        .then((res) =>
+          setChatLog(
+            res.data.messages.map((message) => {
+              return { ...message, role: message.isBot ? "assistant" : "user" };
+            })
+          )
+        )
         .catch((err) => console.error(err))
         .then(() => setLoadingMessages(false));
     }
