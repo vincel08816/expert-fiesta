@@ -20,7 +20,9 @@ const useRedux = () => {
     prependConversation: (payload) => dispatch(prependConversation(payload)),
     setSelected: (payload) => dispatch(setSelected(payload)),
     stopLoadingConversations: () => dispatch(stopLoadingConversations()),
-    appendMessages: (payload) => dispatch(appendMessages(payload)),
+    appendMessages: (payload) => {
+      dispatch(appendMessages(payload));
+    },
     toggleCheckbox: (payload) => dispatch(toggleCheckbox(payload)),
     setMessages: (payload) => dispatch(setMessages(payload)),
     appendBotMessage: (payload) => dispatch(appendBotMessage(payload)),

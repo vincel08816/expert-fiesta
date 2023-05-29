@@ -26,35 +26,6 @@ const conversationsSlice = createSlice({
     stopLoadingConversations(state) {
       state.loadingConversations = false;
     },
-
-    /* these are just potential things to ad  d */
-    // appendMessages(state, action) {
-    //   const { _id, messages } = action.payload;
-    //   const index = state.conversations.find(({ _id: id }) => id === _id);
-
-    //   state.conversations[index].messages = [
-    //     ...messages,
-    //     ...state.conversations[index].messages,
-    //   ];
-    // },
-    // toggleCheckbox(state, action) {
-    //   const { conversations, selected } = state;
-    //   const messages = conversations[selected].messages;
-    //   messages[action.payload].selected = !messages[action.payload]?.selected;
-    // },
-    // setMessages(state, action) {
-    //   const { _id, messages } = action.payload;
-    //   const index = state.conversations.find(({ _id: id }) => id === _id);
-    //   state.conversations[index].messages = messages;
-    // },
-    // appendBotMessage(state, action) {
-    //   const { conversations, selected } = state;
-    //   const { _id, newBotMessage } = action.payload;
-
-    //   const messages = conversations[selected].messages;
-    //   messages[messages.length - 1]._id = _id;
-    //   messages.push(newBotMessage);
-    // },
   },
 });
 
@@ -64,10 +35,6 @@ export const {
   setSelected,
   getSelectedId,
   stopLoadingConversations,
-  // appendMessages,
-  // toggleCheckbox,
-  // setMessages,
-  // appendBotMessage,
 } = conversationsSlice.actions;
 
 export const conversationsReducer = conversationsSlice.reducer;
