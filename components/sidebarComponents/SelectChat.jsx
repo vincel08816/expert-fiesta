@@ -11,35 +11,7 @@ import Swal from "sweetalert2";
 import { setChatLog } from "../../store/chatLogSlice";
 import { setConversations, setSelected } from "../../store/conversationsSlice";
 
-const titleSx = {
-  display: "flex",
-  flexDirection: "row",
-  width: "calc(100% - 30px)",
-  padding: "2px 6px",
-  alignItems: "center",
-  border: "1px solid transparent",
-  borderRadius: "5px",
-  "&:hover": {
-    backgroundColor: "#f1f1f1",
-    cursor: "pointer",
-  },
-};
-
-const containerSx = {
-  width: "100%",
-  flex: 1,
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  overflowY: "scroll",
-  "&::-webkit-scrollbar": {
-    display: "none",
-  },
-  msOverflowStyle: "none",
-  scrollbarWidth: "none",
-};
-
-const SelectChat = ({ display }) => {
+export default ({ display }) => {
   const dispatch = useDispatch();
   const {
     conversations: { conversations, selected },
@@ -51,7 +23,7 @@ const SelectChat = ({ display }) => {
   const handleSetChatLog = (payload) => dispatch(setChatLog(payload));
 
   /* edit conversation name */
-  const handleEdit = async (_id) => {
+  const handleEditTitle = async (_id) => {
     console.log(_id);
     try {
       const swalResponse = await Swal.fire({
@@ -79,7 +51,7 @@ const SelectChat = ({ display }) => {
     }
   };
 
-  const handleDelete = async (_id) => {
+  const handleDeleteConversation = async (_id) => {
     try {
       const swalResponse = await Swal.fire({
         icon: "warning",
@@ -114,7 +86,8 @@ const SelectChat = ({ display }) => {
           <Box sx={{ p: 0.3, pr: 1, mt: 1 }}>
             <ChatBubbleOutlineIcon style={{ width: "18px" }} />
           </Box>
-          <Box
+          <Typography
+            variant="body2"
             sx={{
               overflow: "hidden",
               whiteSpace: "nowrap",
@@ -122,38 +95,17 @@ const SelectChat = ({ display }) => {
               flex: 1,
             }}
           >
-            <Typography variant="body2">{title}</Typography>
-          </Box>
+            {title}
+          </Typography>
 
           {selected === index ? (
             <Box sx={{ ml: 2, display: "flex" }}>
-              <IconButton
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  p: 0.3,
-                  opacity: 0.7,
-                  "&:hover": {
-                    opacity: 1,
-                  },
-                }}
-                onClick={() => handleEdit(_id)}
-              >
+              <IconButton sx={iconSx} onClick={() => handleEditTitle(_id)}>
                 <EditIcon style={{ width: "20px", marginRight: "5px" }} />
               </IconButton>
               <IconButton
-                sx={{
-                  p: 0.3,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  opacity: 0.7,
-                  "&:hover": {
-                    opacity: 1,
-                  },
-                }}
-                onClick={() => handleDelete(_id)}
+                sx={iconSx}
+                onClick={() => handleDeleteConversation(_id)}
               >
                 <DeleteIcon style={{ width: "20px" }} />
               </IconButton>
@@ -172,7 +124,7 @@ const SelectChat = ({ display }) => {
         sx={{ ...titleSx, border: "1px solid black", padding: "4px 6px" }}
         onClick={() => {
           handleSetSelected(-1);
-          setChatLog([]);
+          handleSetChatLog([]);
         }}
       >
         <Box sx={{ p: 0.5, pr: 1 }}>
@@ -193,4 +145,41 @@ const SelectChat = ({ display }) => {
   );
 };
 
-export default SelectChat;
+const iconSx = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  p: 0.3,
+  opacity: 0.7,
+  "&:hover": {
+    opacity: 1,
+  },
+};
+
+const titleSx = {
+  display: "flex",
+  flexDirection: "row",
+  width: "calc(100% - 30px)",
+  padding: "2px 6px",
+  alignItems: "center",
+  border: "1px solid transparent",
+  borderRadius: "5px",
+  "&:hover": {
+    backgroundColor: "#f1f1f1",
+    cursor: "pointer",
+  },
+};
+
+const containerSx = {
+  width: "100%",
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  overflowY: "scroll",
+  "&::-webkit-scrollbar": {
+    display: "none",
+  },
+  msOverflowStyle: "none",
+  scrollbarWidth: "none",
+};

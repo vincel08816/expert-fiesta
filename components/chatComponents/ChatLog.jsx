@@ -91,7 +91,8 @@ const useInfiniteScroll = (lastElement, scrollRef) => {
     })
   );
 
-  const fetchMore = useCallback(() => {
+  // {!} This function has an issue with the implementation when switching between conversations
+  const fetchMore = useCallback(async () => {
     if (selected === -1 || !hasMore) return;
     setLoading(true);
     const id = conversations[selected]._id;
@@ -100,27 +101,22 @@ const useInfiniteScroll = (lastElement, scrollRef) => {
     console.log("fetch more", url);
 
     // axios request here.
-    axios
-      .get(url)
-      .then(({ data }) => {
-        console.log("fetch more data:", data);
-        const messageObject = {};
-        [...data.messages, ...chatLog].forEach(
-          (message) => (messageObject[message._id] = message)
-        );
-        const sortedMessages = Object.values(messageObject).sort(
-          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-        );
-        dispatch(setChatLog(sortedMessages));
-
-        setHasMore(data.hasMore);
-        executeScroll(scrollRef);
-      })
-      .catch(console.error)
-      .then(async () => {
-        await delay(1000);
-        setLoading(false);
-      });
+    try {
+      const { data } = await axios.get(url);
+      console.log("fetch more data:", data);
+      const messageObject = {};
+      [...data.messages, ...chatLog].forEach(
+        (message) => (messageObject[message._id] = message)
+      );
+      const sortedMessages = Object.values(messageObject).sort(
+        (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+      );
+      dispatch(setChatLog(sortedMessages));
+      setHasMore(data.hasMore);
+      executeScroll(scrollRef);
+    } catch (error) {
+      console.error(error);
+    }
   }, [selected, chatLog, page]);
 
   useEffect(() => {

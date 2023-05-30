@@ -19,8 +19,8 @@ const Settings = (display) => {
     <Box
       key={"API Settings"}
       sx={{
-        flex: 1,
         display,
+        flex: 1,
         flexDirection: "column",
         p: 3,
         pt: 1,
@@ -149,7 +149,8 @@ const presets = [
   },
   {
     title: "default",
-    text: "The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.",
+    text:
+      "The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.",
   },
   {
     title: "Code",

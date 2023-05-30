@@ -17,10 +17,9 @@ import IconsWithTooltips from "../IconsWithTooltips";
 import ChatLog from "./ChatLog";
 import GenerationTypeSelector from "./GenerationTypeSelector";
 
-// what's included in this file?
-// ChatLog, chatbox, and footer
+// ChatLog, TextArea, and Footer
 
-const Content = () => {
+export default () => {
   const [isSending, setIsSending] = useState(false);
   const { form, handleChange, clearText } = useFormContext();
   const {
@@ -190,7 +189,7 @@ const Content = () => {
 
           {/* add character count here */}
         </Box>
-        {githubFooter}
+        <GithubFooter />
       </Box>
     </>
   );
@@ -214,7 +213,7 @@ const textAreaBoxStyle = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "space-between",
-  borderRadius: 50,
+  borderRadius: 1,
   boxShadow: "0 0 10px rgba(0,0,0,.1);",
 };
 
@@ -231,7 +230,7 @@ const textAreaStyle = {
   outline: "none",
 };
 
-const githubFooter = (
+const GithubFooter = () => (
   <Box
     sx={{
       textAlign: "center",
@@ -262,5 +261,3 @@ const githubFooter = (
     </Typography>
   </Box>
 );
-
-export default Content;

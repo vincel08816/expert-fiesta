@@ -7,7 +7,7 @@ import { styled } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import Content from "../components/chatComponents/Content";
+import Content from "../components/chatComponents/ChatContent";
 import { CodeModal, useCodeModal } from "../components/CodeModal";
 import TopBar from "../components/TopBar";
 import Tutorial from "../components/Tutorial";
