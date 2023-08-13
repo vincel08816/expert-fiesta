@@ -81,9 +81,16 @@ export default () => {
       return { prompt: form.text, n: form.n, size: form.size };
     }
 
+    const MAX_TOKEN_BY_MODEL = {
+      "gpt-3.5-turbo": 4096,
+      "gpt-3.5-turbo-16k": 16384,
+      "gpt-4": 8192,
+      "gpt-4-32k": 32768,
+    };
+
     const CHAR_PER_TOKEN = 4;
-    const MAX_TOKENS = 4096;
-    const MAX_CHARACTERS = MAX_TOKENS * CHAR_PER_TOKEN;
+    const maxTokens = MAX_TOKEN_BY_MODEL[form.model];
+    const MAX_CHARACTERS = maxTokens * CHAR_PER_TOKEN;
     const MAX_MESSAGES = 5;
 
     let messages = autoSelect
@@ -194,6 +201,8 @@ export default () => {
     </>
   );
 };
+
+const useSendMessage = () => {};
 
 const chatContainerStyle = {
   flex: 0,

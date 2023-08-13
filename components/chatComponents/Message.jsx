@@ -78,11 +78,7 @@ const Message = (props) => {
           }}
         >
           {text ? (
-            <CodeBlock
-              text={text?.trim()}
-              isBot={isBot}
-              enableMarkdown={enableMarkdown}
-            />
+            <CodeBlock text={text?.trim()} isBot={isBot} />
           ) : imageUrls?.length ? (
             imageUrls.map((imageUrl) => (
               <StyledImage

@@ -10,9 +10,13 @@ import remarkGfm from "remark-gfm";
 import styled from "styled-components";
 import { useEventContext } from "../../pages/Home";
 
-const CodeBlock = ({ text, enableMarkdown }) => {
-  const { open, setCodeLanguage, setCodeText, handleOpenModal } =
-    useEventContext();
+const CodeBlock = ({ text }) => {
+  const {
+    open,
+    setCodeLanguage,
+    setCodeText,
+    handleOpenModal,
+  } = useEventContext();
 
   const handleFullScreen = (language, value) => {
     setCodeLanguage(language);

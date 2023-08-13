@@ -51,6 +51,7 @@ export default ({ display }) => {
     }
   };
 
+  /* I think the delete function is broken */
   const handleDeleteConversation = async (_id) => {
     try {
       const swalResponse = await Swal.fire({

@@ -60,11 +60,13 @@ const TextGenerationSettings = () => {
           name="model"
           onChange={handleChange}
         >
-          {["gpt-3.5-turbo"].map((value, index) => (
-            <MenuItem key={index} value={value}>
-              {value}
-            </MenuItem>
-          ))}
+          {["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k"].map(
+            (value, index) => (
+              <MenuItem key={index} value={value}>
+                {value}
+              </MenuItem>
+            )
+          )}
         </Select>
       </FormControl>
       <PromptHeaderPreset />
@@ -91,7 +93,7 @@ const TextGenerationSettings = () => {
   );
 };
 
-// image generation only has 3 parameters, the text, the image and color
+// image generation only has 3 parameters, the text, the image aMnd color
 const ImageGenerationSettings = () => {
   const { form, handleChange } = useFormContext();
 
@@ -157,6 +159,10 @@ const presets = [
     text: `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly. 
     The assistant will wrap code blocks in 3 backticks followed by the language and a new line.
   `,
+  },
+  {
+    title: "Interview",
+    text: `You are an interview coach that gives helpful advice. The assistant will provide a score out of 10 and will provide helpful suggestions without making up information about the applicant.`,
   },
 ];
 
